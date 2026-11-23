@@ -699,11 +699,12 @@ function drawDiagrams(root){
 
 /* ---------- playlist: which videos teach which topic, ranked by how often the exams asked it ---------- */
 const PL=typeof PLAYLIST!=="undefined"?PLAYLIST:null;
-const vurl=v=>"https://www.youtube.com/watch?v="+v[2]+"&list="+PL.list;
+const vurl=v=>"https://www.youtube.com/watch?v="+v[2]+"&list="+(v[3]||PL.list)+"&index="+v[0];
 const vidsOf=t=>{if(!PL)return[];const m=PL.map.find(e=>t.t.startsWith(e[0]));return m?m[1].map(n=>PL.videos[n-1]):[]};
+const xvidsOf=t=>{const X=PL&&PL.extra;if(!X)return[];const m=X.map.find(e=>t.t.startsWith(e[0]));return m?m[1].map(n=>X.videos.find(v=>v[0]===n)).filter(Boolean):[]};
 function vidChips(t){
-  const vs=vidsOf(t);if(!PL)return null;
-  const d=el("div","vids",'<span class="lab">Watch first</span>'+(vs.length?vs.map(v=>'<a class="vid" target="_blank" rel="noopener" href="'+vurl(v)+'"><b>▶ '+String(v[0]).padStart(2,"0")+'</b>'+esc(v[1])+'</a>').join(""):'<span class="pill">No video for this topic in your playlist — use the answer below</span>'));
+  const vs=vidsOf(t),xs=xvidsOf(t);if(!PL)return null;
+  const d=el("div","vids",'<span class="lab">Watch first</span>'+(vs.length||xs.length?vs.map(v=>'<a class="vid" target="_blank" rel="noopener" href="'+vurl(v)+'"><b>▶ '+String(v[0]).padStart(2,"0")+'</b>'+esc(v[1])+'</a>').join("")+xs.map(v=>'<a class="vid" target="_blank" rel="noopener" href="'+vurl(v)+'"><b>▶ '+esc(v[4])+' '+String(v[0]).padStart(2,"0")+'</b>'+esc(v[1])+'</a>').join(""):'<span class="pill">No video for this topic in either playlist — use the answer below</span>'));
   return d;
 }
 let plOrder=store.get(KEY+"-plo","asked");
@@ -712,7 +713,7 @@ function renderPL(){
   $("#tab-pl").hidden=false;
   const rows=PL.videos.map(v=>{const ts=TOPICS.filter(t=>vidsOf(t).includes(v));const ps=new Set();let q=0;ts.forEach(t=>t.items.forEach(x=>{ps.add(x.p);q++}));return{v,ts,q,papers:ps.size}});
   const list=plOrder==="asked"?rows.slice().sort((a,b)=>b.papers-a.papers||b.q-a.q||a.v[0]-b.v[0]):rows;
-  const missing=TOPICS.filter(t=>!vidsOf(t).length);
+  const missing=TOPICS.filter(t=>!vidsOf(t).length&&!xvidsOf(t).length);
   root.textContent="";
   const head=el("div","block",'<h2>Your playlist, ranked by the exams</h2><p class="sub">'+esc(PL.title)+' · '+PL.videos.length+' videos. Each video shows how many of the '+PAPERS.length+' papers asked an 8 or 15 mark question on what it teaches. Videos are matched to topics by their titles.</p>');
   const seg=el("div","seg");[["asked","Most asked first"],["order","Playlist order"]].forEach(([k,l])=>{const b=el("button",null,l);b.setAttribute("aria-pressed",plOrder===k);b.addEventListener("click",()=>{plOrder=k;store.set(KEY+"-plo",k);renderPL()});seg.appendChild(b)});
@@ -724,9 +725,18 @@ function renderPL(){
     [...new Set(r.ts.map(t=>t.u+"|"+t.fam))].forEach(k=>{const [u,f]=k.split("|");const b=el("button","pill u u"+u,esc(f)+" →");b.addEventListener("click",()=>goFam(f,+u));vm.appendChild(b)});
     root.appendChild(d);
   });
+  if(PL.extra){
+    const X=PL.extra;
+    root.appendChild(el("div","block",'<h2 style="margin-top:22px">Only in '+esc(X.who)+'’s playlist</h2><p class="sub">'+esc(X.who)+'’s “Theory of Computation” playlist ('+X.total+' videos) teaches the same topics in the same order. These are the only videos it has that yours does not.</p>'));
+    X.videos.forEach(v=>{const ts=TOPICS.filter(t=>xvidsOf(t).includes(v));const ps=new Set();let q=0;ts.forEach(t=>t.items.forEach(x=>{ps.add(x.p);q++}));
+      const d=el("div","vrow"+(q?"":" cold"),'<span class="vn">'+String(v[0]).padStart(2,"0")+'</span><div><div class="vt">'+esc(v[1])+'</div><div class="vm">'+
+        (q?'<span class="pill rep">In '+ps.size+' of '+PAPERS.length+' papers</span><span class="pill">'+q+' question'+(q>1?"s":"")+'</span>':'<span class="pill">Background only, not asked as a long question</span>')+'</div></div><a class="watch" target="_blank" rel="noopener" href="'+vurl(v)+'">Watch ▶</a>');
+      const vm=d.querySelector(".vm");[...new Set(ts.map(t=>t.u+"|"+t.fam))].forEach(k=>{const [u,f]=k.split("|");const b=el("button","pill u u"+u,esc(f)+" →");b.addEventListener("click",()=>goFam(f,+u));vm.appendChild(b)});
+      root.appendChild(d)});
+  }
   if(missing.length){
     const fs=[...new Set(missing.map(t=>t.u+"|"+t.fam))];
-    const n=el("div","note",'<b>Asked in the exams but not in your playlist.</b> Learn these from the answers here: ');
+    const n=el("div","note",'<b>Asked in the exams but in neither playlist.</b> Learn these from the answers here: ');
     fs.forEach(k=>{const [u,f]=k.split("|");const b=el("button","pill u u"+u,esc(f)+" →");b.style.cssText="border:0;cursor:pointer;margin:4px 4px 0 0";b.addEventListener("click",()=>goFam(f,+u));n.appendChild(b)});
     n.style.marginTop="16px";root.appendChild(n);
   }
