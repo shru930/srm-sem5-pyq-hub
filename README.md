@@ -211,16 +211,18 @@ Each page is **a single self-contained HTML file**: the data, styles, scripts an
 
 ```mermaid
 flowchart LR
-    A["Question paper PDFs<br/>(kept local)"] -->|read & typed up| B["Subject data files<br/>data.js · gen.js"]
-    T["shared/page.src.html<br/>layout · styles · logic"] --> C
-    B --> C["build.js<br/>inlines data into template"]
-    C --> D["index.html<br/>pink theme"]
-    B --> E["shared/build-dive.js<br/>+ pixel theme + sounds"]
+    A["Question paper PDFs (kept local)"] -- "typed up" --> B["Subject data files: data.js, gen.js"]
+    T["shared/page.src.html: layout, styles, logic"] --> C["build.js: puts data into template"]
+    B --> C
+    C --> D["index.html (pink theme)"]
+    B --> E["shared/build-dive.js: pixel theme and sounds"]
     T --> E
-    E --> F["dive.html<br/>Dive theme"]
-    B --> G["check.js<br/>coverage tests"]
-    D & F --> H["GitHub Pages"]
-    D & F --> I["WhatsApp<br/>single-file share"]
+    E --> F["dive.html (Dive theme)"]
+    B --> G["check.js: coverage tests"]
+    D --> H["GitHub Pages"]
+    F --> H
+    D --> I["WhatsApp single-file share"]
+    F --> I
 ```
 
 1. **Data, not pages.** Each subject is described in plain JavaScript data files:
@@ -244,12 +246,18 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-    U["URL hash<br/>#questions · #topics · #mcq …"] --> R[Tab router]
-    R --> S[Study] & HT[Hot topics] & GP[Game plan] & PP[Paper by paper] & PL[Playlist] & MQ[MCQ key]
-    S --> Q["Topic cards → question rows"]
-    Q --> AF["answerFor(): pick this question's<br/>part of the topic answer"]
-    AF --> DG["drawDiagrams(): tables & moves → SVG"]
-    Q <--> LS[("localStorage<br/>progress · theme · sound")]
+    U["URL hash, for example questions, topics, mcq"] --> R["Tab router"]
+    R --> S["Study"]
+    R --> HT["Hot topics"]
+    R --> GP["Game plan"]
+    R --> PP["Paper by paper"]
+    R --> PL["Playlist"]
+    R --> MQ["MCQ key"]
+    S --> Q["Topic cards, then question rows"]
+    Q --> AF["answerFor: picks this question's part of the topic answer"]
+    AF --> DG["drawDiagrams: turns tables and moves into SVG"]
+    Q --> LS[("localStorage: progress, theme, sound")]
+    LS --> Q
 ```
 
 | Piece | What it does |
