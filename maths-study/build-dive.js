@@ -1,8 +1,16 @@
-// Builds dive.html: the maths site restyled as a pixel-art "deep dive" (sky at the top, deep sea below).
-// Same page, data and behaviour as index.html; only the fonts, colours and hero art change.
+// Builds <site>/dive.html: a site restyled as a pixel-art "deep dive" (sky at the top, deep sea below).
+// Same page, data and behaviour as that site's index.html; only the fonts, colours and hero art change.
+// Usage: node build-dive.js [maths|fla] [share copy path]
 const fs = require("fs"), path = require("path");
-const rd = f => fs.readFileSync(path.join(__dirname, f), "utf8");
-const data = rd("gen.js") + "\n" + rd("data.js");
+const SITES = {
+  maths: { dir: "maths-study", files: ["gen.js", "data.js"], title: "Maths PYQ · The Exam Dive" },
+  fla: { dir: "fla-study", files: ["gen.js", "data1.js", "data2.js"], title: "FLA PYQ · The Exam Dive" },
+};
+const S = SITES[process.argv[2] || "maths"];
+if (!S) throw new Error("site must be one of " + Object.keys(SITES).join(", "));
+const root = path.join(__dirname, "..");
+const rd = f => fs.readFileSync(path.join(root, f), "utf8");
+const data = S.files.map(f => rd(S.dir + "/" + f)).join("\n");
 if (data.includes("</script")) throw new Error("data must not contain a closing script tag");
 
 // pixel art -> box-shadow (one shadow per filled cell)
@@ -136,8 +144,8 @@ a.vid b{font-family:var(--display);font-size:16px}
 ::selection{background:var(--hot);color:#140612}
 `;
 
-let page = rd("../cn-study/page.src.html")
-  .replace("__TITLE__", "Maths PYQ · The Exam Dive")
+let page = rd("cn-study/page.src.html")
+  .replace("__TITLE__", S.title)
   .replace(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis[^>]*>/,
     '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&family=IBM+Plex+Mono:wght@400;600&display=swap">')
   .replace("</style>", () => css + "</style>")
@@ -148,6 +156,7 @@ for (const k of ["VT323", 'class="sky"', "the exam dive", "deep dive theme"]) if
 const i = page.indexOf("<header");
 const full = '<!DOCTYPE html>\n<html lang="en" data-theme="dark">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<meta name="theme-color" content="#0b1630">\n' +
   page.slice(0, i) + "</head>\n<body>\n" + page.slice(i) + "\n</body>\n</html>\n";
-fs.writeFileSync(path.join(__dirname, "dive.html"), full);
-if (process.argv[2]) fs.writeFileSync(process.argv[2], full);
-console.log("dive.html", full.length, "bytes");
+const out = full.replace(/<meta name="[a-z]+:viewport-fit-sides"[^>]*>\s*/, "");
+fs.writeFileSync(path.join(root, S.dir, "dive.html"), out);
+if (process.argv[3]) fs.writeFileSync(process.argv[3], out);
+console.log(S.dir + "/dive.html", out.length, "bytes");
