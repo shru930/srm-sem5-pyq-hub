@@ -1662,7 +1662,7 @@ function splitBlocks(html){
 const P=Object.fromEntries(PAPERS.map((p,i)=>[p.k,Object.assign({i},p)]));
 const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const KEY=SITE.key, MAP=typeof SPLIT!=="undefined"?SPLIT:{};
-const qk=x=>x.p+":"+x.q, uname=u=>UNITS[u].split(" — ")[0];
+const qk=x=>x.p+":"+x.q, uname=u=>UNITS[u].split(" — ")[0], mk=(t,x)=>x.m||t.m, big=(t,x)=>mk(t,x)>=15;
 
 TOPICS.forEach((t,i)=>{t.id=i;t.fam=familyOf(t);t.items.sort((a,b)=>P[b.p].i-P[a.p].i);t.papers=[...new Set(t.items.map(x=>x.p))]});
 const order=TOPICS.slice().sort((a,b)=>a.u-b.u||b.papers.length-a.papers.length||a.m-b.m||a.id-b.id);
@@ -1724,6 +1724,7 @@ function answerFor(t,x){
   const B=blocksOf(t);let idx=[];const sp=MAP[qk(x)];
   if(sp){String(sp).split(",").forEach(s=>{const m=s.split("-").map(Number);for(let i=m[0];i<=(m.length>1?m[1]:m[0]);i++)if(i<B.length)idx.push(i)})}
   else if(t.items.length===1)idx=B.map((_,i)=>i);
+  else if(B.some(b=>/^<div data-for="/.test(b)))B.forEach((b,i)=>{const m=/^<div data-for="([^"]*)"/.exec(b);if(!m||m[1].split(",").includes(x.p))idx.push(i)});
   else{
     // a part headed with other papers' names (and the tables under it) belongs to those papers' questions
     let hide=false;
@@ -1740,7 +1741,7 @@ function answerFor(t,x){
 }
 function answerPanel(t,x){
   const k=qk(x),a=answerFor(t,x),d=el("div","qa");
-  d.appendChild(el("div","lab","Answer · "+t.m+" marks"));
+  d.appendChild(el("div","lab","Answer · "+mk(t,x)+" marks"));
   d.appendChild(el("div","ans",a.main));
   if(a.n&&t.items.length>1){const m=el("details","more",'<summary>Same topic, other papers’ versions ('+a.n+' more part'+(a.n>1?"s":"")+')</summary>');m.appendChild(el("div","ans",a.rest));d.appendChild(m)}
   const b=el("button","doneb",done.has(k)?"Done ✓ (undo)":"Mark as done");
@@ -1750,7 +1751,7 @@ function answerPanel(t,x){
 }
 function qRow(t,x,withTopic){
   const k=qk(x),r=el("div","qrow u"+t.u+(done.has(k)?" done":""));r.dataset.k=k;r.id="q-"+k.replace(":","-");
-  const h=el("div","qh",'<button class="tick" aria-label="Mark as done" aria-pressed="'+done.has(k)+'">✓</button><div><div class="qmeta"><span class="pill u">'+P[x.p].name+'</span><span class="pill">Q'+x.q+'</span><span class="pill">'+t.m+' marks</span>'+
+  const h=el("div","qh",'<button class="tick" aria-label="Mark as done" aria-pressed="'+done.has(k)+'">✓</button><div><div class="qmeta"><span class="pill u">'+P[x.p].name+'</span><span class="pill">Q'+x.q+'</span><span class="pill">'+mk(t,x)+' marks</span>'+
     (withTopic?'<span class="pill">'+esc(t.fam)+'</span>':'')+'</div><div class="qtext">'+fmtQ(x.x)+'</div></div><span class="chev"></span>');
   h.tabIndex=0;h.setAttribute("role","button");
   const paint=()=>{const o=st.open.has(k);r.classList.toggle("open",o);h.setAttribute("aria-expanded",o);h.querySelector(".chev").textContent=o?"Hide ▲":"Answer ▼";
@@ -1767,7 +1768,7 @@ $("#units").innerHTML='<button class="ut all" data-u="0"><span class="k">All</sp
 document.querySelectorAll("#units .ut").forEach(b=>b.addEventListener("click",()=>{st.unit=+b.dataset.u;store.set(KEY+"-unit2",st.unit);renderQ()}));
 function qmatch(t,x){
   if(st.unit&&!st.q&&t.u!==st.unit)return false;
-  if(st.marks&&t.m!=st.marks)return false;
+  if(st.marks&&(st.marks==15)!==big(t,x))return false;
   if(st.paper&&x.p!==st.paper)return false;
   if(st.todo&&done.has(qk(x)))return false;
   if(st.fam&&t.fam!==st.fam)return false;
@@ -1789,7 +1790,7 @@ function renderQ(){
   const auto=(st.fam||st.q)&&list.length<=3;
   list.forEach((r,i)=>{
     const t=r.t,c=el("article","tcard u"+t.u);c.dataset.id=t.id;
-    const btn=el("button",null,'<span class="num">'+String(i+1).padStart(2,"0")+'</span><span><span class="tags"><span class="pill u">Unit '+t.u+'</span><span class="pill">Part '+(t.m===8?"B · 8 marks":"C · 15 marks")+'</span>'+
+    const btn=el("button",null,'<span class="num">'+String(i+1).padStart(2,"0")+'</span><span><span class="tags"><span class="pill u">Unit '+t.u+'</span><span class="pill">'+(()=>{const ms=[...new Set(r.xs.map(x=>mk(t,x)))].sort((a,b)=>a-b);return ms.length>1?ms.join(" + ")+" marks":(ms[0]>=15?"Part C · ":"Part B · ")+ms[0]+" marks"})()+'</span>'+
       (t.papers.length>1?'<span class="pill rep">Repeated '+t.papers.length+'×</span>':'<span class="pill">Asked once</span>')+'<span class="pill dn"></span></span><h3>'+esc(t.t)+'</h3><span class="pcs">'+
       r.xs.map(x=>'<span class="pc" data-k="'+qk(x)+'">'+P[x.p].name+' · Q'+x.q+'</span>').join("")+'</span></span><span class="pm"></span>');
     const paint=()=>{
@@ -1819,8 +1820,8 @@ function goFam(name,u){st.topen.clear();resetFilters({fam:name,unit:u});show("qu
 function fams(){
   const m=new Map();
   TOPICS.forEach(t=>{const k=t.u+"|"+t.fam;if(!m.has(k))m.set(k,{u:t.u,name:t.fam,ps:new Set(),n8:0,n15:0,last:-1});
-    const f=m.get(k);t.items.forEach(x=>{f.ps.add(x.p);t.m===8?f.n8++:f.n15++;f.last=Math.max(f.last,P[x.p].i)})});
-  return [...m.values()].map(f=>Object.assign(f,{papers:f.ps.size,marks:f.n8*8+f.n15*15}));
+    const f=m.get(k);t.items.forEach(x=>{f.ps.add(x.p);big(t,x)?f.n15++:f.n8++;f.mk=(f.mk||0)+mk(t,x);f.last=Math.max(f.last,P[x.p].i)})});
+  return [...m.values()].map(f=>Object.assign(f,{papers:f.ps.size,marks:f.mk}));
 }
 function pri(f){return f.papers>=5?'<span class="pri a">MUST DO</span>':f.papers>=3?'<span class="pri b">HIGH</span>':f.papers===2?'<span class="pri c">MEDIUM</span>':'<span class="pri c">ONCE</span>'}
 function rrow(f,i,NP,withUnit){
@@ -1829,11 +1830,11 @@ function rrow(f,i,NP,withUnit){
 function renderA(){
   const root=$("#v-analysis");
   const F=fams(), NP=PAPERS.length;
-  const um=[1,2,3,4,5].map(u=>{const ts=TOPICS.filter(t=>t.u===u);const a=ts.filter(t=>t.m===8).reduce((s,t)=>s+t.items.length,0),b=ts.filter(t=>t.m===15).reduce((s,t)=>s+t.items.length,0);return{u,a,b,marks:a*8+b*15}});
+  const um=[1,2,3,4,5].map(u=>{let a=0,b=0,marks=0;TOPICS.filter(t=>t.u===u).forEach(t=>t.items.forEach(x=>{big(t,x)?b++:a++;marks+=mk(t,x)}));return{u,a,b,marks}});
   const tot=um.reduce((s,x)=>s+x.marks,0);
   let h='<div class="block"><h2>If you have very little time</h2><p class="sub">Do these in order. Each one is a topic that keeps coming back.</p><ol class="plan">'+SITE.plan+'</ol></div>';
   h+='<div class="block"><h2>Where the marks come from</h2><p class="sub">'+SITE.marksIntro+'</p><div class="ugrid">';
-  um.forEach(x=>{h+='<div class="ucard u'+x.u+'"><span class="pill u" style="align-self:flex-start">UNIT '+x.u+'</span><b>'+Math.round(x.marks/tot*100)+'%</b><div class="meter"><i style="width:'+Math.round(x.marks/Math.max(...um.map(y=>y.marks))*100)+'%"></i></div><small>'+x.a+' × 8m · '+x.b+' × 15m · '+x.marks+' marks</small><small>'+esc(uname(x.u))+'</small></div>'});
+  um.forEach(x=>{h+='<div class="ucard u'+x.u+'"><span class="pill u" style="align-self:flex-start">UNIT '+x.u+'</span><b>'+Math.round(x.marks/tot*100)+'%</b><div class="meter"><i style="width:'+Math.round(x.marks/Math.max(...um.map(y=>y.marks))*100)+'%"></i></div><small>'+x.a+' Part B · '+x.b+' Part C · '+x.marks+' marks</small><small>'+esc(uname(x.u))+'</small></div>'});
   h+='</div></div>';
   const top=F.slice().sort((a,b)=>b.papers-a.papers||b.marks-a.marks).slice(0,10);
   h+='<div class="block"><h2>Top 10 topics overall</h2><p class="sub">Ranked by the number of papers (out of '+NP+') in which the topic appeared as an 8 or 15 mark question. Select a row to open its questions.</p><div class="rank">';
@@ -1846,10 +1847,10 @@ function renderA(){
   h+='</div>';
   const c15=F.filter(f=>f.n15).sort((a,b)=>b.n15-a.n15||b.papers-a.papers);
   h+='<div class="block"><h2>What Part C (15 marks) is made of</h2><p class="sub">'+SITE.partC+'</p><div class="tw"><table><tr><th>Topic</th><th>Unit</th><th>Times as 15m</th><th>Papers</th></tr>';
-  c15.forEach(f=>{const ps=[];TOPICS.filter(t=>t.fam===f.name&&t.m===15).forEach(t=>t.items.forEach(x=>ps.push(P[x.p].name+" Q"+x.q)));h+='<tr><td>'+esc(f.name)+'</td><td>'+f.u+'</td><td>'+f.n15+'</td><td>'+ps.join(", ")+'</td></tr>'});
+  c15.forEach(f=>{const ps=[];TOPICS.filter(t=>t.fam===f.name).forEach(t=>t.items.forEach(x=>{if(big(t,x))ps.push(P[x.p].name+" Q"+x.q)}));h+='<tr><td>'+esc(f.name)+'</td><td>'+f.u+'</td><td>'+f.n15+'</td><td>'+ps.join(", ")+'</td></tr>'});
   h+='</table></div></div>';
   h+='<div class="block"><h2>Paper × unit map</h2><p class="sub">Marks set from each unit in each paper (maximum printed marks per paper: 110). Darker cells mean more marks.</p><div class="tw"><table class="heat"><tr><th>Paper</th>'+[1,2,3,4,5].map(u=>'<th>Unit '+u+'</th>').join("")+'</tr>';
-  PAPERS.forEach(p=>{h+='<tr><th>'+p.name+'</th>';[1,2,3,4,5].forEach(u=>{let m=0;TOPICS.filter(t=>t.u===u).forEach(t=>t.items.forEach(x=>{if(x.p===p.k)m+=t.m}));h+='<td class="h" style="--v:'+Math.min(60,m*1.4)+'">'+(m||"–")+'</td>'});h+='</tr>'});
+  PAPERS.forEach(p=>{h+='<tr><th>'+p.name+'</th>';[1,2,3,4,5].forEach(u=>{let m=0;TOPICS.filter(t=>t.u===u).forEach(t=>t.items.forEach(x=>{if(x.p===p.k)m+=mk(t,x)}));h+='<td class="h" style="--v:'+Math.min(60,m*1.4)+'">'+(m||"–")+'</td>'});h+='</tr>'});
   h+='</table></div></div>';
   h+='<div class="note"><b>About the sources.</b> '+SITE.sources+'</div>';
   root.innerHTML=h;
@@ -1872,7 +1873,7 @@ function renderT(){
   fs.forEach(f=>{
     h+='<tr><th data-f="'+esc(f.name)+'">'+esc(f.name)+'</th>';
     PAPERS.forEach(p=>{
-      const parts=[];TOPICS.filter(t=>t.u===tu&&t.fam===f.name).forEach(t=>t.items.forEach(x=>{if(x.p===p.k)parts.push(t.m)}));
+      const parts=[];TOPICS.filter(t=>t.u===tu&&t.fam===f.name).forEach(t=>t.items.forEach(x=>{if(x.p===p.k)parts.push(mk(t,x))}));
       parts.sort((a,b)=>a-b);const m=parts.reduce((s,x)=>s+x,0);
       h+=m?'<td class="on" style="--v:'+Math.min(62,10+m*1.6)+'" title="'+esc(f.name)+' · '+p.name+' · '+m+' marks">'+parts.join("+")+'</td>':'<td class="off">·</td>';
     });
@@ -1894,9 +1895,10 @@ function renderP(){
   head.appendChild(chips);root.appendChild(head);
   const p=P[pp];root.appendChild(el("p","note",'<b>'+p.name+'</b> · '+esc(p.note)+(p.n?' · '+SITE.paperWord+' '+p.n:'')));
   const rows=ALLQ.filter(r=>r.x.p===pp);
-  [21,22,23,24,25,26,27].forEach(n=>{
+  [21,22,23,24,25,26,27,28].forEach(n=>{
     const rs=rows.filter(r=>parseInt(r.x.q,10)===n).sort((a,b)=>a.x.q<b.x.q?-1:1);if(!rs.length)return;
-    root.appendChild(el("div","orh",'<h3>Q'+n+'</h3><span>'+(n<=25?"Part B · 8 marks · answer (a) or (b)":"Part C · 15 marks · answer Q26 or Q27")+'</span>'));
+    const m0=mk(rs[0].t,rs[0].x),two=rs.length>1;
+    root.appendChild(el("div","orh",'<h3>Q'+n+'</h3><span>'+(m0>=15?"Part C · 15 marks · answer one Part C question":"Part B · "+m0+" marks"+(two?" · answer (a) or (b)":""))+'</span>'));
     const box=el("div","rows");rs.forEach(r=>box.appendChild(qRow(r.t,r.x,true)));root.appendChild(box);
   });
 }
@@ -1986,7 +1988,7 @@ function drawDiagrams(root){
 
 /* ---------- playlist: which videos teach which topic, ranked by how often the exams asked it ---------- */
 const PL=typeof PLAYLIST!=="undefined"?PLAYLIST:null;
-const vurl=v=>"https://www.youtube.com/watch?v="+v[2]+"&list="+(v[3]||PL.list)+"&index="+v[0];
+const vurl=v=>"https://www.youtube.com/watch?v="+v[2]+"&list="+(v[3]||PL.list)+"&index="+(v[5]||v[0]);
 const vidsOf=t=>{if(!PL)return[];const m=PL.map.find(e=>t.t.startsWith(e[0]));return m?m[1].map(n=>PL.videos[n-1]):[]};
 const xvidsOf=t=>{const X=PL&&PL.extra;if(!X)return[];const m=X.map.find(e=>t.t.startsWith(e[0]));return m?m[1].map(n=>X.videos.find(v=>v[0]===n)).filter(Boolean):[]};
 function vidChips(t){
@@ -2031,6 +2033,7 @@ function renderPL(){
 
 /* ---------- mcq ---------- */
 function renderM(){
+  if(!Object.keys(MCQ).length){document.querySelector('#tabs button[data-v=mcq]').hidden=true;return}
   const root=$("#v-mcq");const np=PAPERS.filter(p=>p.n).sort((a,b)=>a.n-b.n);
   let h='<div class="block"><h2>Part A answer key, papers 1–9</h2><p class="sub">'+SITE.mcqSub+'</p><div class="tw"><table class="key"><tr><th>Q</th>'+np.map(p=>'<th>'+p.n+'<br><span style="font-weight:400;font-family:var(--body);font-size:12px">'+p.name+'</span></th>').join("")+'</tr>';
   for(let q=0;q<20;q++){h+='<tr><th>'+(q+1)+'</th>'+np.map(p=>'<td>'+MCQ[p.n][q]+'</td>').join("")+'</tr>'}
