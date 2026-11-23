@@ -57,7 +57,7 @@ const TOPICS = [
                   = (A ∩ B ∩ A′) ∪ (A ∩ B ∩ C′)  distributive
                   = ∅ ∪ (A ∩ B ∩ C′)             A ∩ A′ = ∅
                   = A ∩ (B ∩ C′) = A ∩ (B − C)</pre>
-<p><i>Graphically.</i> Both sides are the region inside A and B but outside C: shade it on two Venn diagrams and they match.</p>
+<p><i>Graphically.</i> Both sides are the region inside A and B but outside C: shade it on two Venn diagrams and they match.</p>` + FIG.venn + `
 <p><b>(A ∩ B) − C = (A − C) ∩ (B − C)</b> (Jul 2024)</p>
 <p><i>Analytically.</i> x ∈ (A − C) ∩ (B − C) ⇔ (x ∈ A, x ∉ C) and (x ∈ B, x ∉ C) ⇔ x ∈ A, x ∈ B, x ∉ C ⇔ x ∈ (A ∩ B) − C.</p>
 <pre>(A − C) ∩ (B − C) = (A ∩ C′) ∩ (B ∩ C′)
@@ -77,30 +77,12 @@ const TOPICS = [
 <p><b>Set inclusion ⊆ is a partial order</b> on P(S): A ⊆ A; A ⊆ B and B ⊆ A ⇒ A = B; A ⊆ B, B ⊆ C ⇒ A ⊆ C.</p>
 <p><b>From digraph to Hasse diagram:</b> (1) draw the digraph with every pair; (2) remove the self-loops (reflexivity is understood); (3) remove every edge implied by transitivity (a → c when a → b → c); (4) draw every remaining edge upward and remove the arrowheads.</p>
 <p><b>{1,…,8}, divides</b> (May 2024). Covering pairs (a below b with nothing in between): 1–2, 1–3, 1–5, 1–7, 2–4, 2–6, 3–6, 4–8.</p>
-<pre>        8
-        |
-        4       6
-        |      / \\
-        2 ----+   3     5     7
-         \\        |    /     /
-          +------ 1 --+-----+</pre>
-<p>Level 0: 1. Level 1: 2, 3, 5, 7. Level 2: 4 (over 2), 6 (over 2 and 3). Level 3: 8 (over 4).</p>
+<p>Level 0: 1. Level 1: 2, 3, 5, 7. Level 2: 4 (over 2), 6 (over 2 and 3). Level 3: 8 (over 4).</p>` + FIG.h8 + `
 <p><b>{2,4,5,10,12,20,25}, divides</b> (Jul 2024). Covering pairs: 2–4, 2–10, 5–10, 5–25, 4–12, 4–20, 10–20. Minimal elements 2 and 5; maximal elements 12, 20, 25.</p>
-<pre>   12      20      25
-     \\    /  \\     |
-       4      10   |
-        \\    /  \\  |
-          2       5</pre>
+` + FIG.h7 + `
 <p><b>P(S), S = {a,b,c}, ⊆</b> (May 2025, Nov 2024). The Hasse diagram is a cube: ∅ at the bottom; {a}, {b}, {c}; then {a,b}, {a,c}, {b,c}; then {a,b,c} at the top. Each set is joined to the sets with one more element that contain it (12 edges).</p>
-<pre>              {a,b,c}
-            /    |    \\
-       {a,b}  {a,c}  {b,c}
-        |   \\ /   \\ /   |
-        |    X     X    |
-       {a}   {b}       {c}
-            \\   |    /
-               ∅</pre>
-<p><b>D<sub>30</sub></b> (Jul 2025 · I) = divisors of 30 = {1, 2, 3, 5, 6, 10, 15, 30}. It is also a cube: 1 at the bottom; 2, 3, 5; then 6 (over 2, 3), 10 (over 2, 5), 15 (over 3, 5); 30 at the top.</p>` },
+` + FIG.hP + `
+<p><b>D<sub>30</sub></b> (Jul 2025 · I) = divisors of 30 = {1, 2, 3, 5, 6, 10, 15, 30}. It is also a cube: 1 at the bottom; 2, 3, 5; then 6 (over 2, 3), 10 (over 2, 5), 15 (over 3, 5); 30 at the top.</p>` + FIG.h30 + `` },
 
 { u:1, m:8, t:"Functions — one-one, onto, inverse and composition", items:[
   {p:"d23", q:"21", m:10, x:"If f : Z → N is defined by f(x) = 2x − 1 if x > 0, f(x) = −2x if x ≤ 0, (a) prove that the function is 1-1 and onto; (b) determine f⁻¹."},
@@ -118,7 +100,7 @@ const TOPICS = [
 <p><b>(g∘f)⁻¹ = f⁻¹∘g⁻¹</b> (Nov 2024). f and g are bijections. <i>One-one:</i> g(f(a<sub>1</sub>)) = g(f(a<sub>2</sub>)) ⇒ f(a<sub>1</sub>) = f(a<sub>2</sub>) (g one-one) ⇒ a<sub>1</sub> = a<sub>2</sub> (f one-one). <i>Onto:</i> for c ∈ C pick b with g(b) = c, then a with f(a) = b; then (g∘f)(a) = c. So g∘f is invertible. Now (g∘f)∘(f⁻¹∘g⁻¹) = g∘(f∘f⁻¹)∘g⁻¹ = g∘I<sub>B</sub>∘g⁻¹ = I<sub>C</sub>, and (f⁻¹∘g⁻¹)∘(g∘f) = f⁻¹∘I<sub>B</sub>∘f = I<sub>A</sub>. The inverse is unique, so (g∘f)⁻¹ = f⁻¹∘g⁻¹.</p>
 <p><b>f(x) = x/(x − 2), A = R − {2} → B = R − {1}</b> (Jul 2025 · II). <i>One-one:</i> x<sub>1</sub>/(x<sub>1</sub> − 2) = x<sub>2</sub>/(x<sub>2</sub> − 2) ⇒ x<sub>1</sub>x<sub>2</sub> − 2x<sub>1</sub> = x<sub>1</sub>x<sub>2</sub> − 2x<sub>2</sub> ⇒ x<sub>1</sub> = x<sub>2</sub>. <i>Onto:</i> solve y = x/(x − 2): yx − 2y = x ⇒ x = 2y/(y − 1), defined for y ≠ 1, and x ≠ 2 (x = 2 would give 2y − 2 = 2y, impossible). So every y ∈ B is hit. <b>f⁻¹(y) = 2y/(y − 1).</b></p>
 <p><b>f(x) = x/(x + 4), R − {−4} → R − {1}</b> (Nov 2025 (i)). Same steps: one-one since x<sub>1</sub>(x<sub>2</sub> + 4) = x<sub>2</sub>(x<sub>1</sub> + 4) ⇒ 4x<sub>1</sub> = 4x<sub>2</sub>. Solving y = x/(x + 4): x = 4y/(1 − y), valid for y ≠ 1 and never −4. <b>f⁻¹(y) = 4y/(1 − y).</b></p>
-<p><b>Nov 2025 (ii) Hasse diagram, divisibility on {1,2,3,4,6,8,9,12,18,24}.</b> Covering pairs: 1–2, 1–3, 2–4, 2–6, 3–6, 3–9, 4–8, 4–12, 6–12, 6–18, 9–18, 8–24, 12–24. Levels: 1 | 2, 3 | 4, 6, 9 | 8, 12, 18 | 24.</p>` },
+<p><b>Nov 2025 (ii) Hasse diagram, divisibility on {1,2,3,4,6,8,9,12,18,24}.</b> Covering pairs: 1–2, 1–3, 2–4, 2–6, 3–6, 3–9, 4–8, 4–12, 6–12, 6–18, 9–18, 8–24, 12–24. Levels: 1 | 2, 3 | 4, 6, 9 | 8, 12, 18 | 24.</p>` + FIG.h24 + `` },
 
 { u:1, m:8, t:"Relations — matrices, operations and equivalence relations", items:[
   {p:"n25", q:"21a", x:"Let A = {1,2,3} and define a relation R on A as (a, b) ∈ R iff a + b is even. (i) Find the relational matrix M_R. (ii) Find the inverse relation matrix M_R⁻¹. (iii) Find the complement relation matrix M_Rᶜ. (iv) Find M_R²."},
@@ -462,14 +444,14 @@ Dual:     (p ∨ q) ∧ ¬p ∧ q ≡ ((p ∧ ¬p) ∨ (q ∧ ¬p)) ∧ q ≡ (�
 <p class="f">edges ≤ ½ [(n − k)² + 2n − k − n] = ½ [(n − k)² + (n − k)] = (n − k)(n − k + 1)/2.</p>
 <p>Equality: k − 1 isolated vertices and one complete graph K<sub>n−k+1</sub>.</p>
 <p><b>Bipartite graph: at most n²/4 edges</b> (Nov 2024, Nov 2025). Let the parts have x and n − x vertices. The most edges is when every vertex of one part is joined to every vertex of the other: x(n − x). Now x(n − x) = n²/4 − (x − n/2)² ≤ n²/4, with equality at x = n/2. So |E| ≤ (n/2)² = n²/4.</p>
-<p><b>Nov 2025 (ii) isomorphism.</b> Both graphs have 5 vertices and 6 edges, and degree sequence (3, 3, 2, 2, 2). In G the degree-3 vertices U1, U3 are adjacent; in H, V1 and V3 are adjacent. Mapping U1 → V1, U3 → V3, U4 → V2, U2 → V4, U5 → V5 sends every edge to an edge: U1U3 → V1V3, U1U4 → V1V2, U1U5 → V1V5, U2U3 → V4V3, U2U5 → V4V5, U3U4 → V3V2. So <b>G and H are isomorphic</b>.</p>` },
+<p><b>Nov 2025 (ii) isomorphism.</b> Both graphs have 5 vertices and 6 edges, and degree sequence (3, 3, 2, 2, 2). In G the degree-3 vertices U1, U3 are adjacent; in H, V1 and V3 are adjacent. Mapping U1 → V1, U3 → V3, U4 → V2, U2 → V4, U5 → V5 sends every edge to an edge: U1U3 → V1V3, U1U4 → V1V2, U1U5 → V1V5, U2U3 → V4V3, U2U5 → V4V5, U3U4 → V3V2. So <b>G and H are isomorphic</b>.</p>` + FIG.isoGH + `` },
 
 { u:5, m:8, t:"Graph isomorphism", items:[
   {p:"jl24", q:"25a", x:"Determine whether the following graphs are isomorphic, explain, and also find the adjacency matrix for G1 and G2. (Figure: G1 on 1…8 and G2 on a…h, each an outer square joined to an inner square.)"},
   {p:"m25", q:"25b", x:"Determine whether the following graphs are isomorphic or not. (Figure: G1 = outer rectangle A B C D with inner rectangle E F G H and edges BF, DH; G2 = outer rectangle O P Q R with inner rectangle S T U V and edges OS, RV.)"}
 ], a: `
 <p><b>Isomorphism test.</b> Two graphs are isomorphic if there is a one-to-one correspondence of vertices that preserves adjacency. Necessary (invariant) checks: same number of vertices, edges, degree sequence, and the same pattern of adjacency among vertices of each degree. If an invariant differs, they are not isomorphic; if they agree, exhibit the mapping.</p>
-<p><b>Jul 2024.</b> G1: outer square 1–2–3–8 and inner square 6–5–4–7 joined by 1–6, 2–5, 3–4, 8–7. G2 has the same shape: outer square a–d–c–h, inner square b–e–f–g, joined by a–b, d–e, c–f, h–g. (The figure prints the bottom-left vertex of G2 as “b” again; it is a separate vertex, called h here.) Both have 8 vertices, 12 edges, every degree 3, and both are the cube graph. The mapping 1 → a, 2 → d, 3 → c, 8 → h, 6 → b, 5 → e, 4 → f, 7 → g preserves every edge, so <b>G1 ≅ G2</b>. The adjacency matrices are then equal when rows and columns are written in the matched order:</p>
+<p><b>Jul 2024.</b> G1: outer square 1–2–3–8 and inner square 6–5–4–7 joined by 1–6, 2–5, 3–4, 8–7. G2 has the same shape: outer square a–d–c–h, inner square b–e–f–g, joined by a–b, d–e, c–f, h–g. (The figure prints the bottom-left vertex of G2 as “b” again; it is a separate vertex, called h here.) Both have 8 vertices, 12 edges, every degree 3, and both are the cube graph. The mapping 1 → a, 2 → d, 3 → c, 8 → h, 6 → b, 5 → e, 4 → f, 7 → g preserves every edge, so <b>G1 ≅ G2</b>. The adjacency matrices are then equal when rows and columns are written in the matched order:</p>` + FIG.isoCube + `
 <pre>      1 2 3 4 5 6 7 8          a d c f e b g h
   1   0 1 0 0 0 1 0 1      a   0 1 0 0 0 1 0 1
   2   1 0 1 0 1 0 0 0      d   1 0 1 0 1 0 0 0
@@ -479,7 +461,7 @@ Dual:     (p ∨ q) ∧ ¬p ∧ q ≡ ((p ∧ ¬p) ∨ (q ∧ ¬p)) ∧ q ≡ (�
   6   1 0 0 0 1 0 1 0      b   1 0 0 0 1 0 1 0
   7   0 0 0 1 0 1 0 1      g   0 0 0 1 0 1 0 1
   8   1 0 1 0 0 0 1 0      h   1 0 1 0 0 0 1 0</pre>
-<p><b>May 2025.</b> Both graphs have 8 vertices, 10 edges and degree sequence (3, 3, 3, 3, 2, 2, 2, 2). Look at the degree-3 vertices: in G1 they are B, D, F, H and each has <b>exactly one</b> degree-3 neighbour (B–F, D–H). In G2 they are O, R, S, V, and O is adjacent to <b>two</b> degree-3 vertices (R and S). Adjacency between degree-3 vertices is preserved by any isomorphism, so <b>G1 and G2 are not isomorphic</b>.</p>` },
+<p><b>May 2025.</b> Both graphs have 8 vertices, 10 edges and degree sequence (3, 3, 3, 3, 2, 2, 2, 2). Look at the degree-3 vertices: in G1 they are B, D, F, H and each has <b>exactly one</b> degree-3 neighbour (B–F, D–H). In G2 they are O, R, S, V, and O is adjacent to <b>two</b> degree-3 vertices (R and S). Adjacency between degree-3 vertices is preserved by any isomorphism, so <b>G1 and G2 are not isomorphic</b>.</p>` + FIG.isoRect + `` },
 
 { u:5, m:8, t:"Degrees, handshaking theorem and Eulerian graphs", items:[
   {p:"d23", q:"26", m:10, x:"(a) State and prove the handshaking theorem and also verify the theorem for the following graph. (Figure: house shape A, B, C with square A B E D and diagonals AE, BD meeting at F.) (b) Define Eulerian graph and give one example."},
@@ -487,9 +469,9 @@ Dual:     (p ∨ q) ∧ ¬p ∧ q ≡ ((p ∧ ¬p) ∨ (q ∧ ¬p)) ∧ q ≡ (�
 ], a: `
 <p><b>Handshaking theorem.</b> In any graph, Σ deg(v) = 2|E|.</p>
 <p><i>Proof.</i> Every edge has two ends and contributes exactly 1 to the degree of each end (a loop contributes 2 to its vertex). So adding all degrees counts every edge twice. <b>Corollary:</b> the number of odd-degree vertices is even (the sum of degrees is even).</p>
-<p><b>Dec 2023.</b> Vertices A, B, C, D, E, F (F is the crossing point of the diagonals). Edges: CA, CB, AB, AD, BE, DE, AF, FE, BF, FD — 10 edges. Degrees: A 4, B 4, C 2, D 3, E 3, F 4. Sum = 4 + 4 + 2 + 3 + 3 + 4 = 20 = 2 × 10 ✓.</p>
+<p><b>Dec 2023.</b> Vertices A, B, C, D, E, F (F is the crossing point of the diagonals). Edges: CA, CB, AB, AD, BE, DE, AF, FE, BF, FD — 10 edges. Degrees: A 4, B 4, C 2, D 3, E 3, F 4. Sum = 4 + 4 + 2 + 3 + 3 + 4 = 20 = 2 × 10 ✓.</p>` + FIG.hsHouse + `
 <p><b>Eulerian graph:</b> a connected graph with a closed walk (Euler circuit) that uses every edge exactly once. A connected graph is Eulerian ⇔ every vertex has even degree. Example: a cycle C<sub>4</sub>, or K<sub>5</sub> (every degree 4).</p>
-<p><b>May 2025.</b> As read from the figure: edges AB, AC, BC, BE, BD, CE, CD, ED, EF — <b>6 vertices, 9 edges</b>. Degrees: A 2, B 4, C 4, D 3, E 4, F 1. Sum = 18 = 2 × 9 ✓. Odd-degree vertices D and F: two of them, an even number, as the corollary says.</p>` }
+<p><b>May 2025.</b> As read from the figure: edges AB, AC, BC, BE, BD, CE, CD, ED, EF — <b>6 vertices, 9 edges</b>. Degrees: A 2, B 4, C 4, D 3, E 4, F 1. Sum = 18 = 2 × 9 ✓. Odd-degree vertices D and F: two of them, an even number, as the corollary says.</p>` + FIG.hsM25 + `` }
 ];
 
 // Mark each paper's part of a shared answer: a paragraph that starts with a bold heading and names a paper

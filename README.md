@@ -159,21 +159,33 @@ In FLA, every answer that contains a **transition table** (DFA, NFA, Moore, Meal
 
 The diagrams are generated from the same table that is in the answer, so they always match.
 
+In **Maths**, the answers show the pictures you have to draw in the exam: every Hasse diagram, the Venn diagram for set identities, and each graph question (the Kruskal graph with its spanning tree in bold, isomorphism pairs side by side, handshaking examples).
+
+<table><tr>
+<td width="50%"><img src="docs/screenshots/maths-hasse.jpg" alt="Hasse diagram of D30"><br><sub><b>Hasse diagram</b> drawn under the answer</sub></td>
+<td width="50%"><img src="docs/screenshots/maths-graph.jpg" alt="Kruskal graph with the spanning tree in bold"><br><sub><b>Kruskal</b>: the tree in bold, unused edges faded</sub></td>
+</tr></table>
+
 ### 11. Three looks
 
 <table><tr>
 <td width="50%"><img src="docs/screenshots/dark.jpg" alt="Pink theme in dark mode"><br><sub><b>Pink · dark mode</b>: one tap on the moon button</sub></td>
 <td width="50%"><img src="docs/screenshots/dive.jpg" alt="Pixel-art Exam Dive theme"><br><sub><b>The Exam Dive</b>: a pixel-art theme</sub></td>
+</tr><tr>
+<td colspan="2"><img src="docs/screenshots/sunset.jpg" alt="Neon Sunset theme"><br><sub><b>Sunset</b>: striped sun, palms, skyline and a moving neon grid</sub></td>
 </tr></table>
 
+Every page has a **🌸 Pink · 🌊 Dive · 🌴 Sunset** switch in the hero. Your pick is remembered across all three subjects.
+
 - **Pink 11:11** (default): soft pink with an aura glow, serif headings, and light and dark modes. Your choice is remembered.
-- **The Exam Dive**: a pixel-art version. A blue sky with pixel clouds and a sun fades into a deep-sea navy page, with pixel fonts, glowing cyan and pink frames, and a faint scanline effect. It is available for Maths and FLA.
+- **The Exam Dive**: a pixel-art version. A blue sky with pixel clouds and a sun fades into a deep-sea navy page, with pixel fonts, glowing cyan and pink frames, and a faint scanline effect. Clouds drift, fish swim and bubbles rise.
+- **Sunset**: a neon beach-city night. A striped retro sun sets behind a skyline, palms sway, and a synthwave grid scrolls across the sea. Headings are big condensed caps in a gold-to-pink gradient.
 
 <div align="center"><img src="docs/screenshots/dive-answer.jpg" alt="An FLA answer and diagram in the Dive theme" width="90%"><br><sub>Answers and diagrams restyled in the Dive theme.</sub></div>
 
 ### 12. Retro sound effects
 
-The Dive pages play small chiptune sounds as you study:
+The Dive and Sunset themes play small chiptune sounds as you study:
 
 | Action | Sound |
 |---|---|
@@ -191,7 +203,7 @@ The sounds are **synthesised live with the Web Audio API**, so there are no audi
 <table><tr>
 <td width="33%"><img src="docs/screenshots/mobile-pink.jpg" alt="Pink theme on a phone"></td>
 <td width="33%"><img src="docs/screenshots/mobile-answer.jpg" alt="An answer on a phone"></td>
-<td width="33%"><img src="docs/screenshots/mobile-dive.jpg" alt="Dive theme on a phone"></td>
+<td width="33%"><img src="docs/screenshots/mobile-sunset.jpg" alt="Sunset theme on a phone"></td>
 </tr></table>
 
 The layout reflows for small screens:
@@ -212,12 +224,11 @@ Each page is **a single self-contained HTML file**: the data, styles, scripts an
 ```mermaid
 flowchart LR
     A["Question paper PDFs (kept local)"] -- "typed up" --> B["Subject data files: data.js, gen.js"]
-    T["shared/page.src.html: layout, styles, logic"] --> C["build.js: puts data into template"]
+    T["shared/page.src.html: layout, styles, logic"] --> C["shared/build.js: puts data into template"]
     B --> C
-    C --> D["index.html (pink theme)"]
-    B --> E["shared/build-dive.js: pixel theme and sounds"]
-    T --> E
-    E --> F["dive.html (Dive theme)"]
+    K["shared/skins.js: Dive and Sunset themes, switch, sounds"] --> C
+    C --> D["index.html (opens in Pink)"]
+    C --> F["dive.html (opens in Dive)"]
     B --> G["check.js: coverage tests"]
     D --> H["GitHub Pages"]
     F --> H
@@ -232,15 +243,16 @@ flowchart LR
    - `MCQ`, `MCQ_WHY`, `MCQ_NOTES`: the Part A key, reasons and flags.
    - `PLAYLIST`: the videos and a map from topic name to video numbers.
    - `SITE`: the subject's title, code and intro text.
-2. **Generated working.** `gen.js` produces the long step-by-step tables (Warshall matrices, Euclid steps, coding tables, Kruskal) from small inputs, so the numbers are computed rather than typed by hand.
-3. **One template for every subject.** `shared/page.src.html` contains all the HTML, CSS and JavaScript. `build.js` puts a subject's data into the template and writes one `index.html`.
-4. **A second skin from the same source.** `shared/build-dive.js` takes the same template and data, then:
-   - adds the pixel theme's CSS on top,
-   - draws the pixel art (clouds, sun, fish) as CSS `box-shadow` grids generated from small ASCII sketches,
-   - injects the sound script.
-
-   Because nothing else changes, both themes always have identical content.
-5. **Checks.** `check.js` confirms that every question of every paper appears exactly once, is filed under the right unit, and has an answer. The FLA `tools/` scripts also check that each question gets its own answer section.
+2. **Drawn diagrams.** In Maths, `figs.js` draws the Hasse diagrams, the Venn diagram and every graph (Kruskal trees in bold, isomorphism pairs, handshaking examples) as SVG pictures inside the answers.
+3. **Generated working.** `gen.js` produces the long step-by-step tables (Warshall matrices, Euclid steps, coding tables, Kruskal) from small inputs, so the numbers are computed rather than typed by hand.
+4. **One template for every subject.** `shared/page.src.html` contains all the HTML, CSS and JavaScript. `shared/build.js` puts a subject's data into the template and writes `index.html` and `dive.html`.
+5. **Three themes in every page.** `shared/skins.js` adds a 🌸 Pink · 🌊 Dive · 🌴 Sunset switch to the hero:
+   - **Pink** is the default (with its own light and dark mode).
+   - **Dive** is pixel art: clouds, sun and fish drawn as CSS `box-shadow` grids from small ASCII sketches, with drifting clouds and rising bubbles.
+   - **Sunset** is a neon beach city: a striped sun, a skyline, swaying palms and a moving synthwave grid.
+   - Each theme's CSS is scoped to `:root[data-skin="…"]`, and the choice is saved, so all three subjects open in the theme you last picked. `dive.html` always opens in Dive.
+   - Dive and Sunset play retro click sounds. Animations switch off when the device asks for reduced motion.
+6. **Checks.** `check.js` confirms that every question of every paper appears exactly once, is filed under the right unit, and has an answer. The FLA `tools/` scripts also check that each question gets its own answer section.
 
 ### Inside the page
 
@@ -267,7 +279,7 @@ flowchart TB
 | **`answerFor()`** | Finds the part of a topic's answer that belongs to the question you tapped. It uses, in order: an explicit question-to-block map, sections tagged with the paper name, or the paper-name headings inside the answer. |
 | **`drawDiagrams()`** | Reads transition tables and move lists in an answer, works out the states and edges, places the states left to right, and draws the diagram as inline SVG that follows the theme's colours. |
 | **Progress** | Ticked questions, the open unit, the theme and the sound setting are stored in `localStorage` under a key per subject (`dm-…`, `fla-…`), wrapped in `try/catch` so the page still works in private mode. |
-| **Theming** | All colours are CSS custom properties. Light and dark mode swap the variables, and the Dive theme overrides them again. |
+| **Theming** | All colours are CSS custom properties. Light and dark mode swap the variables; the Dive and Sunset themes override them again under `data-skin`. Switching uses a view transition, so it fades. |
 | **Sounds** | The Web Audio API creates square and sine oscillators with pitch sweeps and short fades. One click listener decides which sound fits the element clicked. |
 
 ---
@@ -277,31 +289,34 @@ flowchart TB
 ```text
 srm-sem5-pyq-hub/
 ├── index.html                landing page linking every subject
-├── package.json              npm scripts: build · dive · check · serve
+├── package.json              npm scripts: build · check · serve
 │
 ├── shared/
 │   ├── page.src.html         ★ the one template every page is built from
-│   └── build-dive.js         builds the pixel "Exam Dive" version of a subject
+│   ├── build.js              builds index.html + dive.html for each subject
+│   └── skins.js              Pink / Dive / Sunset themes, theme switch, sounds
 │
 ├── maths-study/              🧮 Discrete Mathematics (21MAB302T)
 │   ├── data.js               papers, units, topics, answers, MCQ key, playlist
 │   ├── gen.js                generated working: Warshall, Euclid, codes, Kruskal
+│   ├── figs.js               SVG diagrams: Hasse, Venn, graphs
 │   ├── build.js              → index.html
 │   ├── check.js              coverage test (prints ALL COVERED)
-│   ├── index.html            built page · pink theme
-│   └── dive.html             built page · Dive theme
+│   ├── index.html            built page · opens in Pink
+│   └── dive.html             built page · opens in Dive
 │
 ├── fla-study/                🤖 Formal Language & Automata (21CSC301T)
 │   ├── data1.js · data2.js   topics, answers, per-question split map, playlist
 │   ├── gen.js                generated tables
 │   ├── build.js · check.js
 │   ├── tools/                unit check, answer-split check, block helpers
-│   ├── index.html            built page · pink theme
-│   └── dive.html             built page · Dive theme
+│   ├── index.html            built page · opens in Pink
+│   └── dive.html             built page · opens in Dive
 │
 ├── cn-study/                 🌐 Computer Networks (21CSC302J)
 │   ├── data.js · build.js
-│   └── index.html            built page · pink theme
+│   ├── index.html            built page · opens in Pink
+│   └── dive.html             built page · opens in Dive
 │
 └── docs/screenshots/         images used in this README
 ```
@@ -323,17 +338,15 @@ Or skip all of that and open any `index.html` or `dive.html` straight in a brows
 
 | Script | Does |
 |---|---|
-| `npm run build` | Builds CN, FLA and Maths, then both Dive pages |
-| `npm run dive` | Rebuilds only the Dive pages |
+| `npm run build` | Builds `index.html` and `dive.html` for CN, FLA and Maths (`node shared/build.js maths` builds one) |
 | `npm run check` | Runs all coverage and unit checks |
 | `npm run serve` | Serves the folder at `localhost:8000` |
 
 ## ➕ Adding a new subject
 
 1. Make a folder such as `xyz-study/` with a `data.js` that defines `PAPERS`, `UNITS`, `TOPICS`, `MCQ` and `SITE`. Use `maths-study/data.js` as the example.
-2. Copy `maths-study/build.js` into it and change the title.
-3. Optionally add it to `SITES` in `shared/build-dive.js` for a Dive version.
-4. Add a card for it to the root `index.html`, and its build command to `package.json`.
+2. Add it to `SITES` in `shared/build.js` (folder, data files, title). It gets all three themes automatically.
+3. Add a card for it to the root `index.html`.
 
 ## 📝 Notes
 
