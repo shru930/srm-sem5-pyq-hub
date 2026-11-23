@@ -227,6 +227,19 @@ details.more .ans{padding:4px 12px 6px}
 .hm td.off{color:var(--line)}
 .hm td.sum{color:var(--u)}
 
+/* state diagrams drawn from transition tables and move lists */
+figure.fsm{margin:0 0 12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:10px 10px 6px}
+figure.fsm figcaption{font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--u);margin:2px 4px 4px}
+figure.fsm .sc{overflow-x:auto;padding:4px 0}
+figure.fsm svg{display:block;margin:0 auto;max-width:none}
+figure.fsm .nd{fill:var(--surface);stroke:var(--ink);stroke-width:1.6}
+figure.fsm .fin{fill:none;stroke:var(--ink);stroke-width:1.3}
+figure.fsm .ed{fill:none;stroke:var(--accent);stroke-width:1.6}
+figure.fsm .ah{fill:var(--accent)}
+figure.fsm text{font-family:var(--mono);fill:var(--ink);text-anchor:middle}
+figure.fsm text.el{font-size:12px;font-weight:600;paint-order:stroke;stroke:var(--surface);stroke-width:5px;stroke-linejoin:round}
+figure.fsm .key{font:12.5px var(--body);color:var(--muted);margin:2px 4px 2px}
+
 /* playlist */
 .vids{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;align-items:center}
 .vids .lab{margin:0 4px 0 0}
@@ -445,6 +458,7 @@ function answerPanel(t,x){
   if(a.n&&t.items.length>1){const m=el("details","more",'<summary>Same topic, other papers’ versions ('+a.n+' more part'+(a.n>1?"s":"")+')</summary>');m.appendChild(el("div","ans",a.rest));d.appendChild(m)}
   const b=el("button","doneb",done.has(k)?"Done ✓ (undo)":"Mark as done");
   b.addEventListener("click",()=>setDone(k,!done.has(k)));d.appendChild(b);
+  drawDiagrams(d);
   return d;
 }
 function qRow(t,x,withTopic){
@@ -598,6 +612,89 @@ function renderP(){
     root.appendChild(el("div","orh",'<h3>Q'+n+'</h3><span>'+(n<=25?"Part B · 8 marks · answer (a) or (b)":"Part C · 15 marks · answer Q26 or Q27")+'</span>'));
     const box=el("div","rows");rs.forEach(r=>box.appendChild(qRow(r.t,r.x,true)));root.appendChild(box);
   });
+}
+
+/* ---------- state diagrams ----------
+   Every transition table (and every list of PDA / Turing machine moves) in an answer also gets a drawn
+   transition diagram: states on a circle, start arrow, double ring for final states, one arrow per pair
+   of states with its labels merged. */
+let fsmId=0;
+function fsmSVG(N,E){
+  // Textbook layout: states left to right in order; arrows to the right arch above, arrows to the left arch below,
+  // self-loops sit on top of their state. Labels of the same pair of states are stacked.
+  const id="ah"+(fsmId++),n=N.length,LH=14,CW=7.4,f=v=>v.toFixed(1);
+  const M=new Map();E.forEach(e=>{const k=e.a+">"+e.b;if(!M.has(k))M.set(k,{a:e.a,b:e.b,l:[]});if(!M.get(k).l.includes(e.l))M.get(k).l.push(e.l)});
+  const wid=l=>Math.max(...l.map(x=>x.length))*CW;
+  N.forEach(s=>{const len=s.label.length;s.fs=len>9?10:len>6?11.5:13;s.rx=Math.max(22,len*s.fs*.31+10);s.ry=22});
+  // gap between neighbours: wide enough for the labels that sit between them
+  const gapAfter=N.map(()=>110);
+  M.forEach(e=>{if(Math.abs(e.b-e.a)===1){const i=Math.min(e.a,e.b);gapAfter[i]=Math.max(gapAfter[i],wid(e.l)+60)}if(e.a===e.b){gapAfter[e.a]=Math.max(gapAfter[e.a],wid(e.l)/2+70);if(e.a)gapAfter[e.a-1]=Math.max(gapAfter[e.a-1],wid(e.l)/2+70)}});
+  let x=0;N.forEach((s,i)=>{s.x=x;s.y=0;x+=gapAfter[i]});
+  let g="",labels="",minX=-60,maxX=N[n-1].x+40,minY=-40,maxY=40;
+  const text=(cx,cy,lines,up)=>{ // lines stacked away from the arrow: upward above, downward below
+    const h=lines.length*LH,y0=up?cy-h+LH-3:cy+LH-2;
+    labels+='<text class="el" x="'+f(cx)+'" y="'+f(y0)+'">'+lines.map((l,i)=>'<tspan x="'+f(cx)+'" dy="'+(i?LH:0)+'">'+esc(l)+'</tspan>').join("")+'</text>';
+    const w=wid(lines)/2;minX=Math.min(minX,cx-w-6);maxX=Math.max(maxX,cx+w+6);minY=Math.min(minY,up?cy-h-4:cy);maxY=Math.max(maxY,up?cy:cy+h+6)};
+  const onEdge=(s,tx,ty,m)=>{const dx=tx-s.x,dy=ty-s.y,L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,t=1/Math.sqrt((ux/s.rx)**2+(uy/s.ry)**2)+(m||0);return[s.x+ux*t,s.y+uy*t]};
+  M.forEach(e=>{
+    const A=N[e.a],B=N[e.b];
+    if(e.a===e.b){
+      const p1=onEdge(A,A.x-14,A.y-60,1),p2=onEdge(A,A.x+14,A.y-60,4),top=A.y-A.ry-44;
+      g+='<path class="ed" marker-end="url(#'+id+')" d="M'+f(p1[0])+" "+f(p1[1])+" C"+f(A.x-38)+" "+f(top)+" "+f(A.x+38)+" "+f(top)+" "+f(p2[0])+" "+f(p2[1])+'"/>';
+      text(A.x,top+5,e.l,true);return}
+    const span=Math.abs(e.b-e.a),right=e.b>e.a,rev=M.has(e.b+">"+e.a);
+    const h=span===1&&!rev?0:(span===1?26:30+38*(span-1))*(right?-1:1);
+    const mx=(A.x+B.x)/2,cy=A.y+2*h;
+    const p1=onEdge(A,h?mx:B.x,h?cy:B.y,1),p2=onEdge(B,h?mx:A.x,h?cy:A.y,5);
+    g+='<path class="ed" marker-end="url(#'+id+')" d="M'+f(p1[0])+" "+f(p1[1])+" Q"+f(mx)+" "+f(cy)+" "+f(p2[0])+" "+f(p2[1])+'"/>';
+    const apex=.25*p1[1]+.5*cy+.25*p2[1];
+    text(mx,right?apex-5:apex+5,e.l,right);
+  });
+  N.forEach(s=>{
+    if(s.start){g+='<path class="ed" marker-end="url(#'+id+')" d="M'+f(s.x-s.rx-38)+" "+f(s.y)+" L"+f(s.x-s.rx-5)+" "+f(s.y)+'"/>'}
+    g+='<ellipse class="nd" cx="'+f(s.x)+'" cy="'+f(s.y)+'" rx="'+f(s.rx)+'" ry="'+s.ry+'"/>'+(s.final?'<ellipse class="fin" cx="'+f(s.x)+'" cy="'+f(s.y)+'" rx="'+f(s.rx-4)+'" ry="'+(s.ry-4)+'"/>':'')+
+      '<text x="'+f(s.x)+'" y="'+f(s.y+s.fs*.36)+'" font-size="'+s.fs+'">'+esc(s.label)+'</text>'});
+  M.forEach(e=>{if(e.a!==e.b&&Math.abs(e.b-e.a)>1){const h=(30+38*(Math.abs(e.b-e.a)-1));e.b>e.a?minY=Math.min(minY,-h-8):maxY=Math.max(maxY,h+8)}});
+  minX=Math.min(minX,N[0].x-N[0].rx-46);maxX=Math.max(maxX,N[n-1].x+N[n-1].rx+10);
+  const W=maxX-minX+16,H=maxY-minY+16;
+  return '<svg viewBox="'+f(minX-8)+" "+f(minY-8)+" "+f(W)+" "+f(H)+'" width="'+Math.round(W*1.2)+'" height="'+Math.round(H*1.2)+'" role="img" aria-label="Transition diagram"><defs><marker id="'+id+'" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs>'+g+labels+'</svg>';
+}
+function tableFSM(tb){
+  const rows=[...tb.rows];if(rows.length<3)return null;
+  const H=[...rows[0].cells].map(c=>c.textContent.trim());
+  if(!/state/i.test(H[0])||/incoming|sequence/i.test(H.join(" ")))return null;
+  const cols=[];H.forEach((h,i)=>{if(i&&!/meaning|purpose|note/i.test(h))cols.push([i,h.replace(/^input\s+/i,"")])});
+  if(!cols.length||cols.some(c=>c[1].length>6))return null;
+  const moore=/output/i.test(H[0]),norm=x=>x.replace(/\s+/g,"");
+  const N=rows.slice(1).map(r=>{let t=r.cells[0].textContent.trim();const start=/→/.test(t),final=/\*/.test(t);
+    t=t.replace(/[→*]/g,"").replace(/\([^)]*\)/g,"").replace(/\s+/g," ").trim();
+    return{k:norm(moore?t.split(" / ")[0]:t),label:t.replace(/^\{(\{[^{}]*\})\}$/,"$1"),start,final}});
+  if(N.length>12||new Set(N.map(x=>x.k)).size!==N.length||N.some(x=>!x.k))return null;
+  const K=new Map(N.map((x,i)=>[x.k,i])),E=[];
+  if(!N.some(x=>x.start))N[0].start=true;
+  for(let i=0;i<N.length;i++)for(const [ci,sym] of cols){
+    const cell=rows[i+1].cells[ci];if(!cell)return null;let c=cell.textContent.replace(/\s+/g," ").trim(),out="";
+    if(/^(∅|ϕ|φ|–|-|—)?$/.test(c)){if(K.has("∅"))E.push({a:i,b:K.get("∅"),l:sym});continue}
+    const m=/^(.*?)\s*(?:\/|,\s*output)\s*(\S+)$/.exec(c);if(m&&!K.has(norm(c))){c=m[1];out=m[2]}
+    let ts;if(K.has(norm(c)))ts=[norm(c)];else if(/^\{.*\}$/.test(c))ts=c.slice(1,-1).split(",").map(norm);else return null;
+    if(ts.some(t=>!K.has(t)))return null;
+    ts.forEach(t=>E.push({a:i,b:K.get(t),l:sym+(out?"/"+out:"")}));
+  }
+  return E.length?{N,E,kind:moore?"Moore machine":"Transition diagram"}:null;
+}
+function movesFSM(pre){
+  const re=/\(([A-Za-z]\w*), ([^()→]*?)\)\s*→\s*\(([A-Za-z]\w*), ([^()]*?)\)/g,txt=pre.textContent,N=[],K=new Map(),E=[];let m,tm=0;
+  const node=k=>{if(!K.has(k)){K.set(k,N.length);N.push({k,label:k,start:!N.length,final:/^(q?f\d*|q?acc\w*|qa|halt\w*)$/i.test(k)})}return K.get(k)};
+  while((m=re.exec(txt))){const a=node(m[1]),b=node(m[3]);if(!m[2].includes(","))tm++;E.push({a,b,l:m[2].replace(/\s+/g,"")+" → "+m[4].replace(/\s+/g,"")})}
+  if(E.length<3||N.length>12)return null;
+  return{N,E,kind:tm>E.length/2?"Turing machine diagram":"PDA diagram",key:tm>E.length/2?"Arrow label: symbol read → symbol written, head move.":"Arrow label: input, stack top → what replaces the stack top (ε = pop)."};
+}
+function drawDiagrams(root){
+  root.querySelectorAll(".ans table").forEach(tb=>{const m=tableFSM(tb);if(!m)return;
+    const fig=el("figure","fsm",'<figcaption>'+m.kind+' · drawn from the table above</figcaption><div class="sc">'+fsmSVG(m.N,m.E)+'</div><div class="key">Arrow in = start state. Double ring = final state.</div>');
+    (tb.closest(".tw")||tb).after(fig)});
+  root.querySelectorAll(".ans pre").forEach(pre=>{const m=movesFSM(pre);if(!m)return;
+    pre.after(el("figure","fsm",'<figcaption>'+m.kind+' · drawn from the moves above</figcaption><div class="sc">'+fsmSVG(m.N,m.E)+'</div><div class="key">'+m.key+' Arrow in = start state. Double ring = final state.</div>'))});
 }
 
 /* ---------- playlist: which videos teach which topic, ranked by how often the exams asked it ---------- */
