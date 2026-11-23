@@ -1,0 +1,665 @@
+<title>__TITLE__</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,100&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Shared page for both subject sites (the subject's text comes from SITE in its data file).
+   Layout: one study column (max 920px). Warm hero with a progress ring, pill tabs, five unit tiles,
+   then topics with one row per question; a row opens its own answer in place. */
+:root{
+  --bg:#fdc9e8; --surface:#fff3fa; --sunk:#fbd9ec; --ink:#6a1f50; --muted:#a04f7e; --line:#f3b3d6;
+  --accent:#cc4a92; --aura:#db8cba; --aura2:#e6a6cd; --sun:#fff0f8; --good:#cc4a92; --hot:#cc4a92; --pill:#d9609f; --pill-ink:#ffffff;
+  --heat-hi:#c93d8a; --heat-mid:#a565c8; --heat-lo:#e69cc3;
+  --u1:#cf4a90; --u2:#b9529f; --u3:#9c62c4; --u4:#d5567c; --u5:#b14786;
+  --shadow:0 1px 0 rgba(204,74,146,.06),0 12px 28px -16px rgba(180,60,130,.45);
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"DM Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#2a1226; --surface:#3a1b35; --sunk:#32162d; --ink:#ffe6f3; --muted:#e0a9c8; --line:#5a2e50;
+  --accent:#ff8cc4; --aura:#8f3f73; --aura2:#a85089; --sun:#ffe6f3; --good:#ff8cc4; --hot:#ff8cc4; --pill:#ff8cc4; --pill-ink:#2a0a1c;
+  --heat-hi:#ff8cc4; --heat-mid:#c9a2ff; --heat-lo:#b8758f;
+  --u1:#ff8cc4; --u2:#f093e0; --u3:#c9a2ff; --u4:#ff9bb0; --u5:#e89bd4;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 10px 26px -16px rgba(0,0,0,.7); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#2a1226; --surface:#3a1b35; --sunk:#32162d; --ink:#ffe6f3; --muted:#e0a9c8; --line:#5a2e50;
+  --accent:#ff8cc4; --aura:#8f3f73; --aura2:#a85089; --sun:#ffe6f3; --good:#ff8cc4; --hot:#ff8cc4; --pill:#ff8cc4; --pill-ink:#2a0a1c;
+  --heat-hi:#ff8cc4; --heat-mid:#c9a2ff; --heat-lo:#b8758f;
+  --u1:#ff8cc4; --u2:#f093e0; --u3:#c9a2ff; --u4:#ff9bb0; --u5:#e89bd4;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 10px 26px -16px rgba(0,0,0,.7); color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);margin:0}
+.wrap{max-width:920px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2{font-family:var(--display);font-weight:600;font-variation-settings:"SOFT" 100;text-wrap:balance;margin:0;line-height:1.1}
+h3{font-family:var(--body);text-wrap:balance;margin:0;line-height:1.3}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.u1{--u:var(--u1)}.u2{--u:var(--u2)}.u3{--u:var(--u3)}.u4{--u:var(--u4)}.u5{--u:var(--u5)}
+.m{font-family:var(--mono);font-size:.92em}
+
+/* hero */
+header.top{padding-block:22px 6px}
+.hero{position:relative;overflow:hidden;border-radius:32px;padding:30px 26px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;
+  background:var(--bg);border:1px solid var(--line)}
+.hero>*{position:relative}
+.hero::before{content:"";position:absolute;right:-70px;top:50%;width:420px;height:420px;transform:translateY(-50%);border-radius:50%;filter:blur(22px);
+  background:radial-gradient(circle,var(--aura2) 0 14%,var(--aura) 26% 34%,var(--aura2) 44%,var(--aura) 56%,transparent 70%)}
+body{background-image:radial-gradient(520px 520px at 8% 78%,color-mix(in srgb,var(--aura) 45%,transparent),transparent 70%),radial-gradient(460px 460px at 96% 38%,color-mix(in srgb,var(--aura) 30%,transparent),transparent 70%);background-attachment:fixed}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.wish{font:600 clamp(19px,3.4vw,25px)/1.25 var(--display);font-variation-settings:"SOFT" 100;color:var(--accent);margin-bottom:14px}
+.wish b{font-weight:600;letter-spacing:.12em;margin-right:10px}
+h1{font-size:clamp(32px,6.4vw,52px);margin-top:8px}
+h1 i{color:var(--accent)}
+.lede{color:var(--muted);max-width:46ch;margin:10px 0 0}
+.cheer{display:inline-block;margin-top:14px;font-weight:700;background:var(--pill);color:var(--pill-ink);border-radius:999px;padding:7px 14px;font-size:14px}
+.themeb{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 13px;font-size:13.5px;font-weight:600;cursor:pointer;margin:14px 0 0 6px}
+.ring{width:150px;height:150px;position:relative;flex:none;margin-right:24px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:11;stroke-linecap:round}
+.ring .bgc{stroke:color-mix(in srgb,var(--sun) 40%,transparent)}
+.ring .fg{stroke:var(--sun);transition:stroke-dashoffset .5s}
+.ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.ring b{font:600 34px/1 var(--display);color:var(--sun)}
+.ring span{font-size:12px;color:var(--sun);font-weight:600}
+@media (max-width:560px){.hero{grid-template-columns:1fr;padding:22px 18px}.hero::before{right:auto;left:-90px;top:auto;bottom:-150px;transform:none}.ring{width:118px;height:118px;margin:0}}
+
+/* tabs */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-block:12px;scrollbar-width:none}
+.tabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;cursor:pointer;white-space:nowrap;font-weight:600;font-size:14.5px}
+.tabs button:hover{border-color:var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--pill);border-color:var(--pill);color:var(--pill-ink)}
+
+main{padding-block:10px 70px}
+section[hidden]{display:none}
+
+/* unit tiles */
+.units{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.ut{all:unset;box-sizing:border-box;cursor:pointer;border-radius:18px;padding:12px 12px 11px;display:flex;flex-direction:column;gap:6px;min-width:0;
+  background:color-mix(in srgb,var(--u) 13%,var(--surface));border:2px solid transparent}
+.ut:hover{border-color:color-mix(in srgb,var(--u) 45%,transparent)}
+.ut[aria-pressed="true"]{border-color:var(--u);box-shadow:var(--shadow)}
+.ut:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.ut .k{font:600 20px/1 var(--display);color:var(--u)}
+.ut .n{font-size:12.5px;line-height:1.3;color:var(--ink);min-height:2.6em}
+.ut .pb{height:6px;border-radius:3px;background:color-mix(in srgb,var(--u) 20%,var(--surface));overflow:hidden}
+.ut .pb i{display:block;height:100%;background:var(--u);border-radius:3px}
+.ut .c{font:600 11.5px var(--mono);color:var(--muted)}
+.ut.all{--u:var(--ink)}
+@media (max-width:760px){.units{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:420px){.units{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* filters */
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
+.seg{display:inline-flex;background:var(--sunk);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;border-radius:999px;padding:6px 13px;cursor:pointer;font-weight:600;font-size:13.5px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(80,40,10,.18)}
+.filters select,.filters input[type=search]{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 14px;min-width:0}
+.filters input[type=search]{flex:1 1 180px}
+.fmeta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;color:var(--muted);font-size:13.5px;margin:8px 2px 4px}
+.fmeta label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.chipx{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 11px;cursor:pointer;font-size:13px}
+.linkb{border:0;background:none;padding:0;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline;font-size:13.5px}
+
+/* topic cards: closed by default, most repeated first; the questions inside each open their own answer */
+.cards{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.tcard{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}
+.tcard>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;width:100%;padding:16px 18px;cursor:pointer;align-items:start}
+.tcard>button:hover{background:color-mix(in srgb,var(--u) 5%,var(--surface))}
+.tcard>button:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.tcard .num{font:600 26px/1 var(--display);color:var(--u);min-width:34px;font-variant-numeric:tabular-nums}
+.tcard .tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tcard h3{font-size:17.5px;font-weight:700;margin:9px 0}
+.tcard .pcs{display:flex;flex-wrap:wrap;gap:5px}
+.pc{font-size:12px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.pc.d{background:var(--sunk);color:var(--accent);border-color:transparent}
+.tcard .pm{font:500 26px/1 var(--display);color:var(--u);width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--u) 12%,var(--surface))}
+.pill.rep{color:#fff;background:var(--accent);font-size:12px;padding:6px 10px}
+.tbody{border-top:1px solid var(--line);padding:14px 16px 18px;background:color-mix(in srgb,var(--u) 4%,var(--surface))}
+.tbody .lab{margin-bottom:10px}
+
+/* topics and question rows */
+.unit-h{margin:22px 0 4px}
+.unit-h h2{font-size:27px;color:var(--u)}
+.unit-h p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.topic{margin-top:18px}
+.th{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin:0 2px 8px}
+.th h3{font-size:17.5px;font-weight:700;flex:1 1 260px}
+.pill{font:600 11.5px/1 var(--mono);padding:5px 9px;border-radius:999px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.pill.hot{color:var(--hot);background:color-mix(in srgb,var(--hot) 13%,var(--surface))}
+.pill.u{color:var(--u);background:color-mix(in srgb,var(--u) 14%,var(--surface))}
+.rows{display:flex;flex-direction:column;gap:8px}
+.qrow{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;border-left:5px solid var(--u)}
+.qrow.open{box-shadow:var(--shadow)}
+.qh{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;padding:13px 14px;cursor:pointer;align-items:start}
+.qh:hover{background:color-mix(in srgb,var(--u) 5%,var(--surface))}
+.qh:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.tick{all:unset;box-sizing:border-box;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);cursor:pointer;display:grid;place-items:center;font-size:14px;font-weight:700;color:transparent;margin-top:1px}
+.tick:hover{border-color:var(--good)}
+.tick:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.qrow.done .tick{background:var(--good);border-color:var(--good);color:var(--surface)}
+.qmeta{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px}
+.qtext{line-height:1.7;min-width:0}
+.qrow.done .qtext{color:var(--muted)}
+.qtext .tw{margin:8px 0}
+.chev{font-size:13px;font-weight:700;color:var(--u);white-space:nowrap;padding-top:2px}
+.qa{border-top:1px dashed var(--line);padding:14px 16px 16px;min-width:0;background:color-mix(in srgb,var(--u) 4%,var(--surface))}
+.lab{font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--u);margin-bottom:10px}
+.ans{min-width:0;max-width:74ch}
+.ans p{margin:0 0 11px}
+.ans ul,.ans ol{margin:0 0 11px;padding-left:22px}
+.ans li{margin-bottom:5px}
+.ans .f{font-family:var(--mono);font-size:13.5px;background:var(--sunk);border-left:3px solid var(--u);padding:8px 10px;border-radius:0 8px 8px 0}
+.ans pre{font:13px/1.55 var(--mono);background:var(--sunk);border-radius:12px;padding:12px 14px;overflow-x:auto;margin:0 0 11px}
+.tw{overflow-x:auto;margin:0 0 11px}
+table{border-collapse:collapse;font-size:14px;min-width:100%}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:var(--sunk);font-weight:600}
+td.m,th.m{font-family:var(--mono);font-size:.92em}
+table.qt{min-width:0;font-family:var(--mono);font-size:13.5px;background:var(--surface)}
+table.qt th,table.qt td{padding:5px 14px;text-align:center}
+table.bits td,table.bits th{text-align:center;font-family:var(--mono);padding:5px 6px}
+td.pb{color:var(--hot);font-weight:600}
+details.more{margin:4px 0 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+details.more summary{cursor:pointer;padding:9px 12px;font-weight:600;font-size:13.5px;color:var(--muted)}
+details.more .ans{padding:4px 12px 6px}
+.doneb{border:0;border-radius:999px;padding:9px 18px;font-weight:700;cursor:pointer;background:var(--good);color:var(--surface)}
+.qrow.done .doneb{background:var(--sunk);color:var(--muted)}
+.empty{color:var(--muted);padding:34px 0;text-align:center}
+
+/* shared blocks */
+.block{margin-bottom:30px}
+.block>h2{font-size:27px;margin-bottom:4px}
+.block>p.sub{color:var(--muted);margin:0 0 12px;max-width:70ch}
+.ugrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.ucard{background:color-mix(in srgb,var(--u) 11%,var(--surface));border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.ucard b{font:600 32px/1 var(--display);font-variant-numeric:tabular-nums;color:var(--u)}
+.ucard small{color:var(--muted)}
+.meter{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--u);border-radius:3px}
+.rank{background:var(--surface);border:1px solid var(--line);border-radius:18px;margin-bottom:12px;overflow:hidden}
+.rank>h3{font-size:16px;padding:12px 16px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.rrow{display:grid;grid-template-columns:28px minmax(0,1fr) 110px;gap:10px;align-items:center;padding:10px 16px;border:0;border-bottom:1px solid var(--line);cursor:pointer;background:none;width:100%;text-align:left}
+.rrow:last-child{border-bottom:0}
+.rrow:hover{background:var(--sunk)}
+.rrow .rk{font:600 13px var(--mono);color:var(--muted)}
+.rrow .nm{font-weight:600}
+.rrow .mt{display:block;color:var(--muted);font-size:13px;font-weight:400}
+.rrow .fr{font:600 12px var(--mono);text-align:right;color:var(--u)}
+.rrow .meter{margin-top:4px}
+.pri{font:600 11px/1 var(--mono);padding:4px 7px;border-radius:999px;margin-left:6px;white-space:nowrap}
+.pri.a{color:var(--hot);background:color-mix(in srgb,var(--hot) 13%,var(--surface))}
+.pri.b{color:var(--heat-mid);background:color-mix(in srgb,var(--heat-mid) 15%,var(--surface))}
+.pri.c{color:var(--muted);background:var(--sunk)}
+@media (max-width:520px){.rrow{grid-template-columns:22px minmax(0,1fr) 74px}}
+.heat td{text-align:center;font-variant-numeric:tabular-nums}
+.heat td.h{background:color-mix(in srgb,var(--accent) calc(var(--v)*1%),var(--surface))}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:13px 16px;color:var(--muted);font-size:14px}
+.note b{color:var(--ink)}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:6px 18px 6px 38px;margin:0}
+.plan li{margin:10px 0}
+
+/* hot topics */
+.utabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.utabs button{border:2px solid transparent;background:color-mix(in srgb,var(--u) 13%,var(--surface));color:var(--ink);border-radius:999px;padding:8px 15px;cursor:pointer;font-weight:600;font-size:14px}
+.utabs button[aria-selected="true"]{border-color:var(--u)}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.hcard{all:unset;box-sizing:border-box;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.hcard:hover{border-color:var(--h);box-shadow:var(--shadow)}
+.hcard:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.hcard.hi,.lg.hi{--h:var(--heat-hi)}.hcard.mid,.lg.mid{--h:var(--heat-mid)}.hcard.lo,.lg.lo{--h:var(--heat-lo)}
+.hn{font:700 15.5px/1.3 var(--body);flex:1}
+.hbar{display:block;height:8px;border-radius:4px;background:var(--sunk);overflow:hidden}
+.hbar i{display:block;height:100%;border-radius:4px;background:var(--h)}
+.hmeta{display:flex;justify-content:space-between;gap:8px;align-items:baseline;color:var(--muted);font-size:13px;flex-wrap:wrap}
+.hmeta b{font:600 13px var(--mono);color:var(--h)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;color:var(--muted);font-size:13px;margin:0 0 14px}
+.legend i.lg{display:inline-block;width:26px;height:8px;border-radius:4px;background:var(--h);margin-right:5px}
+.hm{font-size:13px}
+.hm th,.hm td{padding:5px 6px}
+.hm thead th{font:600 11px/1.25 var(--mono);text-align:center;vertical-align:bottom;white-space:nowrap}
+.hm thead th:first-child{text-align:left}
+.hm tbody th{background:var(--surface);font-weight:600;min-width:190px;cursor:pointer}
+.hm tbody th:hover{text-decoration:underline}
+.hm td{text-align:center;font:600 12px var(--mono);min-width:44px;white-space:nowrap}
+.hm td.on{background:color-mix(in srgb,var(--u) calc(var(--v)*1%),var(--surface))}
+.hm td.off{color:var(--line)}
+.hm td.sum{color:var(--u)}
+
+/* playlist */
+.vids{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;align-items:center}
+.vids .lab{margin:0 4px 0 0}
+a.vid{display:inline-flex;gap:6px;align-items:center;text-decoration:none;font-size:13px;font-weight:600;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+a.vid:hover{border-color:var(--accent);color:var(--accent)}
+a.vid b{font:600 11.5px var(--mono);color:var(--accent)}
+.vrow{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 16px;margin-bottom:8px}
+.vrow .vn{font:600 22px/1 var(--display);color:var(--accent);font-variant-numeric:tabular-nums}
+.vrow .vt{font-weight:700}
+.vrow .vm{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.vrow .vm button{cursor:pointer;border:0}
+.vrow.cold{opacity:.72}
+a.watch{text-decoration:none;font-weight:700;font-size:13.5px;background:var(--pill);color:var(--pill-ink);border-radius:999px;padding:8px 14px;white-space:nowrap}
+@media (max-width:520px){.vrow{grid-template-columns:32px minmax(0,1fr)}.vrow a.watch{grid-column:2;justify-self:start}}
+
+/* papers + mcq */
+.pchips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+.pchips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 15px;cursor:pointer;font-weight:600;font-size:14px}
+.pchips button[aria-pressed="true"]{background:var(--pill);border-color:var(--pill);color:var(--pill-ink)}
+.orh{display:flex;align-items:center;gap:10px;margin:20px 2px 8px;flex-wrap:wrap}
+.orh h3{font:600 22px/1 var(--display)}
+.orh span{color:var(--muted);font-size:13.5px}
+.key td,.key th{text-align:center;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.key td{font-weight:600}
+</style>
+
+<header class="top"><div class="wrap">
+  <div class="hero">
+    <div>
+      <div class="wish"><b>11 11</b>trust your intuition</div>
+      <div class="eyebrow" id="h-code"></div>
+      <h1 id="h-title"></h1>
+      <p class="lede" id="h-lede"></p>
+      <span class="cheer" id="cheer"></span>
+      <button class="themeb" id="themeb"></button>
+    </div>
+    <div class="ring" role="img" id="ring" aria-label="Questions revised">
+      <svg viewBox="0 0 120 120"><circle class="bgc" cx="60" cy="60" r="52"/><circle class="fg" id="ring-fg" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+      <div><b id="ring-n">0</b><span id="ring-t"></span></div>
+    </div>
+  </div>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <div class="tabs" role="tablist" id="tabs">
+    <button role="tab" data-v="questions">Study</button>
+    <button role="tab" data-v="topics">Hot topics</button>
+    <button role="tab" data-v="analysis">Game plan</button>
+    <button role="tab" data-v="papers">Paper by paper</button>
+    <button role="tab" data-v="playlist" id="tab-pl" hidden>Playlist</button>
+    <button role="tab" data-v="mcq">MCQ key</button>
+  </div>
+</div></div>
+
+<main><div class="wrap">
+  <section id="v-questions">
+    <div class="units" id="units"></div>
+    <div class="filters">
+      <div class="seg" id="f-marks" role="group" aria-label="Marks">
+        <button data-m="" aria-pressed="true">All</button><button data-m="8" aria-pressed="false">8 marks</button><button data-m="15" aria-pressed="false">15 marks</button>
+      </div>
+      <select id="f-paper" aria-label="Paper"></select>
+      <input id="f-search" type="search" placeholder="Search a topic or question…" aria-label="Search">
+    </div>
+    <div class="fmeta">
+      <span id="f-count"></span>
+      <label><input type="checkbox" id="f-todo"> Hide done</label>
+      <span id="f-fam"></span>
+      <button class="linkb" id="f-close" hidden>Close all topics</button>
+    </div>
+    <div id="qlist"></div>
+  </section>
+  <section id="v-topics" hidden></section>
+  <section id="v-analysis" hidden></section>
+  <section id="v-papers" hidden></section>
+  <section id="v-playlist" hidden></section>
+  <section id="v-mcq" hidden></section>
+</div></main>
+
+<script>
+/*__DATA__*/
+</script>
+<script>
+(function(){
+const $=s=>document.querySelector(s), el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+/* Lay a question out the way the printed paper does: transition tables as tables,
+   one grammar rule or δ move per line, sub-parts (i), (ii) on their own lines. */
+function fmtQ(x){
+  const keep=[];const hold=h=>{keep.push(h);return "\u0001"+(keep.length-1)+"\u0001"};
+  // 1. transition table written as "state: sym→next, sym→next; state: ..."
+  const tm=/(^|[\s(])((?:→|\*)*[A-Za-z]\w{0,2}: [0-9a-zε]→)/.exec(x);
+  if(tm){
+    const start=tm.index+tm[1].length, rows=[], syms=[];let pos=start,endPos=start;
+    for(const part of x.slice(start).split("; ")){
+      let c=part;const cut=c.search(/\.(\s|$)/);if(cut>=0)c=c.slice(0,cut);
+      const m=/^((?:→|\*)*[A-Za-z]\w{0,2}): (.+)$/.exec(c);if(!m)break;
+      const cells=m[2].split(", ").map(s=>/^([0-9a-zε])→(.*)$/.exec(s));if(cells.some(z=>!z))break;
+      const row={n:m[1],c:{}};cells.forEach(z=>{row.c[z[1]]=z[2];if(!syms.includes(z[1]))syms.push(z[1])});rows.push(row);
+      if(cut>=0){endPos=pos+cut+1;break}
+      endPos=pos+part.length;pos+=part.length+2;
+    }
+    if(rows.length>=2){
+      const t='<div class="tw"><table class="qt"><tr><th>δ</th>'+syms.map(s=>"<th>"+esc(s)+"</th>").join("")+"</tr>"+
+        rows.map(r=>'<tr><th>'+esc(r.n)+'</th>'+syms.map(s=>"<td>"+esc(r.c[s]==null||r.c[s]==="-"?"–":r.c[s])+"</td>").join("")+"</tr>").join("")+"</table></div>";
+      x=x.slice(0,start)+hold(t)+x.slice(endPos).replace(/^; /,"");
+    }
+  }
+  // 2. two lists of strings (PCP)
+  x=x.replace(/List A[^:={;]*[:=]\s*(?:wᵢ = )?\{?\s*([^;{}]+?)\s*\}?[;,] List B[^:={;]*[:=]\s*(?:xᵢ = )?\{?\s*([^.{}]+?)\s*\}?(?:\.(?=\s|$)|$)/,(m,a,b)=>{
+    const A=a.split(/,\s*/),B=b.split(/,\s*/);if(A.length!==B.length)return m;
+    return hold('<div class="tw"><table class="qt"><tr><th>i</th><th>List A</th><th>List B</th></tr>'+A.map((s,i)=>"<tr><th>"+(i+1)+"</th><td>"+esc(s)+"</td><td>"+esc(B[i])+"</td></tr>").join("")+"</table></div>")});
+  let h=esc(x);
+  // 3. one production / one move per line
+  h=h.replace(/ (\d[.)]) (?=[A-Z][A-Za-z₀-₉]{0,3} → |[δd]\([a-z]\w*,)/g,"<br>$1 ");
+  h=h.replace(/(?<!\d)([,;:.]) (?=[A-Z][A-Za-z₀-₉]{0,3} → )/g,"$1<br>");
+  h=h.replace(/(?<!\d)([,;:.]) (?=[δd]\([a-z]\w*,)/g,"$1<br>");
+  // 4. sub-parts on their own lines
+  h=h.replace(/([A-Za-z0-9.:?)\]}>”"]) (?=(?:\((?:i{1,3}|iv|v)\)|(?:i{1,3}|iv|v)[.)]|[1-9][.)]|[a-e][.)]) [^\d\s])/g,"$1<br>");
+  h=h.replace(/\u0001(\d+)\u0001/g,(m,i)=>keep[+i]);
+  return h;
+}
+/* Split an answer's HTML into its top-level blocks (paragraphs, tables, lists). */
+function splitBlocks(html){
+  const out=[],re=/<(\/?)([a-zA-Z0-9]+)([^>]*)>/g,VOID=/^(br|hr|img|input|col|wbr)$/i;let depth=0,start=0,m;
+  while((m=re.exec(html))){
+    if(VOID.test(m[2])||/\/\s*$/.test(m[3]))continue;
+    if(!m[1]){if(depth===0){const pre=html.slice(start,m.index).trim();if(pre)out.push(pre);start=m.index}depth++}
+    else{depth--;if(depth===0){out.push(html.slice(start,re.lastIndex).trim());start=re.lastIndex}}
+  }
+  const tail=html.slice(start).trim();if(tail)out.push(tail);return out;
+}
+const P=Object.fromEntries(PAPERS.map((p,i)=>[p.k,Object.assign({i},p)]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const KEY=SITE.key, MAP=typeof SPLIT!=="undefined"?SPLIT:{};
+const qk=x=>x.p+":"+x.q, uname=u=>UNITS[u].split(" — ")[0];
+
+TOPICS.forEach((t,i)=>{t.id=i;t.fam=familyOf(t);t.items.sort((a,b)=>P[b.p].i-P[a.p].i);t.papers=[...new Set(t.items.map(x=>x.p))]});
+const order=TOPICS.slice().sort((a,b)=>a.u-b.u||b.papers.length-a.papers.length||a.m-b.m||a.id-b.id);
+const ALLQ=[];order.forEach(t=>t.items.forEach(x=>ALLQ.push({t,x})));
+const totalQ=ALLQ.length;
+let done=new Set(store.get(KEY+"-doneq",[]).filter(k=>ALLQ.some(r=>qk(r.x)===k)));
+const st={unit:store.get(KEY+"-unit2",0),marks:"",paper:"",q:"",todo:false,fam:"",open:new Set(),topen:new Set()};
+if(![0,1,2,3,4,5].includes(st.unit))st.unit=0;
+
+$("#h-code").textContent=SITE.code;$("#h-title").innerHTML=SITE.h1;$("#h-lede").textContent=SITE.lede;
+$("#f-paper").innerHTML='<option value="">All papers</option>'+PAPERS.slice().reverse().map(p=>'<option value="'+p.k+'">'+p.name+'</option>').join("");
+
+/* ---------- light / dark: bright by default, the button switches and remembers ---------- */
+(function(){
+  const root=document.documentElement,b=$("#themeb");
+  const apply=m=>{root.setAttribute("data-theme",m);b.textContent=m==="dark"?"☀ Light mode":"☾ Dark mode"};
+  apply(store.get(KEY+"-theme",null)||root.getAttribute("data-theme")||"light");
+  b.addEventListener("click",()=>{const m=root.getAttribute("data-theme")==="dark"?"light":"dark";store.set(KEY+"-theme",m);apply(m)});
+})();
+
+/* ---------- progress ---------- */
+function cheer(n){
+  const f=n/totalQ;
+  return n===0?"11 11 · this is your sign to start with one question"
+    :f<.1?"you started. trust the process."
+    :f<.25?"soft progress is still progress"
+    :f<.5?"it is working. keep going."
+    :f<.75?"more than halfway there"
+    :f<1?"nearly done. finish what you started."
+    :"every question done · wish granted";
+}
+function progress(){
+  const n=done.size;
+  $("#ring-n").textContent=n;$("#ring-t").textContent="of "+totalQ+" done";
+  $("#ring-fg").style.strokeDashoffset=326.7*(1-n/totalQ);
+  $("#ring").setAttribute("aria-label",n+" of "+totalQ+" questions revised");
+  $("#cheer").textContent=cheer(n);
+  document.querySelectorAll(".tcard").forEach(c=>{
+    const ks=[...c.querySelectorAll(".pc")],d=ks.filter(k=>{const on=done.has(k.dataset.k);k.classList.toggle("d",on);return on}).length;
+    const p=c.querySelector(".dn");p.hidden=!d;p.textContent=d===ks.length?"All done ✓":d+" of "+ks.length+" done";
+  });
+  document.querySelectorAll("#units .ut").forEach(b=>{
+    const u=+b.dataset.u,qs=ALLQ.filter(r=>!u||r.t.u===u),d=qs.filter(r=>done.has(qk(r.x))).length;
+    b.querySelector(".pb i").style.width=(qs.length?d/qs.length*100:0)+"%";b.querySelector(".c").textContent=d+" / "+qs.length+" done";
+  });
+}
+function setDone(k,on){
+  on?done.add(k):done.delete(k);store.set(KEY+"-doneq",[...done]);
+  document.querySelectorAll('.qrow[data-k="'+k+'"]').forEach(r=>{r.classList.toggle("done",on);r.querySelector(".tick").setAttribute("aria-pressed",on);
+    const b=r.querySelector(".doneb");if(b)b.textContent=on?"Done ✓ (undo)":"Mark as done"});
+  progress();
+}
+
+/* ---------- one question's own answer ---------- */
+const bcache=new Map();
+const blocksOf=t=>{if(!bcache.has(t.a))bcache.set(t.a,splitBlocks(t.a));return bcache.get(t.a)};
+const PRE=PAPERS.map(p=>({k:p.k,re:new RegExp(p.name.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"(?!I)")}));
+function answerFor(t,x){
+  const B=blocksOf(t);let idx=[];const sp=MAP[qk(x)];
+  if(sp){String(sp).split(",").forEach(s=>{const m=s.split("-").map(Number);for(let i=m[0];i<=(m.length>1?m[1]:m[0]);i++)if(i<B.length)idx.push(i)})}
+  else if(t.items.length===1)idx=B.map((_,i)=>i);
+  else{
+    // a part headed with other papers' names (and the tables under it) belongs to those papers' questions
+    let hide=false;
+    B.forEach((b,i)=>{
+      if(/^<p[\s>]/.test(b)){
+        const m=/^<p[^>]*>\s*<b>([\s\S]*?)<\/b>/.exec(b),txt=b.replace(/<[^>]+>/g,""),lead=m?m[1].replace(/<[^>]+>/g,""):(txt.length<70?txt:"");
+        const ps=PRE.filter(r=>r.re.test(lead)).map(r=>r.k);hide=ps.length>0&&!ps.includes(x.p);
+      }
+      if(!hide)idx.push(i)});
+    if(!idx.length)idx=B.map((_,i)=>i);
+  }
+  const set=new Set(idx);
+  return{main:idx.map(i=>B[i]).join("\n"),rest:B.filter((_,i)=>!set.has(i)).join("\n"),n:B.length-set.size};
+}
+function answerPanel(t,x){
+  const k=qk(x),a=answerFor(t,x),d=el("div","qa");
+  d.appendChild(el("div","lab","Answer · "+t.m+" marks"));
+  d.appendChild(el("div","ans",a.main));
+  if(a.n&&t.items.length>1){const m=el("details","more",'<summary>Same topic, other papers’ versions ('+a.n+' more part'+(a.n>1?"s":"")+')</summary>');m.appendChild(el("div","ans",a.rest));d.appendChild(m)}
+  const b=el("button","doneb",done.has(k)?"Done ✓ (undo)":"Mark as done");
+  b.addEventListener("click",()=>setDone(k,!done.has(k)));d.appendChild(b);
+  return d;
+}
+function qRow(t,x,withTopic){
+  const k=qk(x),r=el("div","qrow u"+t.u+(done.has(k)?" done":""));r.dataset.k=k;r.id="q-"+k.replace(":","-");
+  const h=el("div","qh",'<button class="tick" aria-label="Mark as done" aria-pressed="'+done.has(k)+'">✓</button><div><div class="qmeta"><span class="pill u">'+P[x.p].name+'</span><span class="pill">Q'+x.q+'</span><span class="pill">'+t.m+' marks</span>'+
+    (withTopic?'<span class="pill">'+esc(t.fam)+'</span>':'')+'</div><div class="qtext">'+fmtQ(x.x)+'</div></div><span class="chev"></span>');
+  h.tabIndex=0;h.setAttribute("role","button");
+  const paint=()=>{const o=st.open.has(k);r.classList.toggle("open",o);h.setAttribute("aria-expanded",o);h.querySelector(".chev").textContent=o?"Hide ▲":"Answer ▼";
+    const p=r.querySelector(".qa");if(o&&!p)r.appendChild(answerPanel(t,x));if(!o&&p)p.remove();};
+  const toggle=()=>{st.open.has(k)?st.open.delete(k):st.open.add(k);paint()};
+  h.addEventListener("click",e=>{if(e.target.closest(".tick")){setDone(k,!done.has(k));return}if(e.target.closest("a,table")&&window.getSelection().toString())return;toggle()});
+  h.addEventListener("keydown",e=>{if(e.target!==h)return;if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle()}});
+  r.appendChild(h);paint();return r;
+}
+
+/* ---------- study ---------- */
+$("#units").innerHTML='<button class="ut all" data-u="0"><span class="k">All</span><span class="n">Most repeated first</span><span class="pb"><i></i></span><span class="c"></span></button>'+
+  [1,2,3,4,5].map(u=>'<button class="ut u'+u+'" data-u="'+u+'"><span class="k">Unit '+u+'</span><span class="n">'+esc(uname(u))+'</span><span class="pb"><i></i></span><span class="c"></span></button>').join("");
+document.querySelectorAll("#units .ut").forEach(b=>b.addEventListener("click",()=>{st.unit=+b.dataset.u;store.set(KEY+"-unit2",st.unit);renderQ()}));
+function qmatch(t,x){
+  if(st.unit&&!st.q&&t.u!==st.unit)return false;
+  if(st.marks&&t.m!=st.marks)return false;
+  if(st.paper&&x.p!==st.paper)return false;
+  if(st.todo&&done.has(qk(x)))return false;
+  if(st.fam&&t.fam!==st.fam)return false;
+  if(st.q){const q=st.q.toLowerCase();if(!(t.t.toLowerCase().includes(q)||t.fam.toLowerCase().includes(q)||x.x.toLowerCase().includes(q)))return false}
+  return true;
+}
+function renderQ(){
+  const root=$("#qlist");root.textContent="";
+  document.querySelectorAll("#units .ut").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.u===st.unit));
+  document.querySelectorAll("#f-marks button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===String(st.marks)));
+  $("#f-fam").innerHTML=st.fam?'<button class="chipx" id="famx">Topic: '+esc(st.fam)+' ✕</button>':"";
+  if(st.fam)$("#famx").onclick=()=>{st.fam="";renderQ()};
+  // one unit: that unit's topics, most repeated first. All: every topic, most repeated first.
+  const list=(st.unit&&!st.q?order:order.slice().sort((a,b)=>b.papers.length-a.papers.length||b.items.length-a.items.length||a.u-b.u||a.id-b.id))
+    .map(t=>({t,xs:t.items.filter(x=>qmatch(t,x))})).filter(r=>r.xs.length);
+  const nq=list.reduce((n,r)=>n+r.xs.length,0);
+  if(st.unit&&!st.q&&list.length)root.appendChild(el("div","unit-h u"+st.unit,'<h2>Unit '+st.unit+' · '+esc(uname(st.unit))+'</h2><p>'+esc(UNITS[st.unit].split(" — ")[1]||"")+'</p>'));
+  const box=el("div","cards");root.appendChild(box);
+  const auto=(st.fam||st.q)&&list.length<=3;
+  list.forEach((r,i)=>{
+    const t=r.t,c=el("article","tcard u"+t.u);c.dataset.id=t.id;
+    const btn=el("button",null,'<span class="num">'+String(i+1).padStart(2,"0")+'</span><span><span class="tags"><span class="pill u">Unit '+t.u+'</span><span class="pill">Part '+(t.m===8?"B · 8 marks":"C · 15 marks")+'</span>'+
+      (t.papers.length>1?'<span class="pill rep">Repeated '+t.papers.length+'×</span>':'<span class="pill">Asked once</span>')+'<span class="pill dn"></span></span><h3>'+esc(t.t)+'</h3><span class="pcs">'+
+      r.xs.map(x=>'<span class="pc" data-k="'+qk(x)+'">'+P[x.p].name+' · Q'+x.q+'</span>').join("")+'</span></span><span class="pm"></span>');
+    const paint=()=>{
+      const o=st.topen.has(t.id);btn.setAttribute("aria-expanded",o);btn.querySelector(".pm").textContent=o?"−":"+";
+      const b=c.querySelector(".tbody");
+      if(o&&!b){const d=el("div","tbody",'<div class="lab">'+r.xs.length+' question'+(r.xs.length>1?"s":"")+' on this topic · tap one for its own answer</div>');
+        const vc=vidChips(t);if(vc)d.insertBefore(vc,d.firstChild);
+        const rows=el("div","rows");r.xs.forEach(x=>rows.appendChild(qRow(t,x,false)));d.appendChild(rows);c.appendChild(d)}
+      if(!o&&b)b.remove();
+    };
+    if(auto)st.topen.add(t.id);
+    btn.addEventListener("click",()=>{st.topen.has(t.id)?st.topen.delete(t.id):st.topen.add(t.id);paint();$("#f-close").hidden=!st.topen.size});
+    c.appendChild(btn);paint();box.appendChild(c);
+  });
+  $("#f-count").textContent=list.length+" topic"+(list.length===1?"":"s")+" · "+nq+" question"+(nq===1?"":"s")+(st.q?" across all units":"")+", most repeated first. Open a topic, then tap a question for its answer.";
+  if(!nq)root.appendChild(el("div","empty","No questions match. Clear the search, or pick another unit above."));
+  $("#f-close").hidden=!st.topen.size;
+  progress();
+}
+function resetFilters(over){
+  Object.assign(st,{marks:"",paper:"",q:"",todo:false,fam:""},over);
+  $("#f-paper").value="";$("#f-search").value="";$("#f-todo").checked=false;
+}
+function goFam(name,u){st.topen.clear();resetFilters({fam:name,unit:u});show("questions");renderQ();window.scrollTo(0,0)}
+
+/* ---------- game plan ---------- */
+function fams(){
+  const m=new Map();
+  TOPICS.forEach(t=>{const k=t.u+"|"+t.fam;if(!m.has(k))m.set(k,{u:t.u,name:t.fam,ps:new Set(),n8:0,n15:0,last:-1});
+    const f=m.get(k);t.items.forEach(x=>{f.ps.add(x.p);t.m===8?f.n8++:f.n15++;f.last=Math.max(f.last,P[x.p].i)})});
+  return [...m.values()].map(f=>Object.assign(f,{papers:f.ps.size,marks:f.n8*8+f.n15*15}));
+}
+function pri(f){return f.papers>=5?'<span class="pri a">MUST DO</span>':f.papers>=3?'<span class="pri b">HIGH</span>':f.papers===2?'<span class="pri c">MEDIUM</span>':'<span class="pri c">ONCE</span>'}
+function rrow(f,i,NP,withUnit){
+  return '<button class="rrow u'+f.u+'" data-f="'+esc(f.name)+'" data-u="'+f.u+'"><span class="rk">'+i+'</span><span class="nm">'+esc(f.name)+pri(f)+'<span class="mt">'+(withUnit?"Unit "+f.u+" · ":"")+f.n8+' × 8m'+(f.n15?' · '+f.n15+' × 15m':'')+' · last asked '+PAPERS[f.last].name+'</span></span><span class="fr">'+f.papers+'/'+NP+' papers<div class="meter"><i style="width:'+f.papers/NP*100+'%"></i></div></span></button>';
+}
+function renderA(){
+  const root=$("#v-analysis");
+  const F=fams(), NP=PAPERS.length;
+  const um=[1,2,3,4,5].map(u=>{const ts=TOPICS.filter(t=>t.u===u);const a=ts.filter(t=>t.m===8).reduce((s,t)=>s+t.items.length,0),b=ts.filter(t=>t.m===15).reduce((s,t)=>s+t.items.length,0);return{u,a,b,marks:a*8+b*15}});
+  const tot=um.reduce((s,x)=>s+x.marks,0);
+  let h='<div class="block"><h2>If you have very little time</h2><p class="sub">Do these in order. Each one is a topic that keeps coming back.</p><ol class="plan">'+SITE.plan+'</ol></div>';
+  h+='<div class="block"><h2>Where the marks come from</h2><p class="sub">'+SITE.marksIntro+'</p><div class="ugrid">';
+  um.forEach(x=>{h+='<div class="ucard u'+x.u+'"><span class="pill u" style="align-self:flex-start">UNIT '+x.u+'</span><b>'+Math.round(x.marks/tot*100)+'%</b><div class="meter"><i style="width:'+Math.round(x.marks/Math.max(...um.map(y=>y.marks))*100)+'%"></i></div><small>'+x.a+' × 8m · '+x.b+' × 15m · '+x.marks+' marks</small><small>'+esc(uname(x.u))+'</small></div>'});
+  h+='</div></div>';
+  const top=F.slice().sort((a,b)=>b.papers-a.papers||b.marks-a.marks).slice(0,10);
+  h+='<div class="block"><h2>Top 10 topics overall</h2><p class="sub">Ranked by the number of papers (out of '+NP+') in which the topic appeared as an 8 or 15 mark question. Select a row to open its questions.</p><div class="rank">';
+  top.forEach((f,i)=>{h+=rrow(f,i+1,NP,true)});h+='</div></div>';
+  h+='<div class="block"><h2>Most important topics in each unit</h2><p class="sub">Every topic of every unit, most repeated first. Study each unit from the top down.</p>';
+  [1,2,3,4,5].forEach(u=>{
+    h+='<div class="rank u'+u+'"><h3><span class="pill u">UNIT '+u+'</span>'+esc(uname(u))+'</h3>';
+    F.filter(f=>f.u===u).sort((a,b)=>b.papers-a.papers||b.marks-a.marks).forEach((f,i)=>{h+=rrow(f,i+1,NP,false)});
+    h+='</div>'});
+  h+='</div>';
+  const c15=F.filter(f=>f.n15).sort((a,b)=>b.n15-a.n15||b.papers-a.papers);
+  h+='<div class="block"><h2>What Part C (15 marks) is made of</h2><p class="sub">'+SITE.partC+'</p><div class="tw"><table><tr><th>Topic</th><th>Unit</th><th>Times as 15m</th><th>Papers</th></tr>';
+  c15.forEach(f=>{const ps=[];TOPICS.filter(t=>t.fam===f.name&&t.m===15).forEach(t=>t.items.forEach(x=>ps.push(P[x.p].name+" Q"+x.q)));h+='<tr><td>'+esc(f.name)+'</td><td>'+f.u+'</td><td>'+f.n15+'</td><td>'+ps.join(", ")+'</td></tr>'});
+  h+='</table></div></div>';
+  h+='<div class="block"><h2>Paper × unit map</h2><p class="sub">Marks set from each unit in each paper (maximum printed marks per paper: 110). Darker cells mean more marks.</p><div class="tw"><table class="heat"><tr><th>Paper</th>'+[1,2,3,4,5].map(u=>'<th>Unit '+u+'</th>').join("")+'</tr>';
+  PAPERS.forEach(p=>{h+='<tr><th>'+p.name+'</th>';[1,2,3,4,5].forEach(u=>{let m=0;TOPICS.filter(t=>t.u===u).forEach(t=>t.items.forEach(x=>{if(x.p===p.k)m+=t.m}));h+='<td class="h" style="--v:'+Math.min(60,m*1.4)+'">'+(m||"–")+'</td>'});h+='</tr>'});
+  h+='</table></div></div>';
+  h+='<div class="note"><b>About the sources.</b> '+SITE.sources+'</div>';
+  root.innerHTML=h;
+  root.querySelectorAll(".rrow").forEach(r=>r.addEventListener("click",()=>goFam(r.dataset.f,+r.dataset.u)));
+}
+
+/* ---------- hot topics ---------- */
+let tu=store.get(KEY+"-tu",1);
+function renderT(){
+  const root=$("#v-topics"), F=fams(), NP=PAPERS.length;
+  if(![1,2,3,4,5].includes(tu))tu=1;
+  const fs=F.filter(f=>f.u===tu).sort((a,b)=>b.papers-a.papers||b.marks-a.marks);
+  let h='<div class="block"><h2>Hot topics</h2><p class="sub">Every topic that has come as an 8 or 15 mark question, by unit. The bar shows in how many of the '+NP+' papers it appeared. Select a topic to open its questions.</p>'+
+    '<div class="utabs" role="tablist">'+[1,2,3,4,5].map(u=>'<button role="tab" class="u'+u+'" data-u="'+u+'" aria-selected="'+(u===tu)+'">Unit '+u+' · '+esc(uname(u))+'</button>').join("")+'</div>'+
+    '<div class="legend"><span><i class="lg hi"></i>5 or more papers: must do</span><span><i class="lg mid"></i>3–4 papers: high</span><span><i class="lg lo"></i>1–2 papers: lower</span></div>';
+  h+='<div class="hgrid">'+fs.map(f=>{const c=f.papers>=5?"hi":f.papers>=3?"mid":"lo";
+    return '<button class="hcard '+c+'" data-f="'+esc(f.name)+'"><span class="hn">'+esc(f.name)+'</span><span class="hbar"><i style="width:'+f.papers/NP*100+'%"></i></span><span class="hmeta"><span>'+f.n8+' × 8m'+(f.n15?' · '+f.n15+' × 15m':'')+'</span><b>'+f.papers+'/'+NP+' papers</b></span></button>'}).join("")+'</div></div>';
+  h+='<div class="block u'+tu+'"><h2>Which paper asked which topic</h2><p class="sub">Unit '+tu+' topics against every paper. Each cell shows the marks set on that topic: 8 is one Part B option, 8+8 is two options, 15 is a Part C question.</p>';
+  h+='<div class="tw"><table class="hm"><thead><tr><th>Topic</th>'+PAPERS.map(p=>'<th>'+p.name.replace(" 20","<br>'").replace(" · ","&nbsp;")+'</th>').join("")+'<th>Papers</th><th>Marks</th></tr></thead><tbody>';
+  fs.forEach(f=>{
+    h+='<tr><th data-f="'+esc(f.name)+'">'+esc(f.name)+'</th>';
+    PAPERS.forEach(p=>{
+      const parts=[];TOPICS.filter(t=>t.u===tu&&t.fam===f.name).forEach(t=>t.items.forEach(x=>{if(x.p===p.k)parts.push(t.m)}));
+      parts.sort((a,b)=>a-b);const m=parts.reduce((s,x)=>s+x,0);
+      h+=m?'<td class="on" style="--v:'+Math.min(62,10+m*1.6)+'" title="'+esc(f.name)+' · '+p.name+' · '+m+' marks">'+parts.join("+")+'</td>':'<td class="off">·</td>';
+    });
+    h+='<td class="sum">'+f.papers+'/'+NP+'</td><td class="sum">'+f.marks+'</td></tr>';
+  });
+  h+='</tbody></table></div></div>';
+  root.innerHTML=h;
+  root.querySelectorAll(".utabs button").forEach(b=>b.addEventListener("click",()=>{tu=+b.dataset.u;store.set(KEY+"-tu",tu);renderT()}));
+  root.querySelectorAll("[data-f]").forEach(b=>{b.addEventListener("click",()=>goFam(b.dataset.f,tu));if(b.tagName==="TH"){b.tabIndex=0;b.addEventListener("keydown",e=>{if(e.key==="Enter")goFam(b.dataset.f,tu)})}});
+}
+
+/* ---------- paper by paper ---------- */
+let pp=store.get(KEY+"-pp",PAPERS[PAPERS.length-1].k);
+function renderP(){
+  const root=$("#v-papers");root.textContent="";if(!P[pp])pp=PAPERS[PAPERS.length-1].k;
+  const head=el("div","block",'<h2>Paper by paper</h2><p class="sub">Pick a paper to see its twelve long questions in order. Tap a question to see its answer.</p>');
+  const chips=el("div","pchips");
+  PAPERS.slice().reverse().forEach(p=>{const b=el("button",null,p.name);b.setAttribute("aria-pressed",p.k===pp);b.addEventListener("click",()=>{pp=p.k;store.set(KEY+"-pp",pp);renderP()});chips.appendChild(b)});
+  head.appendChild(chips);root.appendChild(head);
+  const p=P[pp];root.appendChild(el("p","note",'<b>'+p.name+'</b> · '+esc(p.note)+(p.n?' · '+SITE.paperWord+' '+p.n:'')));
+  const rows=ALLQ.filter(r=>r.x.p===pp);
+  [21,22,23,24,25,26,27].forEach(n=>{
+    const rs=rows.filter(r=>parseInt(r.x.q,10)===n).sort((a,b)=>a.x.q<b.x.q?-1:1);if(!rs.length)return;
+    root.appendChild(el("div","orh",'<h3>Q'+n+'</h3><span>'+(n<=25?"Part B · 8 marks · answer (a) or (b)":"Part C · 15 marks · answer Q26 or Q27")+'</span>'));
+    const box=el("div","rows");rs.forEach(r=>box.appendChild(qRow(r.t,r.x,true)));root.appendChild(box);
+  });
+}
+
+/* ---------- playlist: which videos teach which topic, ranked by how often the exams asked it ---------- */
+const PL=typeof PLAYLIST!=="undefined"?PLAYLIST:null;
+const vurl=v=>"https://www.youtube.com/watch?v="+v[2]+"&list="+PL.list;
+const vidsOf=t=>{if(!PL)return[];const m=PL.map.find(e=>t.t.startsWith(e[0]));return m?m[1].map(n=>PL.videos[n-1]):[]};
+function vidChips(t){
+  const vs=vidsOf(t);if(!PL)return null;
+  const d=el("div","vids",'<span class="lab">Watch first</span>'+(vs.length?vs.map(v=>'<a class="vid" target="_blank" rel="noopener" href="'+vurl(v)+'"><b>▶ '+String(v[0]).padStart(2,"0")+'</b>'+esc(v[1])+'</a>').join(""):'<span class="pill">No video for this topic in your playlist — use the answer below</span>'));
+  return d;
+}
+let plOrder=store.get(KEY+"-plo","asked");
+function renderPL(){
+  const root=$("#v-playlist");if(!PL){return}
+  $("#tab-pl").hidden=false;
+  const rows=PL.videos.map(v=>{const ts=TOPICS.filter(t=>vidsOf(t).includes(v));const ps=new Set();let q=0;ts.forEach(t=>t.items.forEach(x=>{ps.add(x.p);q++}));return{v,ts,q,papers:ps.size}});
+  const list=plOrder==="asked"?rows.slice().sort((a,b)=>b.papers-a.papers||b.q-a.q||a.v[0]-b.v[0]):rows;
+  const missing=TOPICS.filter(t=>!vidsOf(t).length);
+  root.textContent="";
+  const head=el("div","block",'<h2>Your playlist, ranked by the exams</h2><p class="sub">'+esc(PL.title)+' · '+PL.videos.length+' videos. Each video shows how many of the '+PAPERS.length+' papers asked an 8 or 15 mark question on what it teaches. Videos are matched to topics by their titles.</p>');
+  const seg=el("div","seg");[["asked","Most asked first"],["order","Playlist order"]].forEach(([k,l])=>{const b=el("button",null,l);b.setAttribute("aria-pressed",plOrder===k);b.addEventListener("click",()=>{plOrder=k;store.set(KEY+"-plo",k);renderPL()});seg.appendChild(b)});
+  head.appendChild(seg);root.appendChild(head);
+  list.forEach(r=>{
+    const d=el("div","vrow"+(r.q?"":" cold"),'<span class="vn">'+String(r.v[0]).padStart(2,"0")+'</span><div><div class="vt">'+esc(r.v[1])+'</div><div class="vm">'+
+      (r.q?'<span class="pill rep">In '+r.papers+' of '+PAPERS.length+' papers</span><span class="pill">'+r.q+' question'+(r.q>1?"s":"")+'</span>':'<span class="pill">Not asked as a long question yet</span>')+'</div></div><a class="watch" target="_blank" rel="noopener" href="'+vurl(r.v)+'">Watch ▶</a>');
+    const vm=d.querySelector(".vm");
+    [...new Set(r.ts.map(t=>t.u+"|"+t.fam))].forEach(k=>{const [u,f]=k.split("|");const b=el("button","pill u u"+u,esc(f)+" →");b.addEventListener("click",()=>goFam(f,+u));vm.appendChild(b)});
+    root.appendChild(d);
+  });
+  if(missing.length){
+    const fs=[...new Set(missing.map(t=>t.u+"|"+t.fam))];
+    const n=el("div","note",'<b>Asked in the exams but not in your playlist.</b> Learn these from the answers here: ');
+    fs.forEach(k=>{const [u,f]=k.split("|");const b=el("button","pill u u"+u,esc(f)+" →");b.style.cssText="border:0;cursor:pointer;margin:4px 4px 0 0";b.addEventListener("click",()=>goFam(f,+u));n.appendChild(b)});
+    n.style.marginTop="16px";root.appendChild(n);
+  }
+}
+
+/* ---------- mcq ---------- */
+function renderM(){
+  const root=$("#v-mcq");const np=PAPERS.filter(p=>p.n).sort((a,b)=>a.n-b.n);
+  let h='<div class="block"><h2>Part A answer key, papers 1–9</h2><p class="sub">'+SITE.mcqSub+'</p><div class="tw"><table class="key"><tr><th>Q</th>'+np.map(p=>'<th>'+p.n+'<br><span style="font-weight:400;font-family:var(--body);font-size:12px">'+p.name+'</span></th>').join("")+'</tr>';
+  for(let q=0;q<20;q++){h+='<tr><th>'+(q+1)+'</th>'+np.map(p=>'<td>'+MCQ[p.n][q]+'</td>').join("")+'</tr>'}
+  h+='</table></div></div><div class="block"><h2>Answers worth a second look</h2><p class="sub">These questions are worded loosely or have more than one defensible option. The ticked answer is the standard textbook or published one.</p><div class="tw"><table><tr><th>Paper</th><th>Q</th><th>Why</th></tr>'+MCQ_NOTES.map(n=>'<tr><td>'+n[0]+'</td><td>'+n[1]+'</td><td>'+esc(n[2])+'</td></tr>').join("")+'</table></div></div>';
+  root.innerHTML=h;
+}
+
+/* ---------- tabs ---------- */
+const views=["questions","topics","analysis","papers","playlist","mcq"];
+function show(v,push){
+  if(!views.includes(v))v="questions";
+  views.forEach(x=>{$("#v-"+x).hidden=x!==v});
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));
+  if(v==="papers")renderP();if(v==="questions"&&push!==undefined)renderQ();
+  if(push!==false&&location.hash!=="#"+v){try{history.replaceState(null,"","#"+v)}catch(e){location.hash=v}}
+}
+document.querySelectorAll("#tabs button").forEach(b=>b.addEventListener("click",()=>{show(b.dataset.v,true);window.scrollTo(0,0)}));
+window.addEventListener("hashchange",()=>show(location.hash.slice(1),false));
+document.querySelectorAll("#f-marks button").forEach(b=>b.addEventListener("click",()=>{st.marks=b.dataset.m;renderQ()}));
+$("#f-paper").onchange=e=>{st.paper=e.target.value;renderQ()};
+$("#f-search").oninput=e=>{st.q=e.target.value.trim();renderQ()};
+$("#f-todo").onchange=e=>{st.todo=e.target.checked;renderQ()};
+$("#f-close").onclick=()=>{st.open.clear();st.topen.clear();renderQ()};
+renderQ();renderT();renderA();renderP();renderPL();renderM();show(location.hash.slice(1)||"questions",false);
+})();
+</script>

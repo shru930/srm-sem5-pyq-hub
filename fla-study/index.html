@@ -1,0 +1,1951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FLA PYQ Hub</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,100&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Shared page for both subject sites (the subject's text comes from SITE in its data file).
+   Layout: one study column (max 920px). Warm hero with a progress ring, pill tabs, five unit tiles,
+   then topics with one row per question; a row opens its own answer in place. */
+:root{
+  --bg:#fdc9e8; --surface:#fff3fa; --sunk:#fbd9ec; --ink:#6a1f50; --muted:#a04f7e; --line:#f3b3d6;
+  --accent:#cc4a92; --aura:#db8cba; --aura2:#e6a6cd; --sun:#fff0f8; --good:#cc4a92; --hot:#cc4a92; --pill:#d9609f; --pill-ink:#ffffff;
+  --heat-hi:#c93d8a; --heat-mid:#a565c8; --heat-lo:#e69cc3;
+  --u1:#cf4a90; --u2:#b9529f; --u3:#9c62c4; --u4:#d5567c; --u5:#b14786;
+  --shadow:0 1px 0 rgba(204,74,146,.06),0 12px 28px -16px rgba(180,60,130,.45);
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"DM Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#2a1226; --surface:#3a1b35; --sunk:#32162d; --ink:#ffe6f3; --muted:#e0a9c8; --line:#5a2e50;
+  --accent:#ff8cc4; --aura:#8f3f73; --aura2:#a85089; --sun:#ffe6f3; --good:#ff8cc4; --hot:#ff8cc4; --pill:#ff8cc4; --pill-ink:#2a0a1c;
+  --heat-hi:#ff8cc4; --heat-mid:#c9a2ff; --heat-lo:#b8758f;
+  --u1:#ff8cc4; --u2:#f093e0; --u3:#c9a2ff; --u4:#ff9bb0; --u5:#e89bd4;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 10px 26px -16px rgba(0,0,0,.7); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#2a1226; --surface:#3a1b35; --sunk:#32162d; --ink:#ffe6f3; --muted:#e0a9c8; --line:#5a2e50;
+  --accent:#ff8cc4; --aura:#8f3f73; --aura2:#a85089; --sun:#ffe6f3; --good:#ff8cc4; --hot:#ff8cc4; --pill:#ff8cc4; --pill-ink:#2a0a1c;
+  --heat-hi:#ff8cc4; --heat-mid:#c9a2ff; --heat-lo:#b8758f;
+  --u1:#ff8cc4; --u2:#f093e0; --u3:#c9a2ff; --u4:#ff9bb0; --u5:#e89bd4;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 10px 26px -16px rgba(0,0,0,.7); color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--body);margin:0}
+.wrap{max-width:920px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2{font-family:var(--display);font-weight:600;font-variation-settings:"SOFT" 100;text-wrap:balance;margin:0;line-height:1.1}
+h3{font-family:var(--body);text-wrap:balance;margin:0;line-height:1.3}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.u1{--u:var(--u1)}.u2{--u:var(--u2)}.u3{--u:var(--u3)}.u4{--u:var(--u4)}.u5{--u:var(--u5)}
+.m{font-family:var(--mono);font-size:.92em}
+
+/* hero */
+header.top{padding-block:22px 6px}
+.hero{position:relative;overflow:hidden;border-radius:32px;padding:30px 26px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center;
+  background:var(--bg);border:1px solid var(--line)}
+.hero>*{position:relative}
+.hero::before{content:"";position:absolute;right:-70px;top:50%;width:420px;height:420px;transform:translateY(-50%);border-radius:50%;filter:blur(22px);
+  background:radial-gradient(circle,var(--aura2) 0 14%,var(--aura) 26% 34%,var(--aura2) 44%,var(--aura) 56%,transparent 70%)}
+body{background-image:radial-gradient(520px 520px at 8% 78%,color-mix(in srgb,var(--aura) 45%,transparent),transparent 70%),radial-gradient(460px 460px at 96% 38%,color-mix(in srgb,var(--aura) 30%,transparent),transparent 70%);background-attachment:fixed}
+.eyebrow{font:600 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.wish{font:600 clamp(19px,3.4vw,25px)/1.25 var(--display);font-variation-settings:"SOFT" 100;color:var(--accent);margin-bottom:14px}
+.wish b{font-weight:600;letter-spacing:.12em;margin-right:10px}
+h1{font-size:clamp(32px,6.4vw,52px);margin-top:8px}
+h1 i{color:var(--accent)}
+.lede{color:var(--muted);max-width:46ch;margin:10px 0 0}
+.cheer{display:inline-block;margin-top:14px;font-weight:700;background:var(--pill);color:var(--pill-ink);border-radius:999px;padding:7px 14px;font-size:14px}
+.themeb{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 13px;font-size:13.5px;font-weight:600;cursor:pointer;margin:14px 0 0 6px}
+.ring{width:150px;height:150px;position:relative;flex:none;margin-right:24px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:11;stroke-linecap:round}
+.ring .bgc{stroke:color-mix(in srgb,var(--sun) 40%,transparent)}
+.ring .fg{stroke:var(--sun);transition:stroke-dashoffset .5s}
+.ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.ring b{font:600 34px/1 var(--display);color:var(--sun)}
+.ring span{font-size:12px;color:var(--sun);font-weight:600}
+@media (max-width:560px){.hero{grid-template-columns:1fr;padding:22px 18px}.hero::before{right:auto;left:-90px;top:auto;bottom:-150px;transform:none}.ring{width:118px;height:118px;margin:0}}
+
+/* tabs */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-block:12px;scrollbar-width:none}
+.tabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;cursor:pointer;white-space:nowrap;font-weight:600;font-size:14.5px}
+.tabs button:hover{border-color:var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--pill);border-color:var(--pill);color:var(--pill-ink)}
+
+main{padding-block:10px 70px}
+section[hidden]{display:none}
+
+/* unit tiles */
+.units{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.ut{all:unset;box-sizing:border-box;cursor:pointer;border-radius:18px;padding:12px 12px 11px;display:flex;flex-direction:column;gap:6px;min-width:0;
+  background:color-mix(in srgb,var(--u) 13%,var(--surface));border:2px solid transparent}
+.ut:hover{border-color:color-mix(in srgb,var(--u) 45%,transparent)}
+.ut[aria-pressed="true"]{border-color:var(--u);box-shadow:var(--shadow)}
+.ut:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.ut .k{font:600 20px/1 var(--display);color:var(--u)}
+.ut .n{font-size:12.5px;line-height:1.3;color:var(--ink);min-height:2.6em}
+.ut .pb{height:6px;border-radius:3px;background:color-mix(in srgb,var(--u) 20%,var(--surface));overflow:hidden}
+.ut .pb i{display:block;height:100%;background:var(--u);border-radius:3px}
+.ut .c{font:600 11.5px var(--mono);color:var(--muted)}
+.ut.all{--u:var(--ink)}
+@media (max-width:760px){.units{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:420px){.units{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* filters */
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
+.seg{display:inline-flex;background:var(--sunk);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;border-radius:999px;padding:6px 13px;cursor:pointer;font-weight:600;font-size:13.5px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(80,40,10,.18)}
+.filters select,.filters input[type=search]{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 14px;min-width:0}
+.filters input[type=search]{flex:1 1 180px}
+.fmeta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;color:var(--muted);font-size:13.5px;margin:8px 2px 4px}
+.fmeta label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.chipx{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 11px;cursor:pointer;font-size:13px}
+.linkb{border:0;background:none;padding:0;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:underline;font-size:13.5px}
+
+/* topic cards: closed by default, most repeated first; the questions inside each open their own answer */
+.cards{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.tcard{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}
+.tcard>button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;width:100%;padding:16px 18px;cursor:pointer;align-items:start}
+.tcard>button:hover{background:color-mix(in srgb,var(--u) 5%,var(--surface))}
+.tcard>button:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.tcard .num{font:600 26px/1 var(--display);color:var(--u);min-width:34px;font-variant-numeric:tabular-nums}
+.tcard .tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tcard h3{font-size:17.5px;font-weight:700;margin:9px 0}
+.tcard .pcs{display:flex;flex-wrap:wrap;gap:5px}
+.pc{font-size:12px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.pc.d{background:var(--sunk);color:var(--accent);border-color:transparent}
+.tcard .pm{font:500 26px/1 var(--display);color:var(--u);width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--u) 12%,var(--surface))}
+.pill.rep{color:#fff;background:var(--accent);font-size:12px;padding:6px 10px}
+.tbody{border-top:1px solid var(--line);padding:14px 16px 18px;background:color-mix(in srgb,var(--u) 4%,var(--surface))}
+.tbody .lab{margin-bottom:10px}
+
+/* topics and question rows */
+.unit-h{margin:22px 0 4px}
+.unit-h h2{font-size:27px;color:var(--u)}
+.unit-h p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.topic{margin-top:18px}
+.th{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin:0 2px 8px}
+.th h3{font-size:17.5px;font-weight:700;flex:1 1 260px}
+.pill{font:600 11.5px/1 var(--mono);padding:5px 9px;border-radius:999px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.pill.hot{color:var(--hot);background:color-mix(in srgb,var(--hot) 13%,var(--surface))}
+.pill.u{color:var(--u);background:color-mix(in srgb,var(--u) 14%,var(--surface))}
+.rows{display:flex;flex-direction:column;gap:8px}
+.qrow{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;border-left:5px solid var(--u)}
+.qrow.open{box-shadow:var(--shadow)}
+.qh{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;padding:13px 14px;cursor:pointer;align-items:start}
+.qh:hover{background:color-mix(in srgb,var(--u) 5%,var(--surface))}
+.qh:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.tick{all:unset;box-sizing:border-box;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);cursor:pointer;display:grid;place-items:center;font-size:14px;font-weight:700;color:transparent;margin-top:1px}
+.tick:hover{border-color:var(--good)}
+.tick:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.qrow.done .tick{background:var(--good);border-color:var(--good);color:var(--surface)}
+.qmeta{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px}
+.qtext{line-height:1.7;min-width:0}
+.qrow.done .qtext{color:var(--muted)}
+.qtext .tw{margin:8px 0}
+.chev{font-size:13px;font-weight:700;color:var(--u);white-space:nowrap;padding-top:2px}
+.qa{border-top:1px dashed var(--line);padding:14px 16px 16px;min-width:0;background:color-mix(in srgb,var(--u) 4%,var(--surface))}
+.lab{font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--u);margin-bottom:10px}
+.ans{min-width:0;max-width:74ch}
+.ans p{margin:0 0 11px}
+.ans ul,.ans ol{margin:0 0 11px;padding-left:22px}
+.ans li{margin-bottom:5px}
+.ans .f{font-family:var(--mono);font-size:13.5px;background:var(--sunk);border-left:3px solid var(--u);padding:8px 10px;border-radius:0 8px 8px 0}
+.ans pre{font:13px/1.55 var(--mono);background:var(--sunk);border-radius:12px;padding:12px 14px;overflow-x:auto;margin:0 0 11px}
+.tw{overflow-x:auto;margin:0 0 11px}
+table{border-collapse:collapse;font-size:14px;min-width:100%}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:var(--sunk);font-weight:600}
+td.m,th.m{font-family:var(--mono);font-size:.92em}
+table.qt{min-width:0;font-family:var(--mono);font-size:13.5px;background:var(--surface)}
+table.qt th,table.qt td{padding:5px 14px;text-align:center}
+table.bits td,table.bits th{text-align:center;font-family:var(--mono);padding:5px 6px}
+td.pb{color:var(--hot);font-weight:600}
+details.more{margin:4px 0 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+details.more summary{cursor:pointer;padding:9px 12px;font-weight:600;font-size:13.5px;color:var(--muted)}
+details.more .ans{padding:4px 12px 6px}
+.doneb{border:0;border-radius:999px;padding:9px 18px;font-weight:700;cursor:pointer;background:var(--good);color:var(--surface)}
+.qrow.done .doneb{background:var(--sunk);color:var(--muted)}
+.empty{color:var(--muted);padding:34px 0;text-align:center}
+
+/* shared blocks */
+.block{margin-bottom:30px}
+.block>h2{font-size:27px;margin-bottom:4px}
+.block>p.sub{color:var(--muted);margin:0 0 12px;max-width:70ch}
+.ugrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.ucard{background:color-mix(in srgb,var(--u) 11%,var(--surface));border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.ucard b{font:600 32px/1 var(--display);font-variant-numeric:tabular-nums;color:var(--u)}
+.ucard small{color:var(--muted)}
+.meter{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--u);border-radius:3px}
+.rank{background:var(--surface);border:1px solid var(--line);border-radius:18px;margin-bottom:12px;overflow:hidden}
+.rank>h3{font-size:16px;padding:12px 16px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.rrow{display:grid;grid-template-columns:28px minmax(0,1fr) 110px;gap:10px;align-items:center;padding:10px 16px;border:0;border-bottom:1px solid var(--line);cursor:pointer;background:none;width:100%;text-align:left}
+.rrow:last-child{border-bottom:0}
+.rrow:hover{background:var(--sunk)}
+.rrow .rk{font:600 13px var(--mono);color:var(--muted)}
+.rrow .nm{font-weight:600}
+.rrow .mt{display:block;color:var(--muted);font-size:13px;font-weight:400}
+.rrow .fr{font:600 12px var(--mono);text-align:right;color:var(--u)}
+.rrow .meter{margin-top:4px}
+.pri{font:600 11px/1 var(--mono);padding:4px 7px;border-radius:999px;margin-left:6px;white-space:nowrap}
+.pri.a{color:var(--hot);background:color-mix(in srgb,var(--hot) 13%,var(--surface))}
+.pri.b{color:var(--heat-mid);background:color-mix(in srgb,var(--heat-mid) 15%,var(--surface))}
+.pri.c{color:var(--muted);background:var(--sunk)}
+@media (max-width:520px){.rrow{grid-template-columns:22px minmax(0,1fr) 74px}}
+.heat td{text-align:center;font-variant-numeric:tabular-nums}
+.heat td.h{background:color-mix(in srgb,var(--accent) calc(var(--v)*1%),var(--surface))}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:13px 16px;color:var(--muted);font-size:14px}
+.note b{color:var(--ink)}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:6px 18px 6px 38px;margin:0}
+.plan li{margin:10px 0}
+
+/* hot topics */
+.utabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.utabs button{border:2px solid transparent;background:color-mix(in srgb,var(--u) 13%,var(--surface));color:var(--ink);border-radius:999px;padding:8px 15px;cursor:pointer;font-weight:600;font-size:14px}
+.utabs button[aria-selected="true"]{border-color:var(--u)}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.hcard{all:unset;box-sizing:border-box;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.hcard:hover{border-color:var(--h);box-shadow:var(--shadow)}
+.hcard:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.hcard.hi,.lg.hi{--h:var(--heat-hi)}.hcard.mid,.lg.mid{--h:var(--heat-mid)}.hcard.lo,.lg.lo{--h:var(--heat-lo)}
+.hn{font:700 15.5px/1.3 var(--body);flex:1}
+.hbar{display:block;height:8px;border-radius:4px;background:var(--sunk);overflow:hidden}
+.hbar i{display:block;height:100%;border-radius:4px;background:var(--h)}
+.hmeta{display:flex;justify-content:space-between;gap:8px;align-items:baseline;color:var(--muted);font-size:13px;flex-wrap:wrap}
+.hmeta b{font:600 13px var(--mono);color:var(--h)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;color:var(--muted);font-size:13px;margin:0 0 14px}
+.legend i.lg{display:inline-block;width:26px;height:8px;border-radius:4px;background:var(--h);margin-right:5px}
+.hm{font-size:13px}
+.hm th,.hm td{padding:5px 6px}
+.hm thead th{font:600 11px/1.25 var(--mono);text-align:center;vertical-align:bottom;white-space:nowrap}
+.hm thead th:first-child{text-align:left}
+.hm tbody th{background:var(--surface);font-weight:600;min-width:190px;cursor:pointer}
+.hm tbody th:hover{text-decoration:underline}
+.hm td{text-align:center;font:600 12px var(--mono);min-width:44px;white-space:nowrap}
+.hm td.on{background:color-mix(in srgb,var(--u) calc(var(--v)*1%),var(--surface))}
+.hm td.off{color:var(--line)}
+.hm td.sum{color:var(--u)}
+
+/* playlist */
+.vids{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;align-items:center}
+.vids .lab{margin:0 4px 0 0}
+a.vid{display:inline-flex;gap:6px;align-items:center;text-decoration:none;font-size:13px;font-weight:600;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+a.vid:hover{border-color:var(--accent);color:var(--accent)}
+a.vid b{font:600 11.5px var(--mono);color:var(--accent)}
+.vrow{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 16px;margin-bottom:8px}
+.vrow .vn{font:600 22px/1 var(--display);color:var(--accent);font-variant-numeric:tabular-nums}
+.vrow .vt{font-weight:700}
+.vrow .vm{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.vrow .vm button{cursor:pointer;border:0}
+.vrow.cold{opacity:.72}
+a.watch{text-decoration:none;font-weight:700;font-size:13.5px;background:var(--pill);color:var(--pill-ink);border-radius:999px;padding:8px 14px;white-space:nowrap}
+@media (max-width:520px){.vrow{grid-template-columns:32px minmax(0,1fr)}.vrow a.watch{grid-column:2;justify-self:start}}
+
+/* papers + mcq */
+.pchips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+.pchips button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 15px;cursor:pointer;font-weight:600;font-size:14px}
+.pchips button[aria-pressed="true"]{background:var(--pill);border-color:var(--pill);color:var(--pill-ink)}
+.orh{display:flex;align-items:center;gap:10px;margin:20px 2px 8px;flex-wrap:wrap}
+.orh h3{font:600 22px/1 var(--display)}
+.orh span{color:var(--muted);font-size:13.5px}
+.key td,.key th{text-align:center;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.key td{font-weight:600}
+</style>
+
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="hero">
+    <div>
+      <div class="wish"><b>11 11</b>trust your intuition</div>
+      <div class="eyebrow" id="h-code"></div>
+      <h1 id="h-title"></h1>
+      <p class="lede" id="h-lede"></p>
+      <span class="cheer" id="cheer"></span>
+      <button class="themeb" id="themeb"></button>
+    </div>
+    <div class="ring" role="img" id="ring" aria-label="Questions revised">
+      <svg viewBox="0 0 120 120"><circle class="bgc" cx="60" cy="60" r="52"/><circle class="fg" id="ring-fg" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+      <div><b id="ring-n">0</b><span id="ring-t"></span></div>
+    </div>
+  </div>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <div class="tabs" role="tablist" id="tabs">
+    <button role="tab" data-v="questions">Study</button>
+    <button role="tab" data-v="topics">Hot topics</button>
+    <button role="tab" data-v="analysis">Game plan</button>
+    <button role="tab" data-v="papers">Paper by paper</button>
+    <button role="tab" data-v="playlist" id="tab-pl" hidden>Playlist</button>
+    <button role="tab" data-v="mcq">MCQ key</button>
+  </div>
+</div></div>
+
+<main><div class="wrap">
+  <section id="v-questions">
+    <div class="units" id="units"></div>
+    <div class="filters">
+      <div class="seg" id="f-marks" role="group" aria-label="Marks">
+        <button data-m="" aria-pressed="true">All</button><button data-m="8" aria-pressed="false">8 marks</button><button data-m="15" aria-pressed="false">15 marks</button>
+      </div>
+      <select id="f-paper" aria-label="Paper"></select>
+      <input id="f-search" type="search" placeholder="Search a topic or question…" aria-label="Search">
+    </div>
+    <div class="fmeta">
+      <span id="f-count"></span>
+      <label><input type="checkbox" id="f-todo"> Hide done</label>
+      <span id="f-fam"></span>
+      <button class="linkb" id="f-close" hidden>Close all topics</button>
+    </div>
+    <div id="qlist"></div>
+  </section>
+  <section id="v-topics" hidden></section>
+  <section id="v-analysis" hidden></section>
+  <section id="v-papers" hidden></section>
+  <section id="v-playlist" hidden></section>
+  <section id="v-mcq" hidden></section>
+</div></main>
+
+<script>
+const G = {
+"nfa_n23": "<div class=\"tw\"><table><tr><th>DFA state</th><th>0</th><th>1</th></tr><tr><td class=\"m\">→ {a}</td><td class=\"m\">{b,d}</td><td class=\"m\">{b}</td></tr><tr><td class=\"m\">* {b,d}</td><td class=\"m\">{c}</td><td class=\"m\">{a,b,c}</td></tr><tr><td class=\"m\">* {b}</td><td class=\"m\">{c}</td><td class=\"m\">{b,c}</td></tr><tr><td class=\"m\">{c}</td><td class=\"m\">{d}</td><td class=\"m\">{a}</td></tr><tr><td class=\"m\">* {a,b,c}</td><td class=\"m\">{b,c,d}</td><td class=\"m\">{a,b,c}</td></tr><tr><td class=\"m\">* {b,c}</td><td class=\"m\">{c,d}</td><td class=\"m\">{a,b,c}</td></tr><tr><td class=\"m\">* {d}</td><td class=\"m\">∅</td><td class=\"m\">{a}</td></tr><tr><td class=\"m\">* {b,c,d}</td><td class=\"m\">{c,d}</td><td class=\"m\">{a,b,c}</td></tr><tr><td class=\"m\">* {c,d}</td><td class=\"m\">{d}</td><td class=\"m\">{a}</td></tr><tr><td class=\"m\">∅</td><td class=\"m\">∅</td><td class=\"m\">∅</td></tr></table></div><p>→ start state, * final state. 10 reachable DFA states; final states are the subsets that contain an NFA final state: {b,d}, {b}, {a,b,c}, {b,c}, {d}, {b,c,d}, {c,d}.</p>",
+"nfa_pqrs": "<div class=\"tw\"><table><tr><th>DFA state</th><th>0</th><th>1</th></tr><tr><td class=\"m\">→ {p}</td><td class=\"m\">{p,q}</td><td class=\"m\">{p}</td></tr><tr><td class=\"m\">{p,q}</td><td class=\"m\">{p,q,r}</td><td class=\"m\">{p,r}</td></tr><tr><td class=\"m\">{p,q,r}</td><td class=\"m\">{p,q,r,s}</td><td class=\"m\">{p,r}</td></tr><tr><td class=\"m\">{p,r}</td><td class=\"m\">{p,q,s}</td><td class=\"m\">{p}</td></tr><tr><td class=\"m\">* {p,q,r,s}</td><td class=\"m\">{p,q,r,s}</td><td class=\"m\">{p,r,s}</td></tr><tr><td class=\"m\">* {p,q,s}</td><td class=\"m\">{p,q,r,s}</td><td class=\"m\">{p,r,s}</td></tr><tr><td class=\"m\">* {p,r,s}</td><td class=\"m\">{p,q,s}</td><td class=\"m\">{p,s}</td></tr><tr><td class=\"m\">* {p,s}</td><td class=\"m\">{p,q,s}</td><td class=\"m\">{p,s}</td></tr></table></div><p>→ start state, * final state. 8 reachable DFA states; final states are the subsets that contain an NFA final state: {p,q,r,s}, {p,q,s}, {p,r,s}, {p,s}.</p>",
+"nfa_m26": "<div class=\"tw\"><table><tr><th>DFA state</th><th>0</th><th>1</th></tr><tr><td class=\"m\">→ {P}</td><td class=\"m\">{Q,S}</td><td class=\"m\">{Q}</td></tr><tr><td class=\"m\">* {Q,S}</td><td class=\"m\">{R}</td><td class=\"m\">{P,Q,R}</td></tr><tr><td class=\"m\">* {Q}</td><td class=\"m\">{R}</td><td class=\"m\">{Q,R}</td></tr><tr><td class=\"m\">{R}</td><td class=\"m\">{S}</td><td class=\"m\">{P}</td></tr><tr><td class=\"m\">* {P,Q,R}</td><td class=\"m\">{Q,R,S}</td><td class=\"m\">{P,Q,R}</td></tr><tr><td class=\"m\">* {Q,R}</td><td class=\"m\">{R,S}</td><td class=\"m\">{P,Q,R}</td></tr><tr><td class=\"m\">* {S}</td><td class=\"m\">∅</td><td class=\"m\">{P}</td></tr><tr><td class=\"m\">* {Q,R,S}</td><td class=\"m\">{R,S}</td><td class=\"m\">{P,Q,R}</td></tr><tr><td class=\"m\">* {R,S}</td><td class=\"m\">{S}</td><td class=\"m\">{P}</td></tr><tr><td class=\"m\">∅</td><td class=\"m\">∅</td><td class=\"m\">∅</td></tr></table></div><p>→ start state, * final state. 10 reachable DFA states; final states are the subsets that contain an NFA final state: {Q,S}, {Q}, {P,Q,R}, {Q,R}, {S}, {Q,R,S}, {R,S}.</p>",
+"nfa_2last": "<div class=\"tw\"><table><tr><th>DFA state</th><th>0</th><th>1</th></tr><tr><td class=\"m\">→ {q0}</td><td class=\"m\">{q0}</td><td class=\"m\">{q0,q1}</td></tr><tr><td class=\"m\">{q0,q1}</td><td class=\"m\">{q0,q2}</td><td class=\"m\">{q0,q1,q2}</td></tr><tr><td class=\"m\">* {q0,q2}</td><td class=\"m\">{q0}</td><td class=\"m\">{q0,q1}</td></tr><tr><td class=\"m\">* {q0,q1,q2}</td><td class=\"m\">{q0,q2}</td><td class=\"m\">{q0,q1,q2}</td></tr></table></div><p>→ start state, * final state. 4 reachable DFA states; final states are the subsets that contain an NFA final state: {q0,q2}, {q0,q1,q2}.</p>",
+"run_100010": "{q0} → {q0,q1} → {q0,q2} → {q0} → {q0} → {q0,q1} → {q0,q2} : accepted",
+"run_100000": "{q0} → {q0,q1} → {q0,q2} → {q0} → {q0} → {q0} → {q0} : rejected",
+"enfa": "<div class=\"tw\"><table><tr><th>DFA state</th><th>a</th><th>b</th><th>c</th></tr><tr><td class=\"m\">→ * {p,q,r}</td><td class=\"m\">{p,q,r}</td><td class=\"m\">{q,r}</td><td class=\"m\">{p,q,r}</td></tr><tr><td class=\"m\">* {q,r}</td><td class=\"m\">{p,q,r}</td><td class=\"m\">{r}</td><td class=\"m\">{p,q,r}</td></tr><tr><td class=\"m\">* {r}</td><td class=\"m\">∅</td><td class=\"m\">∅</td><td class=\"m\">∅</td></tr><tr><td class=\"m\">∅</td><td class=\"m\">∅</td><td class=\"m\">∅</td><td class=\"m\">∅</td></tr></table></div><p>→ start state, * final state. 4 reachable DFA states; final states are the subsets that contain an NFA final state: {p,q,r}, {q,r}, {r}.</p>",
+"min_m25": "<p><b>Unreachable states removed:</b> none.</p><ol><li>Π<sub>0</sub> = {q0,q3,q4} {q1,q2,q5}</li><li>Π<sub>1</sub> = {q0,q3,q4} {q1,q2} {q5}</li><li>Π<sub>2</sub> = {q0} {q1,q2} {q3,q4} {q5}</li></ol><div class=\"tw\"><table><tr><th>Minimised state</th><th>a</th><th>b</th></tr><tr><td class=\"m\">→ {q0}</td><td class=\"m\">{q1,q2}</td><td class=\"m\">{q1,q2}</td></tr><tr><td class=\"m\">* {q1,q2}</td><td class=\"m\">{q3,q4}</td><td class=\"m\">{q3,q4}</td></tr><tr><td class=\"m\">{q3,q4}</td><td class=\"m\">{q5}</td><td class=\"m\">{q5}</td></tr><tr><td class=\"m\">* {q5}</td><td class=\"m\">{q5}</td><td class=\"m\">{q5}</td></tr></table></div><p><b>Minimum DFA has 4 states.</b></p>",
+"min_hop": "<p><b>Unreachable states removed:</b> q3.</p><ol><li>Π<sub>0</sub> = {q0,q1,q4,q5,q6,q7} {q2}</li><li>Π<sub>1</sub> = {q0,q4,q6} {q1,q7} {q2} {q5}</li><li>Π<sub>2</sub> = {q0,q4} {q1,q7} {q2} {q5} {q6}</li></ol><div class=\"tw\"><table><tr><th>Minimised state</th><th>0</th><th>1</th></tr><tr><td class=\"m\">→ {q0,q4}</td><td class=\"m\">{q1,q7}</td><td class=\"m\">{q5}</td></tr><tr><td class=\"m\">{q1,q7}</td><td class=\"m\">{q6}</td><td class=\"m\">{q2}</td></tr><tr><td class=\"m\">{q5}</td><td class=\"m\">{q2}</td><td class=\"m\">{q6}</td></tr><tr><td class=\"m\">{q6}</td><td class=\"m\">{q6}</td><td class=\"m\">{q0,q4}</td></tr><tr><td class=\"m\">* {q2}</td><td class=\"m\">{q0,q4}</td><td class=\"m\">{q2}</td></tr></table></div><p><b>Minimum DFA has 5 states.</b></p>",
+"re_abc_sub": "<div class=\"tw\"><table><tr><th>DFA state</th><th>a</th><th>b</th><th>c</th></tr><tr><td class=\"m\">→ {s}</td><td class=\"m\">{m}</td><td class=\"m\">∅</td><td class=\"m\">∅</td></tr><tr><td class=\"m\">{m}</td><td class=\"m\">{f,m}</td><td class=\"m\">{f,m}</td><td class=\"m\">{f,m}</td></tr><tr><td class=\"m\">∅</td><td class=\"m\">∅</td><td class=\"m\">∅</td><td class=\"m\">∅</td></tr><tr><td class=\"m\">* {f,m}</td><td class=\"m\">{f,m}</td><td class=\"m\">{f,m}</td><td class=\"m\">{f,m}</td></tr></table></div><p>→ start state, * final state. 4 reachable DFA states; final states are the subsets that contain an NFA final state: {f,m}.</p>",
+"re_abc_min": "<p><b>Unreachable states removed:</b> none.</p><ol><li>Π<sub>0</sub> = {{f,m}} {{m},{s},∅}</li><li>Π<sub>1</sub> = {{f,m}} {{m}} {{s},∅}</li><li>Π<sub>2</sub> = {{f,m}} {{m}} {{s}} {∅}</li></ol><div class=\"tw\"><table><tr><th>Minimised state</th><th>a</th><th>b</th><th>c</th></tr><tr><td class=\"m\">→ {{s}}</td><td class=\"m\">{{m}}</td><td class=\"m\">{∅}</td><td class=\"m\">{∅}</td></tr><tr><td class=\"m\">{{m}}</td><td class=\"m\">{{f,m}}</td><td class=\"m\">{{f,m}}</td><td class=\"m\">{{f,m}}</td></tr><tr><td class=\"m\">{∅}</td><td class=\"m\">{∅}</td><td class=\"m\">{∅}</td><td class=\"m\">{∅}</td></tr><tr><td class=\"m\">* {{f,m}}</td><td class=\"m\">{{f,m}}</td><td class=\"m\">{{f,m}}</td><td class=\"m\">{{f,m}}</td></tr></table></div><p><b>Minimum DFA has 4 states.</b></p>",
+"re_10_sub": "<div class=\"tw\"><table><tr><th>DFA state</th><th>0</th><th>1</th></tr><tr><td class=\"m\">→ {s}</td><td class=\"m\">{z}</td><td class=\"m\">{x,y}</td></tr><tr><td class=\"m\">{z}</td><td class=\"m\">{z}</td><td class=\"m\">{f}</td></tr><tr><td class=\"m\">{x,y}</td><td class=\"m\">{f}</td><td class=\"m\">{z}</td></tr><tr><td class=\"m\">* {f}</td><td class=\"m\">∅</td><td class=\"m\">∅</td></tr><tr><td class=\"m\">∅</td><td class=\"m\">∅</td><td class=\"m\">∅</td></tr></table></div><p>→ start state, * final state. 5 reachable DFA states; final states are the subsets that contain an NFA final state: {f}.</p>",
+"re_10_min": "<p><b>Unreachable states removed:</b> none.</p><ol><li>Π<sub>0</sub> = {{f}} {{s},{x,y},{z},∅}</li><li>Π<sub>1</sub> = {{f}} {{s},∅} {{x,y}} {{z}}</li><li>Π<sub>2</sub> = {{f}} {{s}} {{x,y}} {{z}} {∅}</li></ol><div class=\"tw\"><table><tr><th>Minimised state</th><th>0</th><th>1</th></tr><tr><td class=\"m\">→ {{s}}</td><td class=\"m\">{{z}}</td><td class=\"m\">{{x,y}}</td></tr><tr><td class=\"m\">{{z}}</td><td class=\"m\">{{z}}</td><td class=\"m\">{{f}}</td></tr><tr><td class=\"m\">{{x,y}}</td><td class=\"m\">{{f}}</td><td class=\"m\">{{z}}</td></tr><tr><td class=\"m\">* {{f}}</td><td class=\"m\">{∅}</td><td class=\"m\">{∅}</td></tr><tr><td class=\"m\">{∅}</td><td class=\"m\">{∅}</td><td class=\"m\">{∅}</td></tr></table></div><p><b>Minimum DFA has 5 states.</b></p>",
+"tm_code_table": "<div class=\"tw\"><table><tr><th>#</th><th>Move</th><th>Code 0<sup>i</sup>10<sup>j</sup>10<sup>k</sup>10<sup>l</sup>10<sup>m</sup></th></tr><tr><td>1</td><td class=\"m\">δ(q0,0) = (q1,X,R)</td><td class=\"m\">01010010000100</td></tr><tr><td>2</td><td class=\"m\">δ(q0,Y) = (q3,Y,R)</td><td class=\"m\">010000010000100000100</td></tr><tr><td>3</td><td class=\"m\">δ(q1,0) = (q1,0,R)</td><td class=\"m\">001010010100</td></tr><tr><td>4</td><td class=\"m\">δ(q1,1) = (q2,Y,L)</td><td class=\"m\">00100100010000010</td></tr><tr><td>5</td><td class=\"m\">δ(q1,Y) = (q1,Y,R)</td><td class=\"m\">00100000100100000100</td></tr><tr><td>6</td><td class=\"m\">δ(q2,0) = (q2,0,L)</td><td class=\"m\">0001010001010</td></tr><tr><td>7</td><td class=\"m\">δ(q2,X) = (q0,X,R)</td><td class=\"m\">000100001010000100</td></tr><tr><td>8</td><td class=\"m\">δ(q2,Y) = (q2,Y,L)</td><td class=\"m\">000100000100010000010</td></tr><tr><td>9</td><td class=\"m\">δ(q3,Y) = (q3,Y,R)</td><td class=\"m\">000010000010000100000100</td></tr><tr><td>10</td><td class=\"m\">δ(q3,B) = (q4,B,R)</td><td class=\"m\">000010001000001000100</td></tr></table></div>",
+"tm_code": "01010010000100110100000100001000001001100101001010011001001000100000101100100000100100000100110001010001010110001000010100001001100010000010001000001011000010000010000100000100110000100010000010001001111011"
+};
+
+/* 21CSC301T Formal Language and Automata — every Part B (8m) and Part C (15m) question from 9 papers. */
+const PAPERS = [
+  { k: "n23",  name: "Nov 2023",      n: 1, note: "from the zip" },
+  { k: "m24",  name: "May 2024",      n: 2, note: "from the zip (Paper 1 and Paper 2 in the zip are the same paper)" },
+  { k: "jl24", name: "Jul 2024",      n: 3, note: "from the zip" },
+  { k: "n24",  name: "Nov 2024",      n: 4, note: "from the zip" },
+  { k: "m25",  name: "May 2025",      n: 5, note: "from the zip" },
+  { k: "jl25a", name: "Jul 2025 · I", n: 6, note: "from the zip (Paper 1)" },
+  { k: "jl25b", name: "Jul 2025 · II", n: 7, note: "from the zip (Paper 2)" },
+  { k: "d25",  name: "Dec 2025",      n: 8, note: "downloaded from thehelpers.tech, listed there as Nov 2025; not in the zip" },
+  { k: "m26",  name: "May 2026",      n: 9, note: "downloaded from thehelpers.tech; not in the zip" }
+];
+
+const UNITS = {
+  1: "Finite automata & regular languages — DFA, NFA, ε-NFA, regular expressions, minimisation, pumping lemma, Moore/Mealy",
+  2: "Context-free grammars — derivations, ambiguity, simplification, CNF, GNF",
+  3: "Pushdown automata — PDA design, DPDA, CFG ↔ PDA",
+  4: "Turing machines — TM design, variants, computation",
+  5: "Undecidability & complexity — recursive/RE languages, PCP, Rice, halting problem, P and NP"
+};
+
+const A_SUBSET = `<p><b>Subset construction:</b> the DFA start state is {q<sub>0</sub>}. For a DFA state S and input a, δ′(S, a) = union of δ(q, a) for all q in S. Add each new subset as a state and repeat until no new subset appears. A subset is final if it contains at least one NFA final state. The empty set ∅ is the dead state.</p>`;
+
+const A_GNF_METHOD = `<p><b>Greibach Normal Form:</b> every production is A → aα, one terminal followed by zero or more variables. <b>Method:</b> (1) remove ε, unit and useless productions and put the grammar in CNF; (2) order the variables A<sub>1</sub>…A<sub>n</sub>; (3) make every A<sub>i</sub> → A<sub>j</sub>γ have j &gt; i by substitution; (4) remove immediate left recursion A → Aα | β with a new variable Z: A → β | βZ, Z → α | αZ; (5) back-substitute so every body starts with a terminal.</p>`;
+
+const A_CNF_METHOD = `<p><b>Chomsky Normal Form:</b> every production is A → BC or A → a (S → ε only if ε is in the language). <b>Steps:</b> (1) remove ε-productions (find nullable variables, add every version of each body with nullable variables left out); (2) remove unit productions A → B; (3) remove useless symbols (non-generating, then unreachable); (4) replace each terminal inside a long body by a new variable X<sub>a</sub> → a; (5) break bodies longer than two with new variables.</p>`;
+
+const TOPICS = [
+/* ================= UNIT 1 ================= */
+{ u:1, m:8, t:"NFA to DFA — subset construction problems", items:[
+  {p:"n23", q:"21a", x:"Construct a DFA equivalent to the NFA M = ({a,b,c,d}, {0,1}, δ, a, {b,d}) where δ is: a: 0→{b,d}, 1→{b}; b: 0→c, 1→{b,c}; c: 0→d, 1→a; d: 0→–, 1→a."},
+  {p:"jl24", q:"21b", x:"Construct DFA equivalent to NFA ({P,Q,R,S}, {0,1}, δ, P, {S}) where δ is: p: 0→{p,q}, 1→{p}; q: 0→{r}, 1→{r}; r: 0→{s}, 1→–; s: 0→{s}, 1→{s}."},
+  {p:"jl25a", q:"21b", x:"(i) Convert the given NFA to DFA: p: 0→{p,q}, 1→{p}; q: 0→{r}, 1→{r}; r: 0→{s}, 1→∅; *s: 0→{s}, 1→{s}. (ii) For the following Moore machine the input alphabet is {a,b} and the output alphabet is {0,1}. Run the following input sequences and find the respective outputs: 1. aabab 2. ababb. (Machine: q0/0 loops on b, a→q1; q1/0 loops on a, b→q2; q2/1: a→q1, b→q0.)"},
+  {p:"m26", q:"21b", x:"Construct a DFA equivalent to the NFA M = ({P,Q,R,S}, {0,1}, δ, P, {Q,S}) where δ is: P: 0→{Q,S}, 1→{Q}; Q: 0→{R}, 1→{Q,R}; R: 0→{S}, 1→{P}; S: 0→∅, 1→{P}."}
+], a: A_SUBSET + `
+<p><b>Nov 2023 Q21(a)</b> — start a, finals b and d:</p>` + G.nfa_n23 + `
+<p><b>Jul 2024 Q21(b) and Jul 2025 · I Q21(b)(i)</b> — start p, final s:</p>` + G.nfa_pqrs + `
+<p>The language is “strings that contain 0, then any symbol, then 0” (a 0 followed two places later by a 0): once s is reached the machine stays accepting.</p>
+<p><b>May 2026 Q21(b)</b> — start P, finals Q and S:</p>` + G.nfa_m26 + `
+<p><b>In the exam</b> also draw the transition diagram of the DFA from the table.</p>
+<p><b>Jul 2025 · I Q21(b)(ii) — Moore machine runs.</b> A Moore machine prints the output of every state it enters, starting with the start state, so n inputs give n + 1 outputs.</p>
+<div class="tw"><table>
+<tr><th>Input</th><th>State sequence</th><th>Output</th></tr>
+<tr><td class="m">aabab</td><td class="m">q0 → q1 → q1 → q2 → q1 → q2</td><td class="m">0 0 0 1 0 1</td></tr>
+<tr><td class="m">ababb</td><td class="m">q0 → q1 → q2 → q1 → q2 → q0</td><td class="m">0 0 1 0 1 0</td></tr>
+</table></div>
+<p>The machine prints 1 each time the substring “ab” has just been read.</p>` },
+
+{ u:1, m:8, t:"NFA for “second-last symbol is 1”, conversion to DFA, string check", items:[
+  {p:"n24", q:"21a", x:"Design a Non-Deterministic Finite Automata for the language that accepts the string where the last before symbol is always ‘1’. Convert the constructed NFA to DFA. Also, find the strings i. 100010 ii. 100000 which are accepted/rejected by both NFA and DFA."},
+  {p:"jl25b", q:"21b", x:"Design a Non-Deterministic Finite Automata for the language that accepts the string where the last before symbol is always ‘1’. Convert the constructed NFA to DFA. Also, find the strings i. 100010 ii. 100000 which are accepted/rejected by both NFA and DFA."}
+], a: `
+<p><b>Language:</b> (0+1)*1(0+1) — the second symbol from the end is 1.</p>
+<p><b>NFA</b> N = ({q0,q1,q2}, {0,1}, δ, q0, {q2}): q0 loops on 0 and 1 and <i>guesses</i> the second-last symbol.</p>
+<div class="tw"><table>
+<tr><th>State</th><th>0</th><th>1</th></tr>
+<tr><td class="m">→ q0</td><td class="m">{q0}</td><td class="m">{q0, q1}</td></tr>
+<tr><td class="m">q1</td><td class="m">{q2}</td><td class="m">{q2}</td></tr>
+<tr><td class="m">* q2</td><td class="m">∅</td><td class="m">∅</td></tr>
+</table></div>
+<p><b>DFA by subset construction:</b></p>` + G.nfa_2last + `
+<p><b>String check on the DFA:</b></p>
+<ul>
+<li><span class="m">100010</span>: ` + G.run_100010 + `. On the NFA: q0 –1,0,0,0→ q0 –1→ q1 –0→ q2. <b>Accepted by both</b> (second-last symbol is 1).</li>
+<li><span class="m">100000</span>: ` + G.run_100000 + `. On the NFA no path ends in q2 because the second-last symbol is 0. <b>Rejected by both.</b></li>
+</ul>
+<p>Draw both diagrams: NFA with three states in a row; DFA with four states A = {q0}, B = {q0,q1}, C = {q0,q2}, D = {q0,q1,q2}, finals C and D.</p>` },
+
+{ u:1, m:8, t:"Regular expression to automaton — ε-NFA, DFA, minimised DFA", items:[
+  {p:"n23", q:"21b", x:"Design a minimized DFA by converting the following regular expression for the RE = a(a+b+c)* (a+b+c)."},
+  {p:"m24", q:"21b", x:"Convert the Regular expression into Epsilon-NFA for the string 10 + (0 + 11)0*1."},
+  {p:"jl24", q:"22a", x:"1) Construct a minimized DFA for the RE 10 + (0 + 11) 0*1. 2) Let r be a regular Expression. Then prove that there exists an NFA with ε-transitions that accept L(r)."},
+  {p:"jl25b", q:"21a", x:"Design a minimized DFA by converting the following regular expression for the RE = a(a+b+c)* (a+b+c)."}
+], a: `
+<p><b>Thompson's construction (the theorem for Jul 2024 22a(2)).</b> For every regular expression r there is an ε-NFA with one start state, one final state, no arrows into the start and none out of the final state, that accepts L(r). Proof by induction on the number of operators:</p>
+<ul>
+<li><b>Basis:</b> for ∅: two states, no arrow. For ε: start –ε→ final. For a symbol a: start –a→ final.</li>
+<li><b>Union r + s:</b> new start with ε-arrows to the starts of M<sub>r</sub> and M<sub>s</sub>; ε-arrows from both finals to a new final.</li>
+<li><b>Concatenation rs:</b> ε-arrow from the final of M<sub>r</sub> to the start of M<sub>s</sub>.</li>
+<li><b>Closure r*:</b> new start and new final; ε from new start to start of M<sub>r</sub> and to new final; ε from final of M<sub>r</sub> back to its start and to the new final.</li>
+</ul>
+<p>Each construction accepts exactly the union, concatenation or star of the languages of its parts, so by induction the claim holds for every r.</p>
+<p><b>RE = 10 + (0 + 11)0*1 — ε-NFA (May 2024 21b).</b> Build the pieces: 1·0 for the left branch; (0 + 11) as a union; 0* as a loop with ε-arrows; then ·1; finally join the two branches with a new start and a new final using ε-arrows. Draw it in that order and label every ε.</p>
+<p><b>Minimised DFA for 10 + (0 + 11)0*1 (Jul 2024 22a).</b> NFA without ε: s –1→ x, s –1→ y, s –0→ z, x –0→ f, y –1→ z, z –0→ z, z –1→ f, final f. Subset construction:</p>` + G.re_10_sub + `<p>Minimisation (partition refinement):</p>` + G.re_10_min + `
+<p>Meaning of the states: start; “read 1” ({x,y}); “inside (0+11)0*” ({z}); accept; dead. Five states including the dead state, four without it.</p>
+<p><b>RE = a(a+b+c)*(a+b+c) (Nov 2023 21b, Jul 2025 · II 21a).</b> The language is “starts with a and has length ≥ 2”. NFA: s –a→ m, m loops on a,b,c, m –a,b,c→ f. Subset construction:</p>` + G.re_abc_sub + `<p>Minimisation:</p>` + G.re_abc_min + `
+<p><b>Minimised DFA:</b> q0 –a→ q1; q1 –a,b,c→ q2; q2 loops on a,b,c (final); q0 –b,c→ dead. Four states with the dead state, three without.</p>` },
+
+{ u:1, m:8, t:"Designing a DFA for a given language", items:[
+  {p:"m24", q:"21a", x:"Construct a DFA that accepts odd number of 1's and even number of 0's."},
+  {p:"m25", q:"21a", x:"1. Illustrate the formal description of DFA and NFA with a suitable examples. 2. Construct a deterministic finite automata which accepts all set of strings which never contains a substring \"xxy\" for all set of strings formed using Σ={x,y}."},
+  {p:"d25", q:"21a", x:"Construct a minimal Deterministic Finite Automata (DFA) for the given language. L = {aⁿbᵐ : n>=2, m>=1} over the alphabet Σ = {a,b}."}
+], a: `
+<p><b>Formal definitions.</b> A <b>DFA</b> is M = (Q, Σ, δ, q<sub>0</sub>, F): Q finite set of states, Σ input alphabet, δ: Q × Σ → Q (exactly one next state), q<sub>0</sub> start state, F ⊆ Q final states. An <b>NFA</b> has the same five parts but δ: Q × Σ → 2<sup>Q</sup> (a set of next states, possibly empty); a string is accepted if <i>some</i> path ends in a final state. Example DFA: strings ending in 01 with states q0, q1, q2. Example NFA: strings whose second-last symbol is 1 (q0 loops on 0,1; q0 –1→ q1 –0,1→ q2). Every NFA has an equivalent DFA (subset construction), so both accept exactly the regular languages.</p>
+<p><b>Odd number of 1s and even number of 0s (May 2024).</b> Remember two parities: state (parity of 0s, parity of 1s).</p>
+<div class="tw"><table>
+<tr><th>State</th><th>Meaning</th><th>0</th><th>1</th></tr>
+<tr><td class="m">→ q0</td><td>even 0s, even 1s</td><td class="m">q2</td><td class="m">q1</td></tr>
+<tr><td class="m">* q1</td><td>even 0s, odd 1s</td><td class="m">q3</td><td class="m">q0</td></tr>
+<tr><td class="m">q2</td><td>odd 0s, even 1s</td><td class="m">q0</td><td class="m">q3</td></tr>
+<tr><td class="m">q3</td><td>odd 0s, odd 1s</td><td class="m">q1</td><td class="m">q2</td></tr>
+</table></div>
+<p>Check: 100 → q0, q1, q3, q1 accepted (one 1, two 0s).</p>
+<p><b>No substring “xxy” (May 2025).</b> Track how much of xxy has been matched.</p>
+<div class="tw"><table>
+<tr><th>State</th><th>Meaning</th><th>x</th><th>y</th></tr>
+<tr><td class="m">→ * q0</td><td>no progress</td><td class="m">q1</td><td class="m">q0</td></tr>
+<tr><td class="m">* q1</td><td>last symbol x</td><td class="m">q2</td><td class="m">q0</td></tr>
+<tr><td class="m">* q2</td><td>last two symbols xx</td><td class="m">q2</td><td class="m">q3</td></tr>
+<tr><td class="m">q3</td><td>dead: xxy seen</td><td class="m">q3</td><td class="m">q3</td></tr>
+</table></div>
+<p><b>L = {aⁿbᵐ : n ≥ 2, m ≥ 1} (Dec 2025).</b> RE: aaa*bb*.</p>
+<div class="tw"><table>
+<tr><th>State</th><th>Meaning</th><th>a</th><th>b</th></tr>
+<tr><td class="m">→ q0</td><td>nothing read</td><td class="m">q1</td><td class="m">qd</td></tr>
+<tr><td class="m">q1</td><td>one a</td><td class="m">q2</td><td class="m">qd</td></tr>
+<tr><td class="m">q2</td><td>two or more a's</td><td class="m">q2</td><td class="m">q3</td></tr>
+<tr><td class="m">* q3</td><td>b's after the a's</td><td class="m">qd</td><td class="m">q3</td></tr>
+<tr><td class="m">qd</td><td>dead</td><td class="m">qd</td><td class="m">qd</td></tr>
+</table></div>
+<p>It is minimal: the five states are pairwise distinguishable (q3 is the only final state; b separates q2 from q0, q1; ab separates q1 from q0; qd never accepts).</p>` },
+
+{ u:1, m:8, t:"ε-NFA to DFA with ε-closures (and Mealy machine for 2's complement)", items:[
+  {p:"jl25a", q:"21a", x:"i. Consider the following ε-NFA: →p: ε→{q,r}, a→∅, b→{q}, c→{r}; q: ε→∅, a→{p}, b→{r}, c→{p,q}; *r: ε→∅, a→∅, b→∅, c→∅. 1. Complete the ε-closures of each state 2. Convert the automaton to DFA. ii. Construct a Mealy machine that gives 2's complement of any binary input. (Assume that the last carry bit is neglected.)"}
+], a: `
+<p><b>ε-closure(q)</b> = q plus every state reachable from q using only ε-moves.</p>
+<ul>
+<li>ε-closure(p) = <b>{p, q, r}</b></li>
+<li>ε-closure(q) = <b>{q}</b></li>
+<li>ε-closure(r) = <b>{r}</b></li>
+</ul>
+<p><b>DFA:</b> start state = ε-closure(p). δ′(S, x) = ε-closure of the union of δ(s, x) for s in S.</p>` + G.enfa + `
+<p>Example row: from {p,q,r} on a: δ(q,a) = {p}, closure = {p,q,r}. On b: δ(p,b) ∪ δ(q,b) = {q,r}. On c: {r} ∪ {p,q} → closure {p,q,r}.</p>
+<p><b>(ii) Mealy machine for 2's complement.</b> Read the number from the <b>least significant bit</b>. Rule: copy bits up to and including the first 1, then flip every later bit.</p>
+<div class="tw"><table>
+<tr><th>State</th><th>Input 0</th><th>Input 1</th></tr>
+<tr><td class="m">→ q0 (no 1 seen yet)</td><td class="m">q0, output 0</td><td class="m">q1, output 1</td></tr>
+<tr><td class="m">q1 (first 1 passed)</td><td class="m">q1, output 1</td><td class="m">q1, output 0</td></tr>
+</table></div>
+<p>Example: 10100 (read right to left: 0,0,1,0,1) → outputs 0,0,1,1,0 → 01100. Check: 2's complement of 10100 is 01011 + 1 = 01100 ✓.</p>` },
+
+{ u:1, m:8, t:"Moore and Mealy machines — design and conversion", items:[
+  {p:"n24", q:"21b", x:"Design a Moore machine for the given language over the input symbol (0,1). If the substring is 10, it should print ‘a’, for 11, it should print ‘b’, otherwise, it should print ‘c’. Convert the constructed Moore machine to a Mealy machine."},
+  {p:"m25", q:"21b", x:"1. Compare and contrast between Mealy and Moore machine? Also construct a Moore Machine that computes divisibility of binary number by 3. 2. Can we design a regular expression for a palindrome? Justify your answer."},
+  {p:"m26", q:"21a", x:"Convert the following Mealy Machine to Moore Machine. (Figure drawn as a table, each entry is next state / output.) →q1: a→q1 / 1, b→q2 / 0; q2: a→q4 / 1, b→q4 / 1; q4: a→q3 / 0, b→q1 / 1; q3: a→q2 / 1, b→q3 / 1."}
+], a: `
+<div class="tw"><table>
+<tr><th>Point</th><th>Moore machine</th><th>Mealy machine</th></tr>
+<tr><td>Output depends on</td><td>Present state only: λ: Q → Δ</td><td>Present state and input: λ: Q × Σ → Δ</td></tr>
+<tr><td>Output written on</td><td>States (q/0)</td><td>Transitions (a/0)</td></tr>
+<tr><td>Output length for n inputs</td><td>n + 1 (start state prints too)</td><td>n</td></tr>
+<tr><td>States</td><td>Usually more</td><td>Usually fewer</td></tr>
+<tr><td>Reaction</td><td>One step later</td><td>Immediately with the input</td></tr>
+</table></div>
+<p>Both are 6-tuples (Q, Σ, Δ, δ, λ, q<sub>0</sub>) with no final states, and they are equivalent in power.</p>
+<p><b>Nov 2024 — Moore machine for 10 → a, 11 → b, otherwise c.</b></p>
+<div class="tw"><table>
+<tr><th>State / output</th><th>Meaning</th><th>0</th><th>1</th></tr>
+<tr><td class="m">→ S / c</td><td>start, or last symbol 0 not after 1</td><td class="m">S</td><td class="m">A</td></tr>
+<tr><td class="m">A / c</td><td>last symbol 1 (after 0 or at start)</td><td class="m">B</td><td class="m">C</td></tr>
+<tr><td class="m">B / a</td><td>just read 10</td><td class="m">S</td><td class="m">A</td></tr>
+<tr><td class="m">C / b</td><td>just read 11</td><td class="m">B</td><td class="m">C</td></tr>
+</table></div>
+<p><b>To Mealy:</b> put the output of the destination state on each arrow.</p>
+<div class="tw"><table>
+<tr><th>State</th><th>0</th><th>1</th></tr>
+<tr><td class="m">→ S</td><td class="m">S / c</td><td class="m">A / c</td></tr>
+<tr><td class="m">A</td><td class="m">B / a</td><td class="m">C / b</td></tr>
+<tr><td class="m">B</td><td class="m">S / c</td><td class="m">A / c</td></tr>
+<tr><td class="m">C</td><td class="m">B / a</td><td class="m">C / b</td></tr>
+</table></div>
+<p>Rows S and B are identical, and rows A and C are identical, so the Mealy machine reduces to two states: “last symbol was not 1” and “last symbol was 1”.</p>
+<p><b>May 2025 — Moore machine for divisibility by 3.</b> State = remainder of the number read so far; reading bit b changes the value v to 2v + b.</p>
+<div class="tw"><table>
+<tr><th>State / output</th><th>0</th><th>1</th></tr>
+<tr><td class="m">→ r0 / 1 (divisible)</td><td class="m">r0</td><td class="m">r1</td></tr>
+<tr><td class="m">r1 / 0</td><td class="m">r2</td><td class="m">r0</td></tr>
+<tr><td class="m">r2 / 0</td><td class="m">r1</td><td class="m">r2</td></tr>
+</table></div>
+<p>Example 110 (six): r0 → r1 → r0 → r0, last output 1 = divisible.</p>
+<p><b>Regular expression for palindromes?</b> No. L = {w : w = w<sup>R</sup>} over an alphabet of two or more symbols is not regular: take w = 0ⁿ10ⁿ; by the pumping lemma y lies inside the first 0ⁿ, and pumping gives 0ⁿ⁺ᵏ10ⁿ, which is not a palindrome. A finite automaton cannot remember an unbounded first half. Regular expressions describe exactly the regular languages, so none exists. (Palindromes are context-free: S → 0S0 | 1S1 | 0 | 1 | ε.)</p>
+<p><b>May 2026 — Mealy to Moore.</b> <b>Rule:</b> for each state list the outputs on its incoming arrows. If they are all the same, the state keeps that output. If it receives different outputs, split it into one copy per output; each copy has the same outgoing arrows as the original. The figure gives q1: a/1 → q1, b/0 → q2; q2: a/1, b/1 → q4; q4: a/0 → q3, b/1 → q1; q3: b/1 → q3, a/1 → q2:</p>
+<div class="tw"><table>
+<tr><th>State</th><th>Incoming outputs</th><th>Moore state(s)</th></tr>
+<tr><td class="m">q1</td><td>1, 1</td><td class="m">q1 / 1</td></tr>
+<tr><td class="m">q2</td><td>0 (from q1), 1 (from q3)</td><td class="m">q2₀ / 0, q2₁ / 1</td></tr>
+<tr><td class="m">q4</td><td>1, 1</td><td class="m">q4 / 1</td></tr>
+<tr><td class="m">q3</td><td>0 (from q4), 1 (own loop)</td><td class="m">q3₀ / 0, q3₁ / 1</td></tr>
+</table></div>
+<div class="tw"><table>
+<tr><th>Moore state / output</th><th>a</th><th>b</th></tr>
+<tr><td class="m">→ q1 / 1</td><td class="m">q1</td><td class="m">q2₀</td></tr>
+<tr><td class="m">q2₀ / 0</td><td class="m">q4</td><td class="m">q4</td></tr>
+<tr><td class="m">q2₁ / 1</td><td class="m">q4</td><td class="m">q4</td></tr>
+<tr><td class="m">q4 / 1</td><td class="m">q3₀</td><td class="m">q1</td></tr>
+<tr><td class="m">q3₀ / 0</td><td class="m">q2₁</td><td class="m">q3₁</td></tr>
+<tr><td class="m">q3₁ / 1</td><td class="m">q2₁</td><td class="m">q3₁</td></tr>
+</table></div>
+<p>The Moore machine prints one extra symbol (the output of the start state) before the first input.</p>` },
+
+{ u:1, m:8, t:"Proof by mathematical induction", items:[
+  {p:"jl24", q:"21a", x:"Prove that 1² + 2² + 3² + ...... + n² = n(n+1)(2n+1)/6 for all positive integers n."}
+], a: `
+<p><b>Statement P(n):</b> 1² + 2² + … + n² = n(n+1)(2n+1)/6.</p>
+<p><b>Basis (n = 1):</b> LHS = 1² = 1. RHS = 1·2·3/6 = 1. P(1) is true.</p>
+<p><b>Induction hypothesis:</b> assume P(k) is true for some k ≥ 1: 1² + 2² + … + k² = k(k+1)(2k+1)/6.</p>
+<p><b>Induction step:</b> prove P(k+1).</p>
+<pre>1² + 2² + … + k² + (k+1)²
+  = k(k+1)(2k+1)/6 + (k+1)²              (by the hypothesis)
+  = (k+1) [ k(2k+1) + 6(k+1) ] / 6
+  = (k+1) (2k² + 7k + 6) / 6
+  = (k+1)(k+2)(2k+3) / 6
+  = (k+1)((k+1)+1)(2(k+1)+1) / 6</pre>
+<p>This is exactly the formula with n = k + 1, so P(k+1) is true.</p>
+<p><b>Conclusion:</b> P(1) is true and P(k) ⇒ P(k+1), so by the principle of mathematical induction P(n) holds for every positive integer n.</p>
+<p><b>Why it is in this course:</b> induction (on string length, number of steps, or number of operators) is the standard proof method for automata, e.g. proving that a DFA accepts exactly a language or that every regular expression has an ε-NFA.</p>` },
+
+{ u:1, m:8, t:"Closure properties of regular languages (and one ambiguity proof)", items:[
+  {p:"jl24", q:"22b", x:"Show that the regular language are closed under: i) Union ii) Intersection iii) Kleene closure iv) Difference."},
+  {p:"d25", q:"22b", x:"i) Show that regular languages are closed under concatenation and Kleene Closure. (4 marks) ii) Show that the given grammar is ambiguous: S → aSb | bSa | SS | ε. (4 marks)"}
+], a: `
+<p>Let L and M be regular, with regular expressions r and s and DFAs A = (Q<sub>A</sub>, Σ, δ<sub>A</sub>, q<sub>A</sub>, F<sub>A</sub>) and B = (Q<sub>B</sub>, Σ, δ<sub>B</sub>, q<sub>B</sub>, F<sub>B</sub>).</p>
+<ul>
+<li><b>Union:</b> r + s is a regular expression and L(r + s) = L ∪ M, so L ∪ M is regular. (Automaton: new start state with ε-arrows to both machines.)</li>
+<li><b>Concatenation:</b> rs is a regular expression for LM. (Automaton: ε-arrows from the finals of A to the start of B; only B's finals stay final.)</li>
+<li><b>Kleene closure:</b> r* is a regular expression for L*. (Automaton: new start/final state, ε from every final state back to the old start.)</li>
+<li><b>Complement:</b> swap final and non-final states of the DFA: F′ = Q − F. It accepts exactly Σ* − L.</li>
+<li><b>Intersection:</b> <b>product automaton</b> with states Q<sub>A</sub> × Q<sub>B</sub>, start (q<sub>A</sub>, q<sub>B</sub>), δ((p,q), a) = (δ<sub>A</sub>(p,a), δ<sub>B</sub>(q,a)), finals F<sub>A</sub> × F<sub>B</sub>. It accepts w iff both accept w. (Or by De Morgan: L ∩ M = complement of (L′ ∪ M′).)</li>
+<li><b>Difference:</b> L − M = L ∩ M′. Complement and intersection keep regularity, so L − M is regular. (Product automaton with finals F<sub>A</sub> × (Q<sub>B</sub> − F<sub>B</sub>).)</li>
+</ul>
+<p>Other closure properties: reversal, homomorphism, inverse homomorphism.</p>
+<p><b>Example:</b> L = strings with an even number of 0s, M = strings ending in 1. Both regular, so L ∩ M (even 0s and ending in 1) is regular; its product DFA has 2 × 2 = 4 states.</p>
+<p><b>Dec 2025 (ii) — S → aSb | bSa | SS | ε is ambiguous.</b> The string <span class="m">ab</span> has two different leftmost derivations:</p>
+<pre>1.  S ⇒ aSb ⇒ ab
+2.  S ⇒ SS ⇒ aSbS ⇒ abS ⇒ ab</pre>
+<p>They give two different parse trees (one with root aSb, one with root SS whose second S derives ε). One string with two parse trees is enough, so the grammar is ambiguous. (The string abab also works: (ab)(ab) by SS, split in different ways when three S's are used.)</p>` },
+
+{ u:1, m:8, t:"Pumping lemma for regular languages — proving a language is not regular", items:[
+  {p:"jl25b", q:"23b", x:"Prove that the language L={aⁿbⁿ | n≥0} is not regular using the Pumping Lemma."},
+  {p:"d25", q:"21b", x:"Prove that the given language is not regular: L = {0ⁿ10ⁿ : n>=1} over the alphabet Σ = {0,1}."}
+], a: `
+<p><b>Pumping lemma.</b> If L is regular, there is a constant n such that every w in L with |w| ≥ n can be written w = xyz with (1) y ≠ ε, (2) |xy| ≤ n, (3) xyᵏz ∈ L for all k ≥ 0. (n is the number of states of a DFA for L: a long string must repeat a state, and the loop y can be repeated.)</p>
+<p>To prove L is <b>not</b> regular: assume it is, choose a suitable w, show that <i>every</i> allowed split fails for some k.</p>
+<p><b>L = {aⁿbⁿ | n ≥ 0}</b></p>
+<ol>
+<li>Assume L is regular with pumping constant n.</li>
+<li>Choose w = aⁿbⁿ. It is in L and |w| = 2n ≥ n.</li>
+<li>Write w = xyz with |xy| ≤ n and y ≠ ε. Since the first n symbols are all a, y = aʲ with j ≥ 1.</li>
+<li>Pump with k = 2: xy²z = aⁿ⁺ʲbⁿ. It has more a's than b's, so it is not in L. (k = 0 gives aⁿ⁻ʲbⁿ, also not in L.)</li>
+<li>This contradicts condition (3), so L is not regular.</li>
+</ol>
+<p><b>L = {0ⁿ10ⁿ : n ≥ 1}</b></p>
+<ol>
+<li>Assume L is regular with pumping constant n.</li>
+<li>Choose w = 0ⁿ10ⁿ ∈ L, |w| = 2n + 1 ≥ n.</li>
+<li>With |xy| ≤ n, y lies inside the first block: y = 0ʲ, j ≥ 1.</li>
+<li>k = 2 gives 0ⁿ⁺ʲ10ⁿ: the number of 0s before the 1 differs from the number after it, so it is not in L.</li>
+<li>Contradiction; L is not regular.</li>
+</ol>` },
+
+{ u:1, m:8, t:"DFA minimisation by the table-filling algorithm", items:[
+  {p:"jl25a", q:"22a", x:"Use the table filling algorithm to minimize the following DFA. (Figure: 8 states q0–q7 over {0,1}, final state q2.)"}
+], a: `
+<p><b>Table-filling (Myhill–Nerode) algorithm:</b></p>
+<ol>
+<li>Remove states not reachable from the start state.</li>
+<li>Draw a triangular table with one cell for every pair of states.</li>
+<li><b>Basis:</b> mark every pair (p, q) where exactly one of p, q is final.</li>
+<li><b>Induction:</b> for an unmarked pair (p, q) and each input a, if the pair (δ(p,a), δ(q,a)) is already marked, mark (p, q). Repeat until a full pass marks nothing.</li>
+<li>Unmarked pairs are equivalent; merge them.</li>
+</ol>
+<p><b>The DFA in the figure</b> (the standard 8-state example): q0: 0→q1, 1→q5; q1: 0→q6, 1→q2; *q2: 0→q0, 1→q2; q3: 0→q2, 1→q6; q4: 0→q7, 1→q5; q5: 0→q2, 1→q6; q6: 0→q6, 1→q4; q7: 0→q6, 1→q2.</p>` + G.min_hop + `
+<p><b>How the marks arise:</b> first every pair with q2 is marked. Then q0 and q1 are marked because on 1 they go to q5 and q2 (a marked pair); likewise q5 is separated from q0, q1 because on 0 it goes to the final state. In the next pass q6 is separated from q0 and q4. The pairs that stay unmarked are (q0,q4), (q1,q7) and (q3,q5); q3 is unreachable, so the reachable machine merges q0 with q4 and q1 with q7.</p>
+<p>Show the triangular table with × in every marked cell in your answer.</p>` },
+
+{ u:1, m:15, t:"Regular expression scenario — RE, DFA, ε-NFA, NFA to DFA (15 marks)", items:[
+  {p:"n23", q:"26", x:"A bus stops in each stop in a pattern that it covers the stops around the shop area repeatedly and then it stops the other areas once. The stops around the shopping zone are grocery shop ('a'), Meat shop ('b'), dress shop('c') and the others are another grocery stop ('a'), another dress shop ('c'). i. Write a Regular Expression for the above scenario (1 mark) ii. Draw a DFA for the Regular Expression (3 marks) iii. What are the input strings accepted by the R.E (3 marks) iv. Design a ε-NFA using Thompson's construction (3 marks) v. Design a NFA for the Regular Expression and convert it to the DFA (5 marks)"}
+], a: `
+<p><b>(i) Regular expression.</b> The shopping-zone stops a, b, c are covered repeatedly, then the other stops a and c once: <b class="m">(abc)*ac</b>.</p>
+<p><b>(ii) DFA.</b></p>
+<div class="tw"><table>
+<tr><th>State</th><th>Meaning</th><th>a</th><th>b</th><th>c</th></tr>
+<tr><td class="m">→ q0</td><td>at the start of a round</td><td class="m">q1</td><td class="m">qd</td><td class="m">qd</td></tr>
+<tr><td class="m">q1</td><td>read a</td><td class="m">qd</td><td class="m">q2</td><td class="m">q3</td></tr>
+<tr><td class="m">q2</td><td>read ab</td><td class="m">qd</td><td class="m">qd</td><td class="m">q0</td></tr>
+<tr><td class="m">* q3</td><td>finished with ac</td><td class="m">qd</td><td class="m">qd</td><td class="m">qd</td></tr>
+<tr><td class="m">qd</td><td>dead</td><td class="m">qd</td><td class="m">qd</td><td class="m">qd</td></tr>
+</table></div>
+<p><b>(iii) Strings accepted:</b> ac, abcac, abcabcac, abcabcabcac, … = {(abc)ⁿac | n ≥ 0}. Not accepted: ε, abc, aac, abca.</p>
+<p><b>(iv) ε-NFA by Thompson's construction.</b> Build a –b–c as three symbol machines joined by ε; wrap them in the star construction (new start and final, ε to skip, ε to loop back); then join with ε to the machines for a and c. Number the states in order; every joint is an ε-arrow.</p>
+<p><b>(v) NFA and conversion.</b> NFA: p0 –a→ p1 –b→ p2 –c→ p0 (the loop) and p0 –a→ p3 –c→ p4 (final). It is non-deterministic at p0 on a.</p>
+<div class="tw"><table>
+<tr><th>DFA state</th><th>a</th><th>b</th><th>c</th></tr>
+<tr><td class="m">→ {p0}</td><td class="m">{p1,p3}</td><td class="m">∅</td><td class="m">∅</td></tr>
+<tr><td class="m">{p1,p3}</td><td class="m">∅</td><td class="m">{p2}</td><td class="m">{p4}</td></tr>
+<tr><td class="m">{p2}</td><td class="m">∅</td><td class="m">∅</td><td class="m">{p0}</td></tr>
+<tr><td class="m">* {p4}</td><td class="m">∅</td><td class="m">∅</td><td class="m">∅</td></tr>
+</table></div>
+<p>This is the same machine as in (ii) with {p0} = q0, {p1,p3} = q1, {p2} = q2, {p4} = q3 and ∅ = dead.</p>
+<p>If you read the scenario as “any shopping-zone stop, in any order, repeatedly”, the expression is (a+b+c)*ac; state your reading in the first line of the answer.</p>` },
+
+{ u:1, m:15, t:"DFA to regular expression by the Rijk method (15 marks)", items:[
+  {p:"n24", q:"26", x:"In an organization, employee ID is generated over the input symbol {a, b} any combination of input symbols could be formed as an employee ID but atleast one ‘a’ should be a part of it. Do the following for the above scenario. a. Identify the strings of the language b. Construct DFA c. Convert the DFA to Regular Expression using Rijk method."}
+], a: `
+<p><b>(a) Language.</b> L = {w ∈ {a,b}* : w contains at least one a} = {a, aa, ab, ba, aab, aba, baa, bab, bba, …}. Not in L: ε, b, bb, bbb. Regular expression expected: (a+b)*a(a+b)*.</p>
+<p><b>(b) DFA.</b> M = ({1, 2}, {a,b}, δ, 1, {2}).</p>
+<div class="tw"><table>
+<tr><th>State</th><th>a</th><th>b</th></tr>
+<tr><td class="m">→ 1 (no a yet)</td><td class="m">2</td><td class="m">1</td></tr>
+<tr><td class="m">* 2 (a seen)</td><td class="m">2</td><td class="m">2</td></tr>
+</table></div>
+<p><b>(c) R<sub>ij</sub><sup>(k)</sup> method.</b> R<sub>ij</sub><sup>(k)</sup> = strings taking state i to state j using intermediate states numbered ≤ k.</p>
+<p class="f">R(k)ij = R(k−1)ij + R(k−1)ik ( R(k−1)kk )* R(k−1)kj</p>
+<p><b>k = 0</b> (direct arrows; add ε when i = j):</p>
+<div class="tw"><table>
+<tr><th></th><th>k = 0</th><th>k = 1</th></tr>
+<tr><td class="m">R11</td><td class="m">ε + b</td><td class="m">(ε+b) + (ε+b)(ε+b)*(ε+b) = b*</td></tr>
+<tr><td class="m">R12</td><td class="m">a</td><td class="m">a + (ε+b)(ε+b)*a = b*a</td></tr>
+<tr><td class="m">R21</td><td class="m">∅</td><td class="m">∅ + ∅(ε+b)*(ε+b) = ∅</td></tr>
+<tr><td class="m">R22</td><td class="m">ε + a + b</td><td class="m">(ε+a+b) + ∅(ε+b)*a = ε + a + b</td></tr>
+</table></div>
+<p><b>k = 2:</b> the answer is R<sub>12</sub><sup>(2)</sup> (start state 1, final state 2).</p>
+<pre>R12(2) = R12(1) + R12(1) ( R22(1) )* R22(1)
+       = b*a + b*a (ε+a+b)* (ε+a+b)
+       = b*a + b*a (a+b)*
+       = b*a (a+b)*</pre>
+<p><b>Regular expression: b*a(a+b)*</b> — any number of b's, the first a, then anything. It is equivalent to (a+b)*a(a+b)*.</p>
+<p>Simplification rules used: (ε + r)* = r*, (ε + r)r* = r*, r + rs* = rs*, ∅r = ∅.</p>` },
+
+/* ================= UNIT 2 ================= */
+{ u:2, m:8, t:"Simplifying a CFG — removing ε, unit and useless productions", items:[
+  {p:"n23", q:"22b", x:"i. Simplify the following context-free grammar G = {N,T,P,S}, P = {S → AB, A → a, B → b, B → C, E → C | ε} (4) ii. Check whether the following is in Chomsky Normal Form or not: S → bA | aB, A → bAA | aS | a, B → bBB | bS | b (4)"},
+  {p:"m24", q:"22a", x:"Simplify the given grammar G: S → aA | a | C, A → aB | ε, B → aA, C → cCD."},
+  {p:"m25", q:"22a", x:"Remove all unit-productions, all useless productions, and all null-productions from the grammar G: S → aA | aBB, A → aaA | ε, B → bB | bbC, C → B. What language does this grammar generate?"},
+  {p:"jl25b", q:"22a", x:"Simplify the production from the following CFG by preserving the meaning of it. S → XYX, X → 0X | ε, Y → 1Y | ε."},
+  {p:"m26", q:"22b", x:"Remove the null production from the given grammars: i) S → aS | AB, A → ε, B → ε, D → b. ii) S → ABC, A → BC | a, B → bAC | ε."}
+], a: `
+<p><b>Order of simplification:</b> (1) ε-productions, (2) unit productions, (3) useless symbols — first non-generating, then unreachable.</p>
+<ul>
+<li><b>Nullable</b> variable: derives ε. For each body, add every variant with nullable variables left out, then delete the ε-productions.</li>
+<li><b>Unit</b> production A → B: replace it with all non-unit bodies of B.</li>
+<li><b>Generating</b> symbol: derives some terminal string. <b>Reachable:</b> appears in a derivation from S.</li>
+</ul>
+<p><b>Nov 2023 (i).</b> C has no production, so C is non-generating: delete B → C and E → C. E is unreachable from S: delete E → ε. <b>Result: S → AB, A → a, B → b</b> (L = {ab}).</p>
+<p><b>Nov 2023 (ii).</b> CNF allows only A → BC or A → a. S → bA, A → bAA, A → aS, B → bBB, B → bS mix a terminal with variables (and some have three symbols), so the grammar is <b>not in CNF</b>; it is in Greibach normal form. CNF version: C<sub>a</sub> → a, C<sub>b</sub> → b; S → C<sub>b</sub>A | C<sub>a</sub>B; A → C<sub>b</sub>D | C<sub>a</sub>S | a; D → AA; B → C<sub>b</sub>E | C<sub>b</sub>S | b; E → BB.</p>
+<p><b>May 2024.</b> D has no production, so C → cCD can never finish: C is non-generating; delete S → C and C → cCD. Nullable: A. Remove ε: S → aA | a; B → aA | a; A → aB. No unit productions; all symbols useful. <b>Result: S → aA | a, A → aB, B → aA | a.</b> Language: a, aaa, aaaaa, … = a(aa)*.</p>
+<p><b>May 2025.</b> B → bB | bbC and C → B never produce a terminal string: B and C are non-generating; delete S → aBB and all B, C productions (this also removes the unit production C → B). Left: S → aA, A → aaA | ε. Nullable: A. <b>Result: S → aA | a, A → aaA | aa.</b> <b>Language: an odd number of a's, L = {a²ⁿ⁺¹ | n ≥ 0} = a(aa)*.</b></p>
+<p><b>Jul 2025 · II.</b> Nullable: X, Y, S. Remove ε: S → XYX | XY | YX | XX | X | Y; X → 0X | 0; Y → 1Y | 1. Remove units S → X, S → Y: <b>S → XYX | XY | YX | XX | 0X | 0 | 1Y | 1; X → 0X | 0; Y → 1Y | 1.</b> The language is 0*1*0* without ε; if ε must be kept, add a new start S₀ → S | ε.</p>
+<p><b>May 2026 (i).</b> Nullable: A, B, then S (S → AB). S → aS | a | AB | A | B. A and B derive only ε, so after deleting A → ε and B → ε they have no productions and every body containing them is removed. D is unreachable. <b>Result: S → aS | a</b> (plus S₀ → S | ε to keep ε).</p>
+<p><b>May 2026 (ii).</b> As printed, C has no production; with the usual rule C → cAB | ε (the standard form of this problem) the nullable set is {A, B, C, S} and the result is: <b>S → ABC | AB | AC | BC | A | B | C; A → BC | B | C | a; B → bAC | bA | bC | b; C → cAB | cA | cB | c.</b> (If C really has no production, C is non-generating, S → ABC can never finish, and the grammar generates nothing.)</p>` },
+
+{ u:2, m:8, t:"Derivations, parse trees, ambiguity and writing a CFG", items:[
+  {p:"n23", q:"22a", x:"i. If S → aSb | aAb, A → bAa, A → ba. Find out the CFL. (4) ii. Generate a context-free grammar for the positive and negative integers. (4)"},
+  {p:"m24", q:"22b", x:"Find leftmost, rightmost derivations and parse tree for w=+*-xyxy for the production rule given below E → +EE | *EE | -EE | x | y."},
+  {p:"n24", q:"22a", x:"i) Find whether the following grammar is ambiguous. S → AS | A, A → aAb | c. ii) Discuss about any four properties of a regular set with an example."},
+  {p:"n24", q:"22b", x:"Design a CFG for the HTML code where it has to accept the correct form of the HTML language. The CFG should be written for the following tags without generating any ambiguity in the language flow. The tags are <body>, <h1>, <p>, <a>, <div> and characters inside the tags for displaying the text."},
+  {p:"d25", q:"22a", x:"For each of the following two languages, find the respective context free grammar that generates it. i) L₁ = {aⁿb²ⁿ : n>=1} over the alphabet Σ = {a,b} (4 marks) ii) L₂ = {aⁿbᵐcᵐdⁿ : n>=1} over the alphabet Σ = {a,b,c,d} (4 marks)"}
+], a: `
+<p><b>Definitions.</b> A CFG is G = (V, T, P, S). <b>Leftmost derivation:</b> always replace the leftmost variable; <b>rightmost:</b> the rightmost. A <b>parse tree</b> has the start symbol at the root, variables inside and terminals (or ε) at the leaves; its yield is the derived string. A grammar is <b>ambiguous</b> if some string has two parse trees (two leftmost derivations).</p>
+<p><b>Nov 2023 (i).</b> A → bAa | ba gives bᵐaᵐ (m ≥ 1). S → aSb | aAb wraps it in aⁿ … bⁿ (n ≥ 1). <b>L = {aⁿbᵐaᵐbⁿ | n ≥ 1, m ≥ 1}.</b></p>
+<p><b>Nov 2023 (ii) — integers.</b></p>
+<pre>S → +N | −N | N
+N → D N | D
+D → 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9</pre>
+<p>Example: S ⇒ −N ⇒ −DN ⇒ −4N ⇒ −4D ⇒ −42.</p>
+<p><b>May 2024 — w = +*−xyxy.</b></p>
+<pre>Leftmost:  E ⇒ +EE ⇒ +*EEE ⇒ +*−EEEE ⇒ +*−xEEE ⇒ +*−xyEE ⇒ +*−xyxE ⇒ +*−xyxy
+Rightmost: E ⇒ +EE ⇒ +Ey ⇒ +*EEy ⇒ +*Exy ⇒ +*−EExy ⇒ +*−Eyxy ⇒ +*−xyxy</pre>
+<p><b>Parse tree:</b> root E with children +, E, E. The first E has children *, E, E; its first E has children −, E(x), E(y) and its second is x. The root's last child is y. (The expression is ((x − y) * x) + y in prefix form; the grammar is unambiguous.)</p>
+<p><b>Nov 2024 22a(i).</b> A generates aⁿcbⁿ (n ≥ 0) in exactly one way, and S → AS | A generates one or more such blocks, split in exactly one way because each block has a single c in its middle. Every string therefore has <b>one</b> leftmost derivation: the grammar is <b>not ambiguous</b>. Example: cacb has only S ⇒ AS ⇒ cS ⇒ cA ⇒ caAb ⇒ cacb.</p>
+<p><b>Nov 2024 22a(ii) — four properties of regular sets.</b> (1) Union of two regular sets is regular: (ab)* ∪ a*. (2) Concatenation is regular: a*·b*. (3) Kleene closure is regular: (ab)*. (4) The complement and intersection of regular sets are regular: complement of “strings with 00” is “strings without 00”. Also reversal, difference and homomorphism.</p>
+<p><b>Nov 2024 22b — HTML grammar (unambiguous).</b></p>
+<pre>Doc      → &lt;body&gt; Elements &lt;/body&gt;
+Elements → Element Elements | ε
+Element  → &lt;h1&gt; Text &lt;/h1&gt;
+         | &lt;p&gt; Text &lt;/p&gt;
+         | &lt;a&gt; Text &lt;/a&gt;
+         | &lt;div&gt; Elements &lt;/div&gt;
+Text     → Char Text | Char
+Char     → a | b | … | z | A | … | Z | 0 | … | 9 | space</pre>
+<p>Each element starts with a different opening tag and lists are built to the right only, so every document has exactly one parse tree. Example: &lt;body&gt;&lt;h1&gt;Hi&lt;/h1&gt;&lt;div&gt;&lt;p&gt;ok&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;.</p>
+<p><b>Dec 2025.</b></p>
+<pre>(i)  L1 = { aⁿb²ⁿ | n ≥ 1 }:      S → aSbb | abb
+(ii) L2 = { aⁿbᵐcᵐdⁿ | n,m ≥ 1 }:  S → aSd | aAd
+                                   A → bAc | bc</pre>
+<p>Check (i): S ⇒ aSbb ⇒ aabbbb. Check (ii): S ⇒ aSd ⇒ aaAdd ⇒ aabcdd.</p>` },
+
+{ u:2, m:8, t:"Greibach Normal Form (GNF) conversions — 8 mark versions", items:[
+  {p:"jl24", q:"24a", x:"Convert the following grammar G into Greibach Normal Form (GNF): S → XA | BB, B → b | SB, X → b, A → a."},
+  {p:"m25", q:"22b", x:"Convert the given context free grammar into its equivalent Greibach normal form (GNF): S → AA | a, A → SS | b."},
+  {p:"jl25a", q:"22b", x:"i. Convert the following CFG to GNF: S → AB, S → BSB | BB | b, S → aAb | a. ii. Test whether the following grammars are ambiguous. 1. S → 0S1S | 1S0S | ε 2. S → AA, A → aAb | bAa | ε."},
+  {p:"jl25b", q:"22b", x:"Convert the given grammar from CFG to GNF: S → XB | AA, A → a | SA, B → b, X → a."}
+], a: A_GNF_METHOD + `
+<p><b>Jul 2025 · II — S → XB | AA, A → a | SA, B → b, X → a.</b></p>
+<ol>
+<li>Substitute X: S → aB | AA.</li>
+<li>A → a | SA = a | aBA | AAA (left recursive).</li>
+<li>Remove left recursion with Z: A → a | aBA | aZ | aBAZ; Z → AA | AAZ.</li>
+<li>Back-substitute A at the front of S and Z.</li>
+</ol>
+<pre>S → aB | aA | aBAA | aZA | aBAZA
+A → a | aBA | aZ | aBAZ
+Z → aA | aBAA | aZA | aBAZA | aAZ | aBAAZ | aZAZ | aBAZAZ
+B → b
+X → a</pre>
+<p><b>Jul 2024 — S → XA | BB, B → b | SB, X → b, A → a.</b></p>
+<ol>
+<li>S → bA | BB.</li>
+<li>B → b | SB = b | bAB | BBB.</li>
+<li>Remove left recursion: B → b | bAB | bZ | bABZ; Z → BB | BBZ.</li>
+<li>Back-substitute B.</li>
+</ol>
+<pre>S → bA | bB | bABB | bZB | bABZB
+B → b | bAB | bZ | bABZ
+Z → bB | bABB | bZB | bABZB | bBZ | bABBZ | bZBZ | bABZBZ
+A → a
+X → b</pre>
+<p><b>May 2025 — S → AA | a, A → SS | b.</b> Order S &lt; A.</p>
+<ol>
+<li>A → SS | b = AAS | aS | b (left recursive).</li>
+<li>A → aS | b | aSZ | bZ; Z → AS | ASZ.</li>
+<li>S → AA | a: substitute the first A.</li>
+<li>Z: substitute the first A.</li>
+</ol>
+<pre>A → aS | b | aSZ | bZ
+S → aSA | bA | aSZA | bZA | a
+Z → aSS | bS | aSZS | bZS | aSSZ | bSZ | aSZSZ | bZSZ</pre>
+<p><b>Jul 2025 · I (i).</b> All three lines are printed with S on the left, which cannot be intended; reading them as S → AB, B → BSB | BB | b, A → aAb | a:</p>
+<ol>
+<li>A → aAb | a: introduce C → b: A → aAC | a.</li>
+<li>B → BSB | BB | b is left recursive: B → b | bZ; Z → SB | B | SBZ | BZ.</li>
+<li>S → AB = aACB | aB.</li>
+<li>Substitute the leading S and B in Z.</li>
+</ol>
+<pre>S → aACB | aB
+A → aAC | a
+C → b
+B → b | bZ
+Z → aACBB | aBB | b | bZ | aACBBZ | aBBZ | bZZ</pre>
+<p><b>Jul 2025 · I (ii) — ambiguity.</b></p>
+<ul>
+<li><b>S → 0S1S | 1S0S | ε is ambiguous.</b> The string 0101 has two leftmost derivations: (a) S ⇒ 0S1S ⇒ 01S ⇒ 010S1S ⇒ 0101S ⇒ 0101 (inner S = ε, outer S = 01); (b) S ⇒ 0S1S ⇒ 01S0S1S ⇒ 010S1S ⇒ 0101S ⇒ 0101 (inner S = 10, outer S = ε).</li>
+<li><b>S → AA, A → aAb | bAa | ε is ambiguous.</b> The string ab comes from S ⇒ AA with the first A ⇒ aAb ⇒ ab and the second A ⇒ ε, or with the first A ⇒ ε and the second A ⇒ ab: two leftmost derivations.</li>
+</ul>` },
+
+{ u:2, m:15, t:"GNF conversion with ε-productions (15 marks)", items:[
+  {p:"m26", q:"26", x:"Convert the following grammar into GNF: S → aA | bB, B → bB | ε, A → aA | ε."}
+], a: A_GNF_METHOD + `
+<p><b>Step 1 — remove ε-productions.</b> Nullable variables: A (A → ε) and B (B → ε). S is not nullable because both its bodies start with a terminal. Add versions with the nullable variable omitted:</p>
+<pre>S → aA | a | bB | b
+A → aA | a
+B → bB | b</pre>
+<p><b>Step 2 — unit productions:</b> none. <b>Step 3 — useless symbols:</b> S, A, B are all generating and reachable.</p>
+<p><b>Step 4 — check the GNF form A → aα (α ∈ V*).</b></p>
+<div class="tw"><table>
+<tr><th>Production</th><th>Leading terminal</th><th>Variables after it</th><th>GNF?</th></tr>
+<tr><td class="m">S → aA</td><td>a</td><td>A</td><td>yes</td></tr>
+<tr><td class="m">S → a</td><td>a</td><td>—</td><td>yes</td></tr>
+<tr><td class="m">S → bB</td><td>b</td><td>B</td><td>yes</td></tr>
+<tr><td class="m">S → b</td><td>b</td><td>—</td><td>yes</td></tr>
+<tr><td class="m">A → aA | a</td><td>a</td><td>A / —</td><td>yes</td></tr>
+<tr><td class="m">B → bB | b</td><td>b</td><td>B / —</td><td>yes</td></tr>
+</table></div>
+<p>No left recursion and no leading variable, so no substitution is needed. <b>The grammar in GNF is:</b></p>
+<pre>S → aA | a | bB | b
+A → aA | a
+B → bB | b</pre>
+<p><b>Language:</b> A gives a⁺ and B gives b⁺ after their leading symbol, so L(G) = {aⁿ | n ≥ 1} ∪ {bⁿ | n ≥ 1} = aa* + bb*. The original grammar generates the same set (aA with A ⇒ ε gives a), so ε was never in L and nothing is lost.</p>
+<p><b>Check:</b> aaa: S ⇒ aA ⇒ aaA ⇒ aaa. bb: S ⇒ bB ⇒ bb. In GNF each step produces exactly one terminal, so a string of length n needs exactly n steps.</p>
+<p><b>For the full 15 marks</b> write the definition of GNF, the general five-step method above (ordering variables, making A<sub>i</sub> → A<sub>j</sub>γ have j &gt; i, removing left recursion with a new variable, back-substitution) and note that this grammar needs only the ε-removal step. Mention the use of GNF: a PDA built from a GNF grammar reads one input symbol per move.</p>` },
+
+{ u:2, m:8, t:"Chomsky Normal Form conversion (8 marks)", items:[
+  {p:"m26", q:"22a", x:"Convert the following grammar to CNF: S → aAa | bBb | ε, A → C | a, B → C | b, C → CDE | ε, D → A | B | ab."}
+], a: A_CNF_METHOD + `
+<p><b>Step 1 — useless symbol first.</b> E has no production, so E is non-generating and C → CDE can never be used. Only C → ε remains for C.</p>
+<p><b>Step 2 — ε-productions.</b> Nullable: C, then A and B (A → C, B → C), D (D → A), and S. Removing ε:</p>
+<pre>S → aAa | aa | bBb | bb
+A → C | a
+B → C | b
+D → A | B | ab</pre>
+<p>C now has no production, so A → C and B → C disappear.</p>
+<p><b>Step 3 — unit productions.</b> D → A | B becomes D → a | b | ab.</p>
+<p><b>Step 4 — unreachable symbols.</b> D cannot be reached from S: delete it.</p>
+<pre>S → aAa | aa | bBb | bb
+A → a
+B → b</pre>
+<p><b>Step 5 — CNF form.</b> X → a, Y → b for terminals in long bodies; P → AX, Q → BY to shorten.</p>
+<pre>S → XP | XX | YQ | YY
+P → AX
+Q → BY
+A → a      B → b
+X → a      Y → b</pre>
+<p>The original language is {ε, aa, aaa, bb, bbb}. Since ε ∈ L, add a new start symbol <span class="m">S₀ → XP | XX | YQ | YY | ε</span>.</p>` },
+
+{ u:2, m:15, t:"CNF (and GNF) conversion problems — 15 mark versions", items:[
+  {p:"n24", q:"27", x:"Consider the following grammar: S → NP VP; N → cat | dog; NP → the N | NP that VP; VI → barks | bites; VT → bites | catches; VP → VI | VT NP. a) Remove the null production b) Remove the unit production c) Convert to CNF d) Convert to GNF e) Derive parse tree for “the dog catches the cat”."},
+  {p:"jl25a", q:"27", x:"i. Construct a grammar in Chomsky Normal Form for the following CFG. Show the intermediate steps in construction. ({S, A, B, C}, {a, b, c, ε}, P, S): S → ABC, A → BC | a, B → bAC | ε, C → cAB | ε. ii. Find the Regular Expression corresponding to the given automata. (State A with a loop on 1, arrow on 0 to final state B, which loops on 0, 1.)"},
+  {p:"jl25b", q:"26", x:"i) Define Chomsky's Normal Form? Simplify the Grammar and convert the following grammar G into CNF where G = ({A, B, C, D}, {a}, P, S), P: A → AaB | Ca | Ba, B → aB | ε, C → CaC, D → Aa. (12 Marks) ii) Remove the unit productions from the following grammar and write the final production rule: S → AB, A → a, B → C | b, C → D, D → E, E → a. (3 Marks)"},
+  {p:"d25", q:"26", x:"A smart home automation system takes voice commands in the format defined by the following context free grammar. S → VP | Aux VP; VP → V NP | V; NP → Det N | N; Det → the | a | ε; N → cooler | fan | door; V → on | off | open | close; Aux → please. i) Using the original given grammar, generate the string “please open the door” using leftmost derivation. Show intermediary string derivation steps. (3 marks) ii) Convert the given grammar to Chomsky Normal Form (CNF) and then to Greibach Normal Form (GNF). (12 marks)"}
+], a: A_CNF_METHOD + `
+<p><b>Jul 2025 · I Q27(i) — S → ABC, A → BC | a, B → bAC | ε, C → cAB | ε.</b></p>
+<p><b>ε-removal.</b> Nullable: B, C, A (A → BC), S (S → ABC).</p>
+<pre>S → ABC | AB | AC | BC | A | B | C
+A → BC | B | C | a
+B → bAC | bA | bC | b
+C → cAB | cA | cB | c</pre>
+<p><b>Unit removal</b> (S → A | B | C, A → B | C):</p>
+<pre>S → ABC | AB | AC | BC | a | bAC | bA | bC | b | cAB | cA | cB | c
+A → BC | a | bAC | bA | bC | b | cAB | cA | cB | c
+B → bAC | bA | bC | b
+C → cAB | cA | cB | c</pre>
+<p><b>CNF</b> with X<sub>b</sub> → b, X<sub>c</sub> → c, D → AC, E → AB, F → BC:</p>
+<pre>S → AF | AB | AC | BC | a | Xb D | Xb A | Xb C | b | Xc E | Xc A | Xc B | c
+A → BC | a | Xb D | Xb A | Xb C | b | Xc E | Xc A | Xc B | c
+B → Xb D | Xb A | Xb C | b
+C → Xc E | Xc A | Xc B | c
+D → AC     E → AB     F → BC     Xb → b     Xc → c</pre>
+<p>ε is in the original language; add S₀ → (all bodies of S) | ε if it must be kept.</p>
+<p><b>Q27(ii) — regular expression.</b> A loops on 1, then 0 takes it to the final state B, which loops on 0 and 1: <b class="m">1*0(0+1)*</b> (all strings containing at least one 0). By Arden's theorem: A = ε + A1 ⇒ A = 1*; B = A0 + B(0+1) ⇒ B = 1*0(0+1)*.</p>
+<p><b>Jul 2025 · II Q26(i)</b> (start symbol A). <b>CNF definition:</b> every production is A → BC or A → a.</p>
+<ol>
+<li><b>Useless:</b> C → CaC never ends, so C is non-generating: delete C and A → Ca. D is unreachable: delete D → Aa. Left: A → AaB | Ba, B → aB | ε.</li>
+<li><b>ε:</b> B is nullable: A → AaB | Aa | Ba | a; B → aB | a.</li>
+<li><b>Unit:</b> none.</li>
+<li><b>CNF:</b> X → a, Y → XB.</li>
+</ol>
+<pre>A → AY | AX | BX | a
+Y → XB
+B → XB | a
+X → a</pre>
+<p>Language: a⁺.</p>
+<p><b>Q26(ii) — unit productions.</b> B → C → D → E → a, so B ⇒* a. Replace: B → a | b. C, D and E become unreachable. <b>Final: S → AB, A → a, B → a | b.</b></p>
+<p><b>Nov 2024 Q27.</b></p>
+<ul>
+<li><b>(a) Null productions:</b> there are none; the grammar is unchanged.</li>
+<li><b>(b) Unit production</b> VP → VI: replace by VP → barks | bites. VI becomes unreachable.
+<pre>S → NP VP        N → cat | dog        NP → the N | NP that VP
+VT → bites | catches        VP → barks | bites | VT NP</pre></li>
+<li><b>(c) CNF:</b> T → the, H → that, X → H VP.
+<pre>S → NP VP        NP → T N | NP X        X → H VP
+VP → barks | bites | VT NP        VT → bites | catches
+N → cat | dog    T → the    H → that</pre></li>
+<li><b>(d) GNF:</b> NP is left recursive. NP → the N | the N Z; Z → that VP | that VP Z. Substitute leading variables:
+<pre>S  → the N VP | the N Z VP
+NP → the N | the N Z
+Z  → that VP | that VP Z
+VP → barks | bites | bites NP | catches NP
+N  → cat | dog</pre></li>
+<li><b>(e) Parse tree for “the dog catches the cat”:</b> S → NP VP. Left NP → the N, N → dog. VP → VT NP, VT → catches, NP → the N, N → cat. Leftmost derivation: S ⇒ NP VP ⇒ the N VP ⇒ the dog VP ⇒ the dog VT NP ⇒ the dog catches NP ⇒ the dog catches the N ⇒ the dog catches the cat.</li>
+</ul>
+<p><b>Dec 2025 Q26.</b></p>
+<p><b>(i) Leftmost derivation:</b> S ⇒ Aux VP ⇒ please VP ⇒ please V NP ⇒ please open NP ⇒ please open Det N ⇒ please open the N ⇒ please open the door.</p>
+<p><b>(ii) CNF.</b> Nullable: Det. NP → Det N | N already covers the omitted case; delete Det → ε. Unit productions S → VP, VP → V, NP → N are replaced by the bodies they lead to:</p>
+<pre>S   → V NP | on | off | open | close | Aux VP
+VP  → V NP | on | off | open | close
+NP  → Det N | cooler | fan | door
+Det → the | a
+N   → cooler | fan | door
+V   → on | off | open | close
+Aux → please</pre>
+<p>Every body is two variables or one terminal: this is CNF.</p>
+<p><b>GNF:</b> no left recursion, so substitute the leading variable of each two-variable body.</p>
+<pre>S   → on NP | off NP | open NP | close NP | on | off | open | close | please VP
+VP  → on NP | off NP | open NP | close NP | on | off | open | close
+NP  → the N | a N | cooler | fan | door
+N   → cooler | fan | door
+Det → the | a        V → on | off | open | close        Aux → please</pre>
+<p>Check in GNF: S ⇒ please VP ⇒ please open NP ⇒ please open the N ⇒ please open the door.</p>` },
+
+{ u:2, m:15, t:"Pumping lemma for CFLs + minimising a finite automaton (15 marks)", items:[
+  {p:"m25", q:"26", x:"1. State and Prove the pumping lemma for context free languages. Using the pumping lemma find out whether the language L={aⁿbⁿcⁿ : n>=1} is context free or not. 2. Minimize the given FA: →q0: a→q1, b→q2; *q1: a→q3, b→q4; *q2: a→q4, b→q3; q3: a→q5, b→q5; q4: a→q5, b→q5; *q5: a→q5, b→q5."}
+], a: `
+<p><b>Pumping lemma for CFLs — statement.</b> For every context-free language L there is a constant n such that every z ∈ L with |z| ≥ n can be written z = uvwxy with (1) |vwx| ≤ n, (2) vx ≠ ε, (3) uvⁱwxⁱy ∈ L for all i ≥ 0.</p>
+<p><b>Proof.</b> Take a CNF grammar for L − {ε} with m variables and let n = 2ᵐ. A parse tree in CNF is binary, so a tree whose longest path has k variables has a yield of length at most 2ᵏ⁻¹. If |z| ≥ 2ᵐ, the tree for z has a path with at least m + 1 variables. By the pigeonhole principle some variable A repeats among the last m + 1 variables of that path: A ⇒* vAx and A ⇒* w, with S ⇒* uAy. The lower A gives w, the upper A gives vwx. Because the upper A is within m + 1 levels of the leaves, |vwx| ≤ 2ᵐ = n. In CNF the upper A has two children, one of which does not contain the lower A, so v and x are not both ε. Repeating the piece A ⇒* vAx i times gives S ⇒* uvⁱwxⁱy for every i ≥ 0 (i = 0 replaces the upper subtree by the lower one). ∎</p>
+<p><b>L = {aⁿbⁿcⁿ | n ≥ 1} is not context-free.</b></p>
+<ol>
+<li>Assume L is a CFL with constant n. Choose z = aⁿbⁿcⁿ, |z| = 3n ≥ n.</li>
+<li>z = uvwxy with |vwx| ≤ n and vx ≠ ε.</li>
+<li>Since |vwx| ≤ n, vwx cannot contain both an a and a c (they are separated by n b's). So vwx lies inside aⁿbⁿ or inside bⁿcⁿ.</li>
+<li><b>Case 1:</b> vwx has no c. Then uv²wx²y has more a's or b's than before but still n c's, so the three counts are not equal (or the letters are out of order): not in L.</li>
+<li><b>Case 2:</b> vwx has no a. Then uv²wx²y has n a's but more b's or c's: not in L.</li>
+<li>Every split fails, contradicting the lemma. <b>L is not context-free.</b></li>
+</ol>
+<p><b>2. Minimising the FA.</b> Partition into final and non-final states, then split groups whose members go to different groups on some input.</p>` + G.min_m25 + `
+<p>q1 and q2 are equivalent (both are final and both go to the {q3,q4} group on a and b); q3 and q4 are equivalent (both non-final, both go to q5). q5 is final but goes to a final state, unlike q1 and q2, so it stays separate. The minimised machine accepts strings of length 1 and strings of length ≥ 3.</p>` }
+];
+
+const A_PDA_DEF = `<p>A <b>PDA</b> is P = (Q, Σ, Γ, δ, q<sub>0</sub>, Z<sub>0</sub>, F) with δ: Q × (Σ ∪ {ε}) × Γ → finite subsets of Q × Γ*. A move (q, a, X) → (p, γ) reads a, pops X and pushes γ. An <b>instantaneous description</b> is (state, remaining input, stack). Acceptance is by <b>final state</b> or by <b>empty stack</b>; the two are equivalent.</p>`;
+
+const A_CFG2PDA = `<p><b>CFG to PDA (empty stack, one state q):</b> start with S on the stack. (1) For each production A → α: δ(q, ε, A) contains (q, α) — expand. (2) For each terminal a: δ(q, a, a) = (q, ε) — match and pop. The PDA simulates a leftmost derivation.</p>`;
+
+const A_PDA2CFG = `<p><b>PDA to CFG (empty-stack PDA).</b> Variables are S and triples [q X p] meaning “starting in q with X on top, the PDA can pop X and end in p”.</p>
+<ul>
+<li>S → [q<sub>0</sub> Z<sub>0</sub> p] for every state p.</li>
+<li>For δ(q, a, X) ∋ (r, ε): [q X r] → a.</li>
+<li>For δ(q, a, X) ∋ (r, Y<sub>1</sub>Y<sub>2</sub>…Y<sub>k</sub>): [q X p<sub>k</sub>] → a [r Y<sub>1</sub> p<sub>1</sub>][p<sub>1</sub> Y<sub>2</sub> p<sub>2</sub>]…[p<sub>k−1</sub> Y<sub>k</sub> p<sub>k</sub>] for all choices of states p<sub>1</sub>…p<sub>k</sub>.</li>
+</ul>
+<p>Finally delete variables that have no productions or can never finish.</p>`;
+
+const A_TM_DEF = `<p>A <b>Turing machine</b> is M = (Q, Σ, Γ, δ, q<sub>0</sub>, B, F): Q states, Σ input alphabet, Γ tape alphabet (Σ ⊂ Γ), δ: Q × Γ → Q × Γ × {L, R}, q<sub>0</sub> start state, B blank, F accepting states. An <b>instantaneous description</b> α q β shows the tape contents αβ with the head on the first symbol of β in state q. M halts when no move is defined.</p>`;
+
+const A_PNP = `
+<ul>
+<li><b>Class P:</b> decision problems solved by a deterministic Turing machine in polynomial time O(nᵏ). Examples: sorting, shortest path (Dijkstra), minimum spanning tree, linear programming, primality testing, 2-SAT.</li>
+<li><b>Class NP:</b> problems solved by a <b>non-deterministic</b> TM in polynomial time; equivalently, a proposed solution (certificate) can be <b>verified</b> in polynomial time. A non-deterministic algorithm has two stages: guess, then verify. Examples: SAT, Hamiltonian cycle, subset sum, clique, graph colouring. P ⊆ NP; whether P = NP is open.</li>
+<li><b>Polynomial-time reduction</b> A ≤<sub>p</sub> B: a polynomial-time function f with x ∈ A ⇔ f(x) ∈ B. If B is easy then A is easy.</li>
+<li><b>NP-hard:</b> every problem in NP reduces to it in polynomial time. It need not be in NP, and need not even be decidable. Examples: halting problem, optimisation version of travelling salesman, 0/1 knapsack optimisation.</li>
+<li><b>NP-complete:</b> in NP <b>and</b> NP-hard — the hardest problems in NP. Examples: SAT (Cook–Levin theorem, the first), 3-SAT, clique, vertex cover, Hamiltonian cycle, TSP decision version, subset sum, graph 3-colouring.</li>
+</ul>
+<p><b>Relationship:</b> NP-complete = NP ∩ NP-hard. If any NP-complete problem has a polynomial algorithm then P = NP; if P ≠ NP then no NP-complete problem is in P (NP-complete ∩ P = ∅). To prove a new problem X NP-complete: (1) show X ∈ NP; (2) reduce a known NP-complete problem to X in polynomial time.</p>
+<p><b>Diagram:</b> a large oval NP containing a small oval P on one side and the region NP-complete on the other; NP-hard is a region that overlaps NP exactly in NP-complete and extends outside NP.</p>`;
+
+const A_PCP_DEF = `<p><b>Post's Correspondence Problem (PCP).</b> Given two lists of k strings over Σ, A = (w<sub>1</sub>, …, w<sub>k</sub>) and B = (x<sub>1</sub>, …, x<sub>k</sub>), is there a non-empty sequence of indices i<sub>1</sub>, i<sub>2</sub>, …, i<sub>m</sub> (repeats allowed) with w<sub>i1</sub>w<sub>i2</sub>…w<sub>im</sub> = x<sub>i1</sub>x<sub>i2</sub>…x<sub>im</sub>? Such a sequence is a <b>solution</b>. <b>MPCP</b> (modified PCP) is the same question with the extra condition that the sequence must start with index 1.</p>`;
+
+const A_PCP_UNDEC = `<p><b>PCP is undecidable — proof outline.</b> Reduce L<sub>u</sub> (does TM M accept w?), which is undecidable, to MPCP, and MPCP to PCP.</p>
+<p><b>Step 1: MPCP reduces to PCP.</b> Given an MPCP instance A = (w<sub>1</sub>..w<sub>k</sub>), B = (x<sub>1</sub>..x<sub>k</sub>), build a PCP instance with new symbols * and $: y<sub>i</sub> = w<sub>i</sub> with * <b>after</b> every symbol; z<sub>i</sub> = x<sub>i</sub> with * <b>before</b> every symbol. Add a start pair y<sub>0</sub> = *y<sub>1</sub>, z<sub>0</sub> = z<sub>1</sub>, and an end pair y<sub>k+1</sub> = $, z<sub>k+1</sub> = *$. Only pair 0 has both strings starting with the same symbol, so every PCP solution must begin with it; removing the *s and $ gives an MPCP solution, and conversely. So MPCP has a solution ⇔ the new PCP instance has one.</p>
+<p><b>Step 2: L<sub>u</sub> reduces to MPCP.</b> From (M, w) build pairs so that a partial solution spells out the sequence of IDs of M on w, with the B string always one ID ahead:</p>
+<div class="tw"><table>
+<tr><th>Group</th><th>List A</th><th>List B</th><th>Purpose</th></tr>
+<tr><td>First pair</td><td class="m">#</td><td class="m">#q0w#</td><td>Start ID</td></tr>
+<tr><td>Copy</td><td class="m">X, #</td><td class="m">X, #</td><td>Copy tape symbols and separators</td></tr>
+<tr><td>Moves</td><td class="m">qX, ZqX, q#, Zq#</td><td class="m">Yp, pZY, Yp#, pZY#</td><td>One pair per move of δ (right / left, on a symbol or at the blank end)</td></tr>
+<tr><td>Erase</td><td class="m">XqY, Xq, qY (q accepting)</td><td class="m">q</td><td>Accepting state eats the tape</td></tr>
+<tr><td>Finish</td><td class="m">q##</td><td class="m">#</td><td>Lets list A catch up</td></tr>
+</table></div>
+<p>List A can only catch up with list B if M reaches an accepting state, so the MPCP instance has a solution ⇔ M accepts w.</p>
+<p><b>Conclusion:</b> if PCP were decidable, MPCP would be decidable, and then L<sub>u</sub> would be decidable — a contradiction. Hence PCP is undecidable.</p>`;
+
+const A_RICE = `<p><b>Rice's theorem.</b> Every <b>non-trivial</b> property of the recursively enumerable languages is undecidable. A property P is a set of RE languages; it is trivial if it is empty or contains all RE languages. Formally, L<sub>P</sub> = {⟨M⟩ | L(M) has property P} is not recursive when P is non-trivial. (A property of the <i>language</i>, not of the machine: “M has 5 states” is not covered.)</p>
+<p><b>Proof.</b> Assume ∅ ∉ P (otherwise work with the complement of P). Since P is non-trivial, some language L ∈ P is accepted by a TM M<sub>L</sub>. Reduce L<sub>u</sub> to L<sub>P</sub>: given (M, w), build a TM M′ that on input x (1) simulates M on w, ignoring x; (2) if M accepts w, simulates M<sub>L</sub> on x and accepts if M<sub>L</sub> accepts.</p>
+<ul>
+<li>If M accepts w: L(M′) = L, which has property P.</li>
+<li>If M does not accept w: M′ accepts nothing, L(M′) = ∅, which does not have P.</li>
+</ul>
+<p>So (M, w) ∈ L<sub>u</sub> ⇔ ⟨M′⟩ ∈ L<sub>P</sub>. If L<sub>P</sub> were decidable, L<sub>u</sub> would be decidable, a contradiction. ∎</p>
+<p><b>Consequences — all undecidable:</b> is L(M) empty? finite? regular? context-free? does L(M) contain ε? is L(M) = Σ*?</p>
+<p><b>Rice's theorem for RE index sets</b> (when L<sub>P</sub> is recursively enumerable): L<sub>P</sub> is RE iff (1) containment: if L ∈ P and L ⊆ L′ (L′ RE) then L′ ∈ P; (2) if an infinite L is in P, some finite subset of L is in P; (3) the set of finite languages in P is enumerable. Examples: “L ≠ ∅” satisfies all three, so L<sub>ne</sub> is RE; “L = ∅” fails (1), so L<sub>e</sub> is not RE.</p>`;
+
+const A_RECRE = `<div class="tw"><table>
+<tr><th>Point</th><th>Recursive (decidable)</th><th>Recursively enumerable (RE)</th></tr>
+<tr><td>Machine</td><td>A TM that <b>halts on every input</b>: accepts members, rejects non-members</td><td>A TM that accepts members; on non-members it may reject or <b>loop forever</b></td></tr>
+<tr><td>Also called</td><td>Decidable, Turing-decidable; the TM is an algorithm</td><td>Turing-recognisable, semi-decidable, type 0</td></tr>
+<tr><td>Membership</td><td>Always answered yes/no</td><td>Only “yes” is guaranteed</td></tr>
+<tr><td>Complement</td><td>Closed: swap accept and reject</td><td>Not closed</td></tr>
+<tr><td>Union, intersection, concatenation, star</td><td>Closed</td><td>Closed</td></tr>
+<tr><td>Examples</td><td>All regular, context-free and context-sensitive languages; {aⁿbⁿcⁿ}</td><td>L<sub>u</sub> = {(M,w) | M accepts w}, the halting problem, PCP (RE but not recursive)</td></tr>
+</table></div>
+<p><b>Hierarchy:</b> regular ⊂ CFL ⊂ CSL ⊂ recursive ⊂ RE ⊂ all languages. Languages that are not even RE: L<sub>d</sub>, L<sub>e</sub>, the complement of L<sub>u</sub>.</p>
+<p><b>Theorems:</b> (1) If L is recursive, so is its complement. (2) If L and its complement are both RE, then L is recursive (run both machines in parallel; one must accept). (3) So for any L exactly one holds: both L and L′ recursive; neither RE; or one is RE-not-recursive and the other is not RE.</p>`;
+
+const A_DECID = A_RECRE + `
+<p><b>Decidable problem:</b> its language is recursive — an algorithm always gives the right yes/no answer. Examples: does a DFA accept w? is the language of a DFA empty? are two DFAs equivalent? does a CFG generate w (CYK)? is L(CFG) empty?</p>
+<p><b>Undecidable problem:</b> no algorithm exists. Examples:</p>
+<ul>
+<li><b>Halting problem:</b> does TM M halt on input w? (RE but not recursive.)</li>
+<li><b>Universal language L<sub>u</sub>:</b> does M accept w?</li>
+<li><b>Post's correspondence problem.</b></li>
+<li><b>Emptiness L<sub>e</sub>, equivalence of two TMs, any non-trivial property</b> of RE languages (Rice).</li>
+<li>For CFGs: is G ambiguous? is L(G) = Σ*? is L(G<sub>1</sub>) ∩ L(G<sub>2</sub>) empty?</li>
+</ul>
+<p>Undecidability is proved by <b>diagonalisation</b> (L<sub>d</sub>) and then by <b>reduction</b>: if a known undecidable problem A reduces to B, then B is undecidable.</p>`;
+
+TOPICS.push(
+/* ================= UNIT 3 ================= */
+{ u:3, m:8, t:"Designing a PDA for a given language", items:[
+  {p:"n23", q:"23a", x:"Construct a PDA to accept the following language L on Σ={a,b} by empty stack. L = {wcwᴿ | w ∈ Σ⁺}."},
+  {p:"n23", q:"23b", x:"Construct a PDA to accept the language L = {aⁿbᵐcⁿ⁺ᵐ | n,m ≥ 1} by empty stack and by final state."},
+  {p:"m24", q:"23a", x:"Design a PDA to accept L = {aⁿbᵐcᵐdⁿ | m,n ≥ 1}."},
+  {p:"m24", q:"23b", x:"Construct a PDA to accept L = {wwᴿ, w ∈ {a,b}}."},
+  {p:"jl24", q:"23b", x:"Construct a PDA accepting by empty stack the languages {aⁿbⁿ | n ≥ 1}. Draw the transition diagram for the PDA. Show by instantaneous description that the PDA accepts the string “0011”."},
+  {p:"n24", q:"23a", x:"Construct a Push Down Automata (PDA) for the given languages over Σ={a,b,c}. i) {aᵐ⁺ⁿ bᵐ cⁿ | n,m>=0} ii) {aⁿ bⁿ c²ⁿ | n>=0}."},
+  {p:"m25", q:"23a", x:"A deterministic pushdown automaton (DPDA) and a non-deterministic pushdown automaton (NPDA) accepts which set of languages? Design a pushdown automata for a language L={aⁱbʲcᵏ : i = j OR j=k for Σ={a,b,c}}."},
+  {p:"m25", q:"23b", x:"Construct a context free grammar generating the following language and hence equivalent PDA accepting the language. L={aⁿbᵐaⁿ : m,n>=1} ∪ {aⁿcⁿ : n>=1}."},
+  {p:"jl25a", q:"23a", x:"i. Design a PDA that accepts a set of Strings over {a, b} with equal number of a's and b's. ii. Let G be the grammar given by S → 0BB, B → 0S | 1S | 0. Construct a PDA. Test if 010⁴ is in the language."},
+  {p:"jl25a", q:"23b", x:"i. Let L = {aⁿbⁿcᵐdᵐ | n, m ≥ 1}. Find a PDA for L. ii. Convert the PDA P = ({q0,q1},{0,1},{X, Z0}, δ, q0, Z0, F) to a CFG, if δ is given by: 1. δ(q0,1,Z0) = {(q0,XZ0)} 2. δ(q0,1,X) = {(q0,XX)} 3. δ(q0,0,X) = {(q1,X)} 4. δ(q0,ε,Z0) = {(q0,ε)} 5. δ(q1,1,X) = {(q1,ε)} 6. δ(q1,0,Z0) = {(q0,Z0)}."},
+  {p:"d25", q:"23a", x:"Construct a non deterministic push down automata for the language and trace the acceptance or rejection of the input string “baab”. L = {w ∈ {a,b}* : nₐ(w) = n_b(w)} over the alphabet Σ = {a,b}."},
+  {p:"m26", q:"23b", x:"Design a Pushdown Automata for aⁿbⁿcᵐdᵐ."}
+], a: A_PDA_DEF + `
+<p>In every table a row “(q, a, X) → (p, γ)” means δ(q, a, X) contains (p, γ); the top of the stack is on the left of γ.</p>
+<p><b>1. {aⁿbⁿ | n ≥ 1} by empty stack, with ID for 0011 (Jul 2024).</b> Use 0 for a and 1 for b.</p>
+<pre>(q0, 0, Z0) → (q0, XZ0)      push X for each 0
+(q0, 0, X)  → (q0, XX)
+(q0, 1, X)  → (q1, ε)        pop X for each 1
+(q1, 1, X)  → (q1, ε)
+(q1, ε, Z0) → (q1, ε)        empty the stack: accept</pre>
+<p>ID: (q0, 0011, Z0) ⊢ (q0, 011, XZ0) ⊢ (q0, 11, XXZ0) ⊢ (q1, 1, XZ0) ⊢ (q1, ε, Z0) ⊢ (q1, ε, ε). Input finished and stack empty: <b>accepted</b>. Diagram: q0 with a loop “0, Z0/XZ0; 0, X/XX”, arrow “1, X/ε” to q1, loop “1, X/ε; ε, Z0/ε” on q1.</p>
+<p><b>2. {wcwᴿ | w ∈ {a,b}⁺} by empty stack (Nov 2023).</b> Deterministic: c marks the middle.</p>
+<pre>(q0, a, Z0) → (q0, aZ0)    (q0, b, Z0) → (q0, bZ0)
+(q0, a, a) → (q0, aa)      (q0, a, b) → (q0, ab)
+(q0, b, a) → (q0, ba)      (q0, b, b) → (q0, bb)
+(q0, c, a) → (q1, a)       (q0, c, b) → (q1, b)      middle
+(q1, a, a) → (q1, ε)       (q1, b, b) → (q1, ε)      match
+(q1, ε, Z0) → (q1, ε)</pre>
+<p>Trace abcba: (q0, abcba, Z0) ⊢ (q0, bcba, aZ0) ⊢ (q0, cba, baZ0) ⊢ (q1, ba, baZ0) ⊢ (q1, a, aZ0) ⊢ (q1, ε, Z0) ⊢ (q1, ε, ε).</p>
+<p><b>3. {wwᴿ | w ∈ {a,b}*} (May 2024).</b> Same pushes as above, but there is no marker, so the PDA <b>guesses</b> the middle (non-deterministic):</p>
+<pre>(q0, a/b, any) → push the symbol       (six rules as in 2)
+(q0, ε, Z0) → (q1, Z0)   (q0, ε, a) → (q1, a)   (q0, ε, b) → (q1, b)    guess the middle
+(q1, a, a) → (q1, ε)     (q1, b, b) → (q1, ε)
+(q1, ε, Z0) → (q2, Z0)   q2 final (or pop Z0 for empty stack)</pre>
+<p><b>4. {aⁿbᵐcⁿ⁺ᵐ | n, m ≥ 1} (Nov 2023).</b> Push one X for every a and every b; pop one X for every c.</p>
+<pre>(q0, a, Z0) → (q0, XZ0)    (q0, a, X) → (q0, XX)
+(q0, b, X) → (q1, XX)      (q1, b, X) → (q1, XX)
+(q1, c, X) → (q2, ε)       (q2, c, X) → (q2, ε)
+(q2, ε, Z0) → (q2, ε)             by empty stack
+(q2, ε, Z0) → (qf, Z0), F = {qf}  by final state</pre>
+<p><b>5. {aⁿbᵐcᵐdⁿ | m, n ≥ 1} (May 2024).</b> Push A per a, push B per b, pop B per c, pop A per d.</p>
+<pre>(q0, a, Z0) → (q0, AZ0)    (q0, a, A) → (q0, AA)
+(q0, b, A) → (q1, BA)      (q1, b, B) → (q1, BB)
+(q1, c, B) → (q2, ε)       (q2, c, B) → (q2, ε)
+(q2, d, A) → (q3, ε)       (q3, d, A) → (q3, ε)
+(q3, ε, Z0) → (qf, Z0)</pre>
+<p><b>6. {aⁿbⁿcᵐdᵐ | n, m ≥ 1} (Jul 2025 · I, May 2026).</b> Two independent matches, one after the other.</p>
+<pre>(q0, a, Z0) → (q0, AZ0)    (q0, a, A) → (q0, AA)
+(q0, b, A) → (q1, ε)       (q1, b, A) → (q1, ε)
+(q1, c, Z0) → (q2, CZ0)    (q2, c, C) → (q2, CC)
+(q2, d, C) → (q3, ε)       (q3, d, C) → (q3, ε)
+(q3, ε, Z0) → (qf, Z0)</pre>
+<p><b>7. {aᵐ⁺ⁿbᵐcⁿ | m, n ≥ 0} (Nov 2024 i).</b> Push X per a; pop one X for every b and for every c.</p>
+<pre>(q0, a, Z0) → (q0, XZ0)    (q0, a, X) → (q0, XX)
+(q0, b, X) → (q1, ε)       (q1, b, X) → (q1, ε)
+(q0, c, X) → (q2, ε)       (q1, c, X) → (q2, ε)       (q2, c, X) → (q2, ε)
+(q0, ε, Z0) → (qf, Z0)     (q1, ε, Z0) → (qf, Z0)     (q2, ε, Z0) → (qf, Z0)</pre>
+<p><b>8. {aⁿbⁿc²ⁿ} (Nov 2024 ii).</b> This language is <b>not context-free</b>: the number of a's, b's and c's are all tied together, and the pumping lemma for CFLs fails exactly as for aⁿbⁿcⁿ (pumping can change at most two of the three blocks). So <b>no PDA exists</b>; say this and give the proof sketch. If the question meant {aⁿb²ⁿ}, push two X's per a and pop one per b.</p>
+<p><b>9. {aⁱbʲcᵏ | i = j or j = k} (May 2025).</b> DPDAs accept the <b>deterministic CFLs</b>, a proper subset of the CFLs; NPDAs accept <b>all</b> context-free languages. This language needs non-determinism: at the start the PDA guesses which condition to check.</p>
+<pre>(q0, ε, Z0) → (p0, Z0)  and  (q0, ε, Z0) → (r0, Z0)          the guess
+Branch i = j:  push X per a in p0; pop X per b in p1; then read any number of c's in p2; accept with Z0 on top.
+Branch j = k:  read any number of a's in r0; push X per b in r1; pop X per c in r2; accept with Z0 on top.</pre>
+<p><b>10. CFG and PDA for {aⁿbᵐaⁿ | m, n ≥ 1} ∪ {aⁿcⁿ | n ≥ 1} (May 2025).</b></p>
+<pre>S → A | C
+A → aAa | aBa        B → bB | b
+C → aCc | ac</pre>
+<p>PDA (one state q, start stack symbol S, empty stack): δ(q, ε, S) = {(q, A), (q, C)}; δ(q, ε, A) = {(q, aAa), (q, aBa)}; δ(q, ε, B) = {(q, bB), (q, b)}; δ(q, ε, C) = {(q, aCc), (q, ac)}; δ(q, a, a) = δ(q, b, b) = δ(q, c, c) = (q, ε).</p>
+<p><b>11. Equal number of a's and b's (Jul 2025 · I, Dec 2025).</b> The stack holds the surplus: A's if more a's so far, B's if more b's.</p>
+<pre>(q0, a, Z0) → (q0, AZ0)    (q0, b, Z0) → (q0, BZ0)
+(q0, a, A) → (q0, AA)      (q0, b, B) → (q0, BB)
+(q0, a, B) → (q0, ε)       (q0, b, A) → (q0, ε)
+(q0, ε, Z0) → (qf, Z0)     accept (non-deterministic choice with the first row)</pre>
+<p>Trace <span class="m">baab</span>: (q0, baab, Z0) ⊢ (q0, aab, BZ0) ⊢ (q0, ab, Z0) ⊢ (q0, b, AZ0) ⊢ (q0, ε, Z0) ⊢ (qf, ε, Z0): <b>accepted</b> (two a's, two b's).</p>
+<p><b>12. Grammar S → 0BB, B → 0S | 1S | 0 to PDA; test 010⁴ (Jul 2025 · I ii).</b> δ(q, ε, S) = (q, 0BB); δ(q, ε, B) = {(q, 0S), (q, 1S), (q, 0)}; δ(q, 0, 0) = δ(q, 1, 1) = (q, ε).</p>
+<pre>(q, 010000, S) ⊢ (q, 010000, 0BB) ⊢ (q, 10000, BB) ⊢ (q, 10000, 1SB) ⊢ (q, 0000, SB)
+⊢ (q, 0000, 0BBB) ⊢ (q, 000, BBB) ⊢ (q, 000, 0BB) ⊢ (q, 00, BB) ⊢ (q, 00, 0B) ⊢ (q, 0, B)
+⊢ (q, 0, 0) ⊢ (q, ε, ε)</pre>
+<p>Stack empty with the input consumed: <b>010⁴ = 010000 is in the language.</b> (Derivation: S ⇒ 0BB ⇒ 01SB ⇒ 010BBB ⇒ 0100BB ⇒ 01000B ⇒ 010000.)</p>
+<p><b>13. PDA to CFG (Jul 2025 · I b ii).</b> Using the triple construction:</p>
+<pre>S → [q0 Z0 q0] | [q0 Z0 q1]
+(1) [q0 Z0 q0] → 1[q0 X q0][q0 Z0 q0] | 1[q0 X q1][q1 Z0 q0]
+    [q0 Z0 q1] → 1[q0 X q0][q0 Z0 q1] | 1[q0 X q1][q1 Z0 q1]
+(2) [q0 X q0]  → 1[q0 X q0][q0 X q0]  | 1[q0 X q1][q1 X q0]
+    [q0 X q1]  → 1[q0 X q0][q0 X q1]  | 1[q0 X q1][q1 X q1]
+(3) [q0 X q0]  → 0[q1 X q0]        [q0 X q1] → 0[q1 X q1]
+(4) [q0 Z0 q0] → ε
+(5) [q1 X q1]  → 1
+(6) [q1 Z0 q0] → 0[q0 Z0 q0]       [q1 Z0 q1] → 0[q0 Z0 q1]</pre>
+<p>[q1 X q0] has no production, so [q0 X q0] can never finish; [q0 Z0 q1] and [q1 Z0 q1] never finish either. Renaming A = [q0 Z0 q0], B = [q0 X q1], C = [q1 Z0 q0], D = [q1 X q1], the simplified grammar is:</p>
+<pre>S → A        A → 1BC | ε        B → 1BD | 0D        C → 0A        D → 1</pre>` },
+
+{ u:3, m:8, t:"Deterministic vs non-deterministic PDA", items:[
+  {p:"jl24", q:"23a", x:"What are deterministic PDA and non-deterministic PDA? With example explain deterministic PDA and non-deterministic PDA."}
+], a: A_PDA_DEF + `
+<p><b>Deterministic PDA (DPDA):</b> in every situation at most one move is possible. Conditions: (1) δ(q, a, X) has at most one element for every q, a ∈ Σ ∪ {ε}, X; (2) if δ(q, ε, X) is not empty, then δ(q, a, X) is empty for every a ∈ Σ.</p>
+<p><b>Non-deterministic PDA (NPDA):</b> δ may offer several moves; a string is accepted if <i>some</i> sequence of choices leads to acceptance.</p>
+<div class="tw"><table>
+<tr><th>Point</th><th>DPDA</th><th>NPDA</th></tr>
+<tr><td>Moves per (state, input, stack top)</td><td>At most one</td><td>Zero, one or many</td></tr>
+<tr><td>ε-moves</td><td>Allowed only when no input move exists for that pair</td><td>Free</td></tr>
+<tr><td>Languages</td><td>Deterministic CFLs (a proper subset)</td><td>All context-free languages</td></tr>
+<tr><td>Power</td><td>Less; NPDA cannot always be converted to DPDA</td><td>More</td></tr>
+<tr><td>Ambiguity</td><td>Every DCFL has an unambiguous grammar</td><td>May be inherently ambiguous</td></tr>
+<tr><td>Closure</td><td>Closed under complement; not under union</td><td>Closed under union; not under complement</td></tr>
+<tr><td>Use</td><td>Parsers (LR) for programming languages</td><td>General CFL recognition</td></tr>
+</table></div>
+<p><b>Example of a DPDA — L = {wcwᴿ | w ∈ {a,b}*}.</b> Push every symbol; on c switch state; then pop on a match. The marker c tells the machine exactly when to switch, so there is never a choice.</p>
+<pre>(q0, a, any) → push a      (q0, b, any) → push b
+(q0, c, X) → (q1, X)
+(q1, a, a) → (q1, ε)       (q1, b, b) → (q1, ε)       (q1, ε, Z0) → (q2, Z0)</pre>
+<p><b>Example of an NPDA — L = {wwᴿ | w ∈ {a,b}*}.</b> Same idea but with no marker: in q0 the machine may push the next symbol <i>or</i> take an ε-move to q1 to start matching. It must guess the middle, and no DPDA can accept this language.</p>
+<p>Trace abba on the NPDA: (q0, abba, Z0) ⊢ (q0, bba, aZ0) ⊢ (q0, ba, baZ0) ⊢ [guess] (q1, ba, baZ0) ⊢ (q1, a, aZ0) ⊢ (q1, ε, Z0) ⊢ (q2, ε, Z0) accepted.</p>` },
+
+{ u:3, m:8, t:"Converting a CFG to a PDA and checking a string", items:[
+  {p:"n24", q:"23b", x:"Convert the given CFG to PDA and check for the string 010⁴: S → 0BB, B → 0S | 1S | 0."},
+  {p:"d25", q:"23b", x:"Convert the given context free grammar to a push down automata and check the acceptance of the string “a*a”: E → E+E | E*E | a."},
+  {p:"m26", q:"23a", x:"Convert the following CFG to PDA: S → aA, A → aABC | bB | a, B → b, C → c. Check whether the string abcba is accepted."}
+], a: A_CFG2PDA + `
+<p><b>Nov 2024 — S → 0BB, B → 0S | 1S | 0.</b> P = ({q}, {0,1}, {S, B, 0, 1}, δ, q, S, ∅).</p>
+<pre>δ(q, ε, S) = {(q, 0BB)}
+δ(q, ε, B) = {(q, 0S), (q, 1S), (q, 0)}
+δ(q, 0, 0) = {(q, ε)}        δ(q, 1, 1) = {(q, ε)}</pre>
+<p>Check 010⁴ = 010000:</p>
+<pre>(q, 010000, S) ⊢ (q, 010000, 0BB) ⊢ (q, 10000, BB) ⊢ (q, 10000, 1SB) ⊢ (q, 0000, SB)
+⊢ (q, 0000, 0BBB) ⊢ (q, 000, BBB) ⊢ (q, 000, 0BB) ⊢ (q, 00, BB) ⊢ (q, 00, 0B) ⊢ (q, 0, B)
+⊢ (q, 0, 0) ⊢ (q, ε, ε)      accepted by empty stack</pre>
+<p><b>Dec 2025 — E → E+E | E*E | a.</b></p>
+<pre>δ(q, ε, E) = {(q, E+E), (q, E*E), (q, a)}
+δ(q, a, a) = δ(q, +, +) = δ(q, *, *) = {(q, ε)}</pre>
+<p>Check a*a:</p>
+<pre>(q, a*a, E) ⊢ (q, a*a, E*E) ⊢ (q, a*a, a*E) ⊢ (q, *a, *E) ⊢ (q, a, E) ⊢ (q, a, a) ⊢ (q, ε, ε)</pre>
+<p><b>Accepted.</b> It follows the leftmost derivation E ⇒ E*E ⇒ a*E ⇒ a*a.</p>
+<p><b>May 2026 — S → aA, A → aABC | bB | a, B → b, C → c.</b></p>
+<pre>δ(q, ε, S) = {(q, aA)}
+δ(q, ε, A) = {(q, aABC), (q, bB), (q, a)}
+δ(q, ε, B) = {(q, b)}        δ(q, ε, C) = {(q, c)}
+δ(q, a, a) = δ(q, b, b) = δ(q, c, c) = {(q, ε)}</pre>
+<p>Check abcba: (q, abcba, S) ⊢ (q, abcba, aA) ⊢ (q, bcba, A). The next input is b, so only A → bB can match: ⊢ (q, bcba, bB) ⊢ (q, cba, B) ⊢ (q, cba, b). Stack top b does not match input c and no other move exists. Every other choice for A fails earlier. <b>abcba is not accepted.</b></p>
+<p>The grammar generates aa, abb, aaabc, aabbbc, …; for example aaabc is accepted: (q, aaabc, S) ⊢ (q, aaabc, aA) ⊢ (q, aabc, A) ⊢ (q, aabc, aABC) ⊢ (q, abc, ABC) ⊢ (q, abc, aBC) ⊢ (q, bc, BC) ⊢ (q, bc, bC) ⊢ (q, c, C) ⊢ (q, c, c) ⊢ (q, ε, ε).</p>` },
+
+{ u:3, m:8, t:"Converting a PDA to a CFG (8 marks)", items:[
+  {p:"jl25b", q:"23a", x:"Convert the following Pushdown Automaton (PDA) into an equivalent Context-Free Grammar (CFG). States: {q0,q1,qf}, Alphabet: {a,b}, Stack Alphabet: {A,Z}, Start State: q0, Accepting State: qf. δ(q0,a,Z)=(q0,AZ), δ(q0,a,A)=(q0,AA), δ(q0,b,A)=(q1,ε), δ(q1,b,A)=(q1,ε), δ(q1,ε,Z)=(qf,Z). Provide the CFG with appropriate non-terminals, terminals, production rules, and start symbol."}
+], a: A_PDA2CFG + `
+<p><b>The PDA</b> pushes an A for each a, pops an A for each b, and moves to qf when only Z is left: L = {aⁿbⁿ | n ≥ 1}. It accepts by final state, so first add δ(qf, ε, Z) = (qf, ε) to make it an empty-stack PDA.</p>
+<p><b>Productions (useful ones):</b></p>
+<pre>S → [q0 Z qf]
+δ(q0,a,Z)=(q0,AZ):   [q0 Z qf] → a [q0 A q1] [q1 Z qf]
+δ(q0,a,A)=(q0,AA):   [q0 A q1] → a [q0 A q1] [q1 A q1]
+δ(q0,b,A)=(q1,ε):    [q0 A q1] → b
+δ(q1,b,A)=(q1,ε):    [q1 A q1] → b
+δ(q1,ε,Z)=(qf,Z):    [q1 Z qf] → [qf Z qf]
+δ(qf,ε,Z)=(qf,ε):    [qf Z qf] → ε</pre>
+<p>The construction also produces rules with other state choices (such as [q0 A q0] or [q1 A q0]); those variables have no terminating production and are deleted as useless.</p>
+<p><b>Renamed grammar.</b> G = (V, T, P, S) with V = {S, B, D}, T = {a, b}:</p>
+<pre>S → aB            (from [q0 Z qf], with [q1 Z qf] ⇒ ε)
+B → aBD | b       B = [q0 A q1]
+D → b             D = [q1 A q1]</pre>
+<p><b>Check:</b> S ⇒ aB ⇒ aaBD ⇒ aabD ⇒ aabb. The grammar generates aⁿbⁿ (n ≥ 1), the same language as the PDA.</p>` },
+
+{ u:3, m:15, t:"PDA to CFG + derivations and parse tree (15 marks)", items:[
+  {p:"n23", q:"27", x:"i. Convert PDA to CFG. PDA is given by P = ({p,q}, {0,1}, {X,Z}, d, q, Z) where d is: d(p,1,Z) = {(p,XZ)}, d(p,ε,Z) = {(p,ε)}, d(p,1,X) = {(p,XX)}, d(q,1,Z) = {(q,ε)}, d(p,0,X) = {(q,X)}, d(q,0,Z) = {(p,Z)}. (8) ii. Consider the following grammar for list structures: S → a | ^ | (T), T → T,S | S. Find the leftmost derivation, rightmost derivation and parse tree for (((a,a),^,(a)),a). (7)"}
+], a: A_PDA2CFG + `
+<p><b>(i) Productions.</b> Taking p as the start state (it is the state that pushes) and Z as the start stack symbol:</p>
+<pre>S → [p Z p] | [p Z q]
+d(p,1,Z)=(p,XZ):  [p Z p] → 1[p X p][p Z p] | 1[p X q][q Z p]
+                  [p Z q] → 1[p X p][p Z q] | 1[p X q][q Z q]
+d(p,1,X)=(p,XX):  [p X p] → 1[p X p][p X p] | 1[p X q][q X p]
+                  [p X q] → 1[p X p][p X q] | 1[p X q][q X q]
+d(p,0,X)=(q,X):   [p X p] → 0[q X p]        [p X q] → 0[q X q]
+d(q,0,Z)=(p,Z):   [q Z p] → 0[p Z p]        [q Z q] → 0[p Z q]
+d(p,ε,Z)=(p,ε):   [p Z p] → ε
+d(q,1,Z)=(q,ε):   [q Z q] → 1</pre>
+<p><b>Simplification.</b> As printed, no move pops X in state q, so [q X p] and [q X q] have no productions; then [p X p] and [p X q] can never finish, and every production containing them is useless. What remains reachable is <b>S → [p Z p], [p Z p] → ε</b>: the printed PDA accepts only ε by empty stack.</p>
+<p>The intended machine is almost certainly the textbook one with d(q,1,X) = (q,ε) (pop X on 1). With that move, [q X q] → 1 and the grammar becomes (A = [pZp], B = [pXq], C = [qZp], D = [qXq]):</p>
+<pre>S → A        A → 1BC | ε        B → 1BD | 0D        C → 0A        D → 1</pre>
+<p>Write the full production list first; the marks are for applying the construction rule to each move.</p>
+<p><b>(ii) Grammar S → a | ^ | (T), T → T,S | S; string (((a,a),^,(a)),a).</b></p>
+<p><b>Leftmost derivation:</b></p>
+<pre>S ⇒ (T) ⇒ (T,S) ⇒ (S,S) ⇒ ((T),S) ⇒ ((T,S),S) ⇒ ((T,S,S),S) ⇒ ((S,S,S),S)
+  ⇒ (((T),S,S),S) ⇒ (((T,S),S,S),S) ⇒ (((S,S),S,S),S) ⇒ (((a,S),S,S),S)
+  ⇒ (((a,a),S,S),S) ⇒ (((a,a),^,S),S) ⇒ (((a,a),^,(T)),S) ⇒ (((a,a),^,(S)),S)
+  ⇒ (((a,a),^,(a)),S) ⇒ (((a,a),^,(a)),a)</pre>
+<p><b>Rightmost derivation:</b></p>
+<pre>S ⇒ (T) ⇒ (T,S) ⇒ (T,a) ⇒ (S,a) ⇒ ((T),a) ⇒ ((T,S),a) ⇒ ((T,(T)),a) ⇒ ((T,(S)),a)
+  ⇒ ((T,(a)),a) ⇒ ((T,S,(a)),a) ⇒ ((T,^,(a)),a) ⇒ ((S,^,(a)),a) ⇒ (((T),^,(a)),a)
+  ⇒ (((T,S),^,(a)),a) ⇒ (((T,a),^,(a)),a) ⇒ (((S,a),^,(a)),a) ⇒ (((a,a),^,(a)),a)</pre>
+<p><b>Parse tree:</b> root S → ( T ). T → T , S with the right S → a. The left T → S → ( T ); that T → T , S (S → (T) → (S) → (a)); its left T → T , S (S → ^); its left T → S → ( T ) with T → T , S giving a , a. Draw it level by level; the leaves read left to right give the string.</p>
+<p>The scan prints the string as (((a,a),^(a)),a) with a comma missing after ^; the grammar can only produce the version with the comma.</p>` },
+
+/* ================= UNIT 4 ================= */
+{ u:4, m:8, t:"Designing a Turing machine for a language or a function", items:[
+  {p:"n23", q:"24a", x:"Design a Turing Machine to recognize the language L = {0ⁿ1ⁿ | n ≥ 1}; also specify the ID to trace the string 0011."},
+  {p:"n23", q:"24b", x:"Construct Turing machine for the 2's complement of the binary number."},
+  {p:"m24", q:"24b", x:"Construct a TM that accepts strings with “aba” as a substring on the input Σ = {a,b}."},
+  {p:"jl24", q:"24b", x:"Construct a TM for the language L = {aⁿbⁿcⁿ | n ≥ 0}."},
+  {p:"n24", q:"24a", x:"Construct a Turing Machine for the language {aⁿ bⁿ cⁿ | n>=0}. Check that the string ‘aaabbbccc’ is accepted."},
+  {p:"n24", q:"24b", x:"Design a Turing Machine for addition operation and compute using the same Turing machine for ‘2+3’ with appropriate steps."},
+  {p:"m25", q:"24a", x:"Give the tuple definition of Turing Machine (TM) with instantaneous description. Construct a TM for language L={www ; w ∈ (a,b)*}."},
+  {p:"jl25a", q:"24a", x:"i. Design a Turing machine that can compute proper subtraction, m ∸ n and simulate its action. ii. Design a TM to recognize the language {0ⁿ 1ⁿ 0ⁿ | n ≥ 1}."},
+  {p:"jl25a", q:"24b", x:"Design TM to recognize the language {wwᴿ | w in (a,b)*} by using checking off symbols techniques."},
+  {p:"jl25b", q:"24a", x:"Design a Turing machine to check whether the given input is prime or not using multiple tracks."},
+  {p:"jl25b", q:"24b", x:"Design a Turing machine to compute addition of two unary numbers."},
+  {p:"d25", q:"24b", x:"Construct a Turing machine to accept the below language. L = {aⁿbⁿcⁿ : n>=1} over the alphabet Σ = {a,b,c}. Demonstrate the working over the input string “aabbcc”."},
+  {p:"m26", q:"24b", x:"Construct a Turing Machine for the string ending with b where Σ={a,b}."}
+], a: A_TM_DEF + `
+<p>Each line “(q, X) → (p, Y, D)” means δ(q, X) = (p, Y, D).</p>
+<p><b>1. L = {0ⁿ1ⁿ | n ≥ 1}, with ID for 0011.</b> Idea: mark the leftmost 0 as X, go right to the first 1 and mark it Y, come back; repeat.</p>
+<pre>(q0, 0) → (q1, X, R)      (q0, Y) → (q3, Y, R)
+(q1, 0) → (q1, 0, R)      (q1, Y) → (q1, Y, R)      (q1, 1) → (q2, Y, L)
+(q2, 0) → (q2, 0, L)      (q2, Y) → (q2, Y, L)      (q2, X) → (q0, X, R)
+(q3, Y) → (q3, Y, R)      (q3, B) → (q4, B, R)      q4 accepts</pre>
+<pre>q0 0011 ⊢ X q1 011 ⊢ X0 q1 11 ⊢ X q2 0Y1 ⊢ q2 X0Y1 ⊢ X q0 0Y1 ⊢ XX q1 Y1 ⊢ XXY q1 1
+⊢ XX q2 YY ⊢ X q2 XYY ⊢ XX q0 YY ⊢ XXY q3 Y ⊢ XXYY q3 B ⊢ XXYYB q4     accepted</pre>
+<p><b>2. L = {aⁿbⁿcⁿ}</b> (Jul 2024, Nov 2024, Dec 2025). Mark one a (X), one b (Y), one c (Z) per pass.</p>
+<pre>(q0, a) → (q1, X, R)      (q0, Y) → (q4, Y, R)      (q0, B) → (qf, B, R)   [only when n ≥ 0 is allowed]
+(q1, a) → (q1, a, R)      (q1, Y) → (q1, Y, R)      (q1, b) → (q2, Y, R)
+(q2, b) → (q2, b, R)      (q2, Z) → (q2, Z, R)      (q2, c) → (q3, Z, L)
+(q3, a/b/Y/Z) → (q3, same, L)                       (q3, X) → (q0, X, R)
+(q4, Y) → (q4, Y, R)      (q4, Z) → (q4, Z, R)      (q4, B) → (qf, B, R)</pre>
+<p><b>aabbcc:</b> q0 aabbcc ⊢ X q1 abbcc ⊢ Xa q1 bbcc ⊢ XaY q2 bcc ⊢ XaYb q2 cc ⊢ XaY q3 bZc ⊢* q3 XaYbZc ⊢ X q0 aYbZc ⊢ XX q1 YbZc ⊢ XXY q1 bZc ⊢ XXYY q2 Zc ⊢ XXYYZ q2 c ⊢ XXYY q3 ZZ ⊢* X q3 XYYZZ ⊢ XX q0 YYZZ ⊢ XXY q4 YZZ ⊢* XXYYZZ q4 B ⊢ XXYYZZB qf: <b>accepted</b>. For <b>aaabbbccc</b> the same loop runs three times, giving XXXYYYZZZ before q4 scans to the blank: accepted.</p>
+<p><b>3. L = {0ⁿ1ⁿ0ⁿ | n ≥ 1}</b> (Jul 2025 · I ii): use machine 2 with a → 0, b → 1, c → 0 (the third block). q1 skips 0s and Ys until a 1; q2 skips 1s and Zs until a 0.</p>
+<p><b>4. 2's complement of a binary number.</b> Go to the right end; moving left, keep bits unchanged up to and including the first 1, then complement every bit.</p>
+<pre>(q0, 0) → (q0, 0, R)      (q0, 1) → (q0, 1, R)      (q0, B) → (q1, B, L)
+(q1, 0) → (q1, 0, L)      (q1, 1) → (q2, 1, L)
+(q2, 0) → (q2, 1, L)      (q2, 1) → (q2, 0, L)      (q2, B) → (qf, B, R)</pre>
+<p>Example 10100 → 01100.</p>
+<p><b>5. Strings containing “aba”.</b></p>
+<pre>(q0, a) → (q1, a, R)      (q0, b) → (q0, b, R)
+(q1, a) → (q1, a, R)      (q1, b) → (q2, b, R)
+(q2, a) → (qf, a, R)      (q2, b) → (q0, b, R)      qf accepts</pre>
+<p><b>6. Strings ending with b (May 2026).</b></p>
+<pre>(q0, a) → (q0, a, R)      (q0, b) → (q0, b, R)      (q0, B) → (q1, B, L)
+(q1, b) → (qf, b, R)      no move on a or B: reject</pre>
+<p><b>7. Addition of two unary numbers</b> (Nov 2024, Jul 2025 · II). Input 1ᵐ + 1ⁿ. Replace + by 1, then erase the last 1.</p>
+<pre>(q0, 1) → (q0, 1, R)      (q0, +) → (q1, 1, R)
+(q1, 1) → (q1, 1, R)      (q1, B) → (q2, B, L)
+(q2, 1) → (qf, B, L)</pre>
+<p><b>2 + 3:</b> q0 11+111 ⊢ 1 q0 1+111 ⊢ 11 q0 +111 ⊢ 111 q1 111 ⊢* 111111 q1 B ⊢ 11111 q2 1 ⊢ 1111 qf 1B. Tape: 11111 = 5.</p>
+<p><b>8. Proper subtraction m ∸ n</b> (m − n if m ≥ n, else 0). Input 0ᵐ10ⁿ. Repeatedly erase a leading 0 and change one 0 after the 1 into a 1.</p>
+<pre>(q0, 0) → (q1, B, R)      (q0, 1) → (q5, B, R)
+(q1, 0) → (q1, 0, R)      (q1, 1) → (q2, 1, R)
+(q2, 1) → (q2, 1, R)      (q2, 0) → (q3, 1, L)      (q2, B) → (q4, B, L)
+(q3, 0) → (q3, 0, L)      (q3, 1) → (q3, 1, L)      (q3, B) → (q0, B, R)
+(q4, 1) → (q4, B, L)      (q4, 0) → (q4, 0, L)      (q4, B) → (q6, 0, R)
+(q5, 0) → (q5, B, R)      (q5, 1) → (q5, B, R)      (q5, B) → (q6, B, R)</pre>
+<p><b>Simulation, 2 ∸ 1 (0010):</b> q0 0010 ⊢ B q1 010 ⊢ B0 q1 10 ⊢ B01 q2 0 ⊢ B0 q3 11 ⊢ B q3 011 ⊢ q3 B011 ⊢ B q0 011 ⊢ BB q1 11 ⊢ BB1 q2 1 ⊢ BB11 q2 B ⊢ BB1 q4 1 ⊢ BB q4 1 ⊢ B q4 B ⊢ B0 q6. One 0 remains: 2 ∸ 1 = 1.</p>
+<p><b>9. {wwᴿ} by checking off symbols.</b> Check off the leftmost symbol, run to the right end, check that the last unchecked symbol is the same, come back.</p>
+<pre>(q0, a) → (q1, X, R)      (q0, b) → (q2, X, R)      (q0, X) → (qf, X, R)   all checked: accept
+(q1, a/b) → (q1, same, R)   (q1, X or B) → (q3, same, L)      (q3, a) → (q5, X, L)
+(q2, a/b) → (q2, same, R)   (q2, X or B) → (q4, same, L)      (q4, b) → (q5, X, L)
+(q5, a/b) → (q5, same, L)   (q5, X) → (q0, X, R)
+(q0, B) → (qf, B, R)        for the empty string</pre>
+<p>If q3 sees b (or q4 sees a), or X is met at once (odd length), there is no move and the string is rejected.</p>
+<p><b>10. {www}</b> (May 2025). High-level design: (a) use a second track to count the length in threes and reject unless |x| = 3k; while doing so place markers after positions k and 2k (advance a slow marker one cell for every three cells of a fast pass). (b) Repeatedly check off the first unchecked symbol of part 1, then the first unchecked symbol of part 2 and of part 3, rejecting on a mismatch. (c) Accept when all three parts are fully checked off. The language is not context-free, so no PDA can do this, but a TM with marked cells can.</p>
+<p><b>11. Prime test with multiple tracks</b> (Jul 2025 · II). Three tracks: track 1 holds the input n in unary (never changed), track 2 holds a trial divisor d (starts at 2), track 3 is a working copy of n.</p>
+<ol>
+<li>If n is 0 or 1, reject. Write d = 2 on track 2.</li>
+<li>If d = n, accept (prime).</li>
+<li>Copy track 1 to track 3. Repeatedly subtract d from track 3 (cross off d symbols, using track 2 as the counter).</li>
+<li>If track 3 becomes exactly empty, d divides n: reject (not prime).</li>
+<li>If fewer than d symbols remain, add one 1 to track 2 (d = d + 1) and go to step 2.</li>
+</ol>
+<p>A cell of a k-track tape holds a k-tuple, so this is an ordinary TM with tape alphabet Γ = Γ<sub>1</sub> × Γ<sub>2</sub> × Γ<sub>3</sub>.</p>` },
+
+{ u:4, m:8, t:"Variants of Turing machines, universal TM, programming techniques", items:[
+  {p:"m25", q:"24b", x:"Write short notes on ANY two of the following: 1. Extensions of TM 2. Universal Turing Machine 3. Recursive and Recursively Enumerable Languages."},
+  {p:"d25", q:"24a", x:"Discuss on any two variants of Turing Machine with necessary examples and illustrations."},
+  {p:"m26", q:"24a", x:"Write short note on Multitape and Multihead Turing Machines."}
+], a: `
+<p>All variants below accept exactly the recursively enumerable languages: each can be simulated by the basic single-tape TM (Church–Turing thesis).</p>
+<p><b>1. Multitape TM.</b> A finite control with k tapes, each with its own head. One move depends on the state and the k symbols scanned: δ(q, X<sub>1</sub>…X<sub>k</sub>) = (p, Y<sub>1</sub>…Y<sub>k</sub>, D<sub>1</sub>…D<sub>k</sub>); each head writes and moves L, R or stays independently. The input starts on tape 1; the others are blank. <b>Simulation by one tape:</b> use 2k tracks — for each tape one track with its contents and one track with a marker under its head; one multitape move is simulated by sweeping across all markers. n moves cost O(n²) single-tape moves. <b>Example:</b> {wwᴿ} or {0ⁿ1ⁿ}: copy the first half to tape 2, then compare the two tapes in one pass, taking linear time instead of quadratic.</p>
+<p><b>2. Multihead TM.</b> One tape with k heads. A move depends on the state and the k symbols under the heads; each head writes and moves independently. <b>Simulation:</b> a single-tape TM with k + 1 tracks: one track for the tape contents and one track per head holding a marker at that head's position. <b>Example:</b> palindrome checking with two heads, one at each end, moving towards each other.</p>
+<p><b>3. Non-deterministic TM.</b> δ(q, X) is a set of choices; the input is accepted if some sequence of choices reaches an accepting state. A deterministic TM simulates it by breadth-first search over the tree of IDs. Same power, possibly exponentially more time.</p>
+<p><b>4. Multi-track tape.</b> Each cell holds a tuple of symbols; used for marking, counting and arithmetic (see the prime-test design). <b>5. Two-way infinite tape,</b> simulated by a two-track one-way tape (upper track = right half, lower track = left half). <b>6. Restricted models</b> of equal power: semi-infinite tape, two-stack PDA, counter machines with two counters. <b>Storage in the finite control</b> and <b>subroutines</b> are programming techniques, not new models.</p>
+<p><b>Universal Turing machine (UTM).</b> A TM U that takes ⟨M, w⟩ — the binary code of any TM M followed by an input w — and simulates M on w; U accepts ⟨M, w⟩ iff M accepts w. Its language is L<sub>u</sub> = {⟨M, w⟩ | M accepts w}. U is usually described with three tapes: tape 1 holds the code of M and w, tape 2 holds M's simulated tape, tape 3 holds M's current state. For each step U looks up the matching transition code 0ⁱ10ʲ10ᵏ10ˡ10ᵐ on tape 1, updates tape 2 and tape 3. The UTM is the model of a stored-program computer. L<sub>u</sub> is recursively enumerable but not recursive.</p>
+<p><b>Recursive and recursively enumerable languages.</b></p>` + A_RECRE },
+
+{ u:4, m:8, t:"Closure of recursive languages under union and complement", items:[
+  {p:"m24", q:"24a", x:"Prove that Union of two recursive languages is recursive. Also discuss the complement property."}
+], a: `
+<p>A language is <b>recursive</b> if some Turing machine accepts it and <b>halts on every input</b>.</p>
+<p><b>Theorem 1: the union of two recursive languages is recursive.</b></p>
+<p><b>Proof.</b> Let L<sub>1</sub> and L<sub>2</sub> be recursive, accepted by always-halting TMs M<sub>1</sub> and M<sub>2</sub>. Build M that on input w:</p>
+<ol>
+<li>runs M<sub>1</sub> on w. M<sub>1</sub> halts. If it accepts, M accepts.</li>
+<li>Otherwise M runs M<sub>2</sub> on w. M<sub>2</sub> halts. If it accepts, M accepts; else M rejects.</li>
+</ol>
+<p>M always halts, because both simulations halt, and M accepts w iff w ∈ L<sub>1</sub> or w ∈ L<sub>2</sub>. So L(M) = L<sub>1</sub> ∪ L<sub>2</sub> is recursive. ∎ (Diagram: w → M<sub>1</sub>; “yes” → accept; “no” → M<sub>2</sub>; “yes” → accept, “no” → reject.)</p>
+<p>For <b>RE</b> languages the machines may not halt, so M must run M<sub>1</sub> and M<sub>2</sub> in parallel (alternating steps, or on two tapes) and accept if either accepts: RE languages are also closed under union.</p>
+<p><b>Theorem 2: the complement of a recursive language is recursive.</b></p>
+<p><b>Proof.</b> Let M always halt and accept L. Build M′ from M by swapping the outcomes: M′ accepts when M halts without accepting and rejects when M accepts (make the accepting states of M non-accepting halting states, and add a new accepting state reached whenever M would halt in a non-accepting state). M′ always halts and L(M′) = Σ* − L. ∎</p>
+<p><b>Complement of RE languages.</b> RE languages are <b>not</b> closed under complement: L<sub>u</sub> is RE but its complement is not. Swapping does not work because M may loop on strings outside L.</p>
+<p><b>Theorem 3:</b> if L and its complement are both RE, then L is recursive. Run a TM for L and a TM for the complement in parallel; every w is in exactly one of them, so one machine accepts after finitely many steps; answer accordingly. Hence for any language only three situations are possible: both L and L′ recursive; neither RE; one RE-but-not-recursive and the other not RE.</p>
+<p>Recursive languages are also closed under intersection (accept only if both M<sub>1</sub> and M<sub>2</sub> accept), concatenation and Kleene star.</p>` },
+
+{ u:4, m:15, t:"Turing machine problems — 15 mark versions", items:[
+  {p:"m24", q:"26", x:"Obtain the code for <M, 1011> such that M = ({q0, q1, q2, q3, q4}, {0, 1}, {0, 1, X, Y, B}, δ, q0, B, {q4}) where δ is: δ(q0,0) = (q1,X,R), δ(q0,Y) = (q3,Y,R), δ(q1,0) = (q1,0,R), δ(q1,1) = (q2,Y,L), δ(q1,Y) = (q1,Y,R), δ(q2,0) = (q2,0,L), δ(q2,X) = (q0,X,R), δ(q2,Y) = (q2,Y,L), δ(q3,Y) = (q3,Y,R), δ(q3,B) = (q4,B,R). Also design a TM which adds two numbers."},
+  {p:"m24", q:"27", x:"Construct a Turing machine that accepts all palindromes over {0, 1}."},
+  {p:"jl24", q:"27", x:"a. Construct Turing machine (TM) that replace all occurrence of 111 by 101 from sequence of 0's and 1's. b. Construct a Turing machine for proper subtraction, which is defined as m − n if m > n."},
+  {p:"m25", q:"27", x:"Design a Turing machine which computes multiplication of two numbers."},
+  {p:"jl25b", q:"27", x:"Construct a transition diagram for Turing Machine to accept the language L = {w wᴿ | w ∈ (a + b)*}."},
+  {p:"d25", q:"27", x:"A company is developing a very simple compiler backend that uses a Turing Machine model to simulate arithmetic operations. Design a Turing Machine (TM) that can multiply two non-zero positive integers represented in unary notation (e.g., 3 = 111, 2 = 11). After computation, the expected output in the tape for the given inputs 111 and 11 is …BB111111BB…. where B represents blanks in the tape. Define the states and transitions of the Turing Machine for this problem either using a transition table or transition diagram. Illustrate the intermediary steps/tape contents in the working of the TM on the given inputs 111 and 11. You can assume your own delimiters in the input representation."},
+  {p:"m26", q:"27", x:"Design a Turing Machine that takes a string w in {0,1}* as input and outputs ww. Show the action of the Turing Machine on the strings 10 and 010."}
+], a: A_TM_DEF + `
+<p><b>1. Code for ⟨M, 1011⟩ (May 2024 Q26).</b> <b>Scheme:</b> number the states q0…q4 as 1…5, the tape symbols 0, 1, B, X, Y as 1…5 and the directions L, R as 1, 2. A move δ(q<sub>i</sub>, X<sub>j</sub>) = (q<sub>k</sub>, X<sub>l</sub>, D<sub>m</sub>) is coded 0ⁱ10ʲ10ᵏ10ˡ10ᵐ. The code of M is the list of move codes separated by 11; ⟨M, w⟩ is the code of M, then 111, then w.</p>` + G.tm_code_table + `
+<p><b>⟨M, 1011⟩ =</b></p>
+<pre style="white-space:pre-wrap;word-break:break-all">` + G.tm_code + `</pre>
+<p>M is the machine for {0ⁿ1ⁿ}; 1011 starts with 1, for which q0 has no move, so M halts without accepting. (The textbook numbering starts symbols with X<sub>1</sub> = 0, X<sub>2</sub> = 1, X<sub>3</sub> = B and makes q<sub>2</sub> the accepting state; state your numbering in the answer.)</p>
+<p><b>TM that adds two numbers:</b> input 0ᵐ10ⁿ (or 1ᵐ+1ⁿ); replace the separator by a 0, then erase the last 0.</p>
+<pre>(q0, 0) → (q0, 0, R)      (q0, 1) → (q1, 0, R)
+(q1, 0) → (q1, 0, R)      (q1, B) → (q2, B, L)
+(q2, 0) → (qf, B, L)</pre>
+<p>Example 00100 (2 + 2): ⊢* 00000 q1 B ⊢ 0000 q2 0 ⊢ 000 qf 0: tape 0000 = 4.</p>
+<p><b>2. Palindromes over {0,1} (May 2024 Q27).</b> Erase the first symbol, remember it in the state, go to the right end, check and erase the last symbol, return; repeat.</p>
+<pre>(q0, 0) → (q1, B, R)      (q0, 1) → (q2, B, R)      (q0, B) → (qf, B, R)   nothing left: accept
+(q1, 0/1) → (q1, same, R)      (q1, B) → (q3, B, L)
+(q2, 0/1) → (q2, same, R)      (q2, B) → (q4, B, L)
+(q3, 0) → (q5, B, L)      (q3, B) → (qf, B, R)      odd length, middle symbol: accept
+(q4, 1) → (q5, B, L)      (q4, B) → (qf, B, R)
+(q5, 0/1) → (q5, same, L)      (q5, B) → (q0, B, R)</pre>
+<p>q3 on 1 and q4 on 0 have no move: reject. <b>Trace 101:</b> q0 101 ⊢ B q2 01 ⊢ B0 q2 1 ⊢ B01 q2 B ⊢ B0 q4 1 ⊢ B q5 0 ⊢ q5 B0 ⊢ B q0 0 ⊢ BB q1 B ⊢ B q3 B ⊢ accept. <b>Trace 10:</b> q0 10 ⊢ B q2 0 ⊢ B0 q2 B ⊢ B q4 0: no move, rejected.</p>
+<p><b>3. {wwᴿ} with a transition diagram (Jul 2025 · II Q27).</b> Use machine 2 with a, b in place of 0, 1 and <b>remove</b> the two odd-length accepting moves (q3, B) and (q4, B). Diagram: q0 in the centre; upper branch q0 –a/B,R→ q1 (loop a/a,R; b/b,R) –B/B,L→ q3 –a/B,L→ q5; lower branch q0 –b/B,R→ q2 (same loop) –B/B,L→ q4 –b/B,L→ q5; q5 (loop a/a,L; b/b,L) –B/B,R→ q0; q0 –B/B,R→ qf. Trace abba: q0 abba ⊢ B q1 bba ⊢* Bbba q1 B ⊢ Bbb q3 a ⊢ Bb q5 b ⊢* q5 Bbb ⊢ B q0 bb ⊢ BB q2 b ⊢ BBb q2 B ⊢ BB q4 b ⊢ B q5 B ⊢ BB q0 B ⊢ accept.</p>
+<p><b>4. Replace every 111 by 101 (Jul 2024 Q27a).</b> Count consecutive 1s in the state; on the third 1 step back and change the middle one.</p>
+<pre>(q0, 0) → (q0, 0, R)      (q0, 1) → (q1, 1, R)      (q0, B) → (qf, B, L)
+(q1, 0) → (q0, 0, R)      (q1, 1) → (q2, 1, R)      (q1, B) → (qf, B, L)
+(q2, 0) → (q0, 0, R)      (q2, 1) → (q3, 1, L)      (q2, B) → (qf, B, L)
+(q3, 1) → (q4, 0, R)      (q4, 1) → (q0, 1, R)</pre>
+<p>Example 0111011: at the third 1 the head steps back, writes 0 and continues after the block: 0101011.</p>
+<p><b>5. Proper subtraction (Jul 2024 Q27b):</b> input 0ᵐ10ⁿ, output 0^(m−n) if m &gt; n, otherwise blank.</p>
+<pre>(q0, 0) → (q1, B, R)      (q0, 1) → (q5, B, R)
+(q1, 0) → (q1, 0, R)      (q1, 1) → (q2, 1, R)
+(q2, 1) → (q2, 1, R)      (q2, 0) → (q3, 1, L)      (q2, B) → (q4, B, L)
+(q3, 0) → (q3, 0, L)      (q3, 1) → (q3, 1, L)      (q3, B) → (q0, B, R)
+(q4, 1) → (q4, B, L)      (q4, 0) → (q4, 0, L)      (q4, B) → (q6, 0, R)
+(q5, 0) → (q5, B, R)      (q5, 1) → (q5, B, R)      (q5, B) → (q6, B, R)</pre>
+<p>Each cycle cancels one 0 on the left against one 0 on the right. If the right block runs out first (q2 sees B), q4 erases the 1s and restores the 0 that was just removed. If the left block runs out first (q0 sees 1), q5 erases everything. Trace 0010: … ⊢ B0 q6, one 0 left = 2 − 1.</p>
+<p><b>6. Multiplication (May 2025 Q27, Dec 2025 Q27).</b> Input 0ᵐ10ⁿ1 (or 1ᵐ # 1ⁿ # with your own delimiters); output 0^(mn) written after the second separator. <b>Idea:</b> for each 0 of the first block (erased one at a time), copy the whole second block to the end of the tape.</p>
+<pre>Main loop
+(q0, 0) → (q6, B, R)      erase one 0 of the first number
+(q6, 0) → (q6, 0, R)      (q6, 1) → (q1, 1, R)        go to the second number
+Copy subroutine (starts in q1 on the first 0 of 0ⁿ)
+(q1, 0) → (q2, X, R)      mark a 0
+(q2, 0) → (q2, 0, R)      (q2, 1) → (q2, 1, R)        (q2, B) → (q3, 0, L)   append a 0
+(q3, 0) → (q3, 0, L)      (q3, 1) → (q3, 1, L)        (q3, X) → (q1, X, R)
+(q1, 1) → (q4, 1, L)      block copied
+(q4, X) → (q4, 0, L)      restore the Xs              (q4, 1) → (q5, 1, R)
+Return
+(q5, 0) → (q7, 0, L)      (q7, 1) → (q8, 1, L)
+(q8, 0) → (q9, 0, L)      (q9, 0) → (q9, 0, L)        (q9, B) → (q0, B, R)   next round
+(q8, B) → (q10, B, R)     first number used up
+(q10, 1) → (q11, B, R)    (q11, 0) → (q11, B, R)      (q11, 1) → (q12, B, R)   erase 10ⁿ1, halt in q12</pre>
+<p><b>Working on 111 × 11</b> (written 000 1 00 1):</p>
+<div class="tw"><table>
+<tr><th>Stage</th><th>Tape</th></tr>
+<tr><td>Start</td><td class="m">000 1 00 1</td></tr>
+<tr><td>After round 1 (one 0 erased, 00 copied)</td><td class="m">B00 1 00 1 00</td></tr>
+<tr><td>After round 2</td><td class="m">BB0 1 00 1 0000</td></tr>
+<tr><td>After round 3</td><td class="m">BBB 1 00 1 000000</td></tr>
+<tr><td>Clean-up (q10–q12)</td><td class="m">BBBBBBB 000000</td></tr>
+</table></div>
+<p>Result: six symbols = 111111 = 6, the expected …BB111111BB…. Inside a round the copy subroutine goes 00 → X0 (append 0) → XX (append 0) → restore 00.</p>
+<p><b>7. Copy machine w → ww (May 2026 Q27).</b> Mark each symbol of w in turn (0 → X, 1 → Y) and append a copy at the right end written as A (for 0) or C (for 1), so copies are not confused with the original. A final pass turns X, A into 0 and Y, C into 1.</p>
+<pre>(q0, 0) → (q1, X, R)      (q0, 1) → (q2, Y, R)
+(q1, 0/1/A/C) → (q1, same, R)      (q1, B) → (q3, A, L)
+(q2, 0/1/A/C) → (q2, same, R)      (q2, B) → (q3, C, L)
+(q3, 0/1/A/C) → (q3, same, L)      (q3, X) → (q0, X, R)      (q3, Y) → (q0, Y, R)
+(q0, A) → (q4, A, L)      (q0, C) → (q4, C, L)      (q0, B) → (qf, B, R)   all of w copied
+(q4, X) → (q4, 0, L)      (q4, Y) → (q4, 1, L)      (q4, B) → (q5, B, R)
+(q5, 0/1) → (q5, same, R)      (q5, A) → (q5, 0, R)      (q5, C) → (q5, 1, R)      (q5, B) → (qf, B, L)</pre>
+<p><b>On 10:</b> q0 10 ⊢ Y q2 0 ⊢ Y0 q2 B ⊢ Y q3 0C ⊢ q3 Y0C ⊢ Y q0 0C ⊢ YX q1 C ⊢ YXC q1 B ⊢ YX q3 CA ⊢ Y q3 XCA ⊢ YX q0 CA ⊢ Y q4 XCA ⊢ q4 Y0CA ⊢ q4 B10CA ⊢ q5 10CA ⊢* 1010 q5 B ⊢ halt. Tape: <b>1010</b>.</p>
+<p><b>On 010:</b> after three rounds the tape is XYX ACA; q0 reads A and starts the clean-up: XYX → 010 and ACA → 010. Tape: <b>010010</b>.</p>` },
+
+/* ================= UNIT 5 ================= */
+{ u:5, m:8, t:"Post's Correspondence Problem — definition, instances, undecidability", items:[
+  {p:"n23", q:"25a", x:"Define PCP. Let Σ = {0, 1}. Let A and B be the lists of three strings each defined as: List A (wᵢ): 1, 10111, 10; List B (xᵢ): 111, 10, 0."},
+  {p:"m24", q:"25b", x:"Let Σ = {0, 1}. Let A & B be strings. Find the instance of PCP. List A (wᵢ): 1, 10111, 10; List B (xᵢ): 111, 10, (0)."},
+  {p:"jl24", q:"25a", x:"Define PCP and prove that PCP is undecidable."},
+  {p:"m25", q:"25a", x:"1. Does the PCP with two lists A = (y, yxy³, yx) and B = (y³, yx, x) have a solution? If yes give the solution. 2. Discuss NP-hard and NP-complete problems with suitable examples."},
+  {p:"jl25b", q:"25a", x:"Let Σ={0,1}, A and B be the lists of three strings each, defined as List A: wᵢ = 1, 10111, 10; List B: xᵢ = 111, 10, 0. Find the instance of PCP."},
+  {p:"d25", q:"25b", x:"Let Σ = {a, b}. Consider the lists A and B of strings over Σ defined as follows: List A = {a, bab, bb, abba}, List B = {ab, b, bab, ba}. Find whether there exists a sequence of indices i₁,i₂,...,iₖ such that A_{i1}A_{i2}...A_{ik} = B_{i1}B_{i2}...B_{ik}. If yes, provide one valid sequence. (3 marks) Does there exist a valid MPCP solution? (2 marks) Briefly explain whether the PCP problem is decidable. (3 marks)"},
+  {p:"m26", q:"25b", x:"Let M and N be lists of three strings each, as defined in the following table. Find whether there is a solution for the given instance of PCP. M = (ab, bab, bbaaa) and N = (a, ba, bab)."}
+], a: A_PCP_DEF + `
+<p><b>How to search:</b> start with a pair where one string is a prefix of the other; keep track of the surplus (the part by which one side is ahead); the next pair must continue that surplus.</p>
+<p><b>A = (1, 10111, 10), B = (111, 10, 0)</b> (Nov 2023, May 2024, Jul 2025 · II).</p>
+<ul>
+<li>Pair 1 (1 / 111): B ahead; pair 3 does not match at the start; so begin with <b>pair 2</b>: A = 10111, B = 10. A is ahead by 111.</li>
+<li>Add <b>pair 1</b>: A = 101111, B = 10111. A ahead by 1.</li>
+<li>Add <b>pair 1</b> again: A = 1011111, B = 10111111. B ahead by 1.</li>
+<li>Add <b>pair 3</b>: A = 101111110, B = 101111110. Equal.</li>
+</ul>
+<p><b>Solution: i = 2, 1, 1, 3.</b> w₂w₁w₁w₃ = 10111·1·1·10 = <span class="m">101111110</span> = 10·111·111·0 = x₂x₁x₁x₃. So this PCP instance has a solution.</p>
+<p><b>A = (y, yxy³, yx), B = (y³, yx, x)</b> (May 2025). The same instance with y for 1 and x for 0. <b>Yes: 2, 1, 1, 3.</b> A: yxyyy·y·y·yx = <span class="m">yxyyyyyyx</span>; B: yx·yyy·yyy·x = <span class="m">yxyyyyyyx</span>.</p>
+<p><b>A = (a, bab, bb, abba), B = (ab, b, bab, ba)</b> (Dec 2025).</p>
+<ul>
+<li>Pair 1: A = a, B = ab. B ahead by b.</li>
+<li>Pair 3: A = abb, B = abbab. B ahead by ab.</li>
+<li>Pair 4: A = abbabba, B = abbabba. Equal.</li>
+</ul>
+<p><b>Yes: 1, 3, 4</b> gives <span class="m">abbabba</span> on both sides. Because this solution begins with index 1, it is also a <b>valid MPCP solution</b>. <b>Decidability:</b> PCP is undecidable in general: no algorithm decides every instance, although a particular instance may be solved by search (PCP is recursively enumerable: a solution, if one exists, is found by trying all sequences).</p>
+<p><b>M = (ab, bab, bbaaa), N = (a, ba, bab)</b> (May 2026). <b>No solution.</b> Reason 1: every string of M is longer than its partner in N (2 &gt; 1, 3 &gt; 2, 5 &gt; 3), so for any sequence the M string is strictly longer than the N string and they can never be equal. Reason 2 (by search): pair 3 mismatches at the second symbol; starting with pair 1 (ab / a) the next pair must have N starting with b, and both pair 2 (abbab vs aba) and pair 3 (abbbaaa vs abab) mismatch at the third symbol; starting with pair 2 (bab / ba) both continuations mismatch at the fourth symbol.</p>
+<p><b>May 2025 part 2 — NP-hard and NP-complete:</b></p>` + A_PNP + A_PCP_UNDEC },
+
+{ u:5, m:15, t:"PCP, MPCP and Rice's theorem — 15 mark versions", items:[
+  {p:"jl24", q:"26", x:"a. State and explain RICE theorem. b. Prove that MPCP reduces to PCP."},
+  {p:"jl25a", q:"26", x:"i. Prove that PCP is Undecidable. ii. Does the following instance of list A and B have a PCP solution? Find the instance of MPCP. List A (wᵢ): ab, bbab, baa, b; List B (xᵢ): abbb, a, aa, bbb."}
+], a: A_PCP_DEF + A_PCP_UNDEC + `
+<p><b>Jul 2025 · I Q26(ii) — A = (ab, bbab, baa, b), B = (abbb, a, aa, bbb).</b></p>
+<ul>
+<li>Pair 1: A = ab, B = abbb. B ahead by bb.</li>
+<li>Pair 2: A = abbbab, B = abbba. A ahead by b.</li>
+<li>Pair 4: A = abbbabb, B = abbbabbb. B ahead by b.</li>
+<li>Pair 3: A = abbbabbbaa, B = abbbabbbaa. Equal.</li>
+</ul>
+<p><b>PCP solution: 1, 2, 4, 3</b> → <span class="m">abbbabbbaa</span>. It starts with pair 1, so it is also a solution of the MPCP instance.</p>
+<p><b>The corresponding PCP instance built from the MPCP instance</b> (the reduction of step 1: * after each symbol in list C, * before each symbol in list D, plus a start pair 0 and an end pair 5):</p>
+<div class="tw"><table>
+<tr><th>i</th><th>List C (yᵢ)</th><th>List D (zᵢ)</th></tr>
+<tr><td>0</td><td class="m">*a*b*</td><td class="m">*a*b*b*b</td></tr>
+<tr><td>1</td><td class="m">a*b*</td><td class="m">*a*b*b*b</td></tr>
+<tr><td>2</td><td class="m">b*b*a*b*</td><td class="m">*a</td></tr>
+<tr><td>3</td><td class="m">b*a*a*</td><td class="m">*a*a</td></tr>
+<tr><td>4</td><td class="m">b*</td><td class="m">*b*b*b</td></tr>
+<tr><td>5</td><td class="m">$</td><td class="m">*$</td></tr>
+</table></div>
+<p>Its solution is 0, 2, 4, 3, 5, giving <span class="m">*a*b*b*b*a*b*b*b*a*a*$</span> on both sides.</p>
+<p><b>Jul 2024 Q26(b) — MPCP reduces to PCP</b> is Step 1 of the proof above; write the construction, then prove both directions: (⇒) if i<sub>1</sub> = 1, i<sub>2</sub>, …, i<sub>m</sub> solves MPCP, then 0, i<sub>2</sub>, …, i<sub>m</sub>, k+1 solves the PCP instance, because the y string and the z string are the same word with a * between all symbols; (⇐) in the PCP instance only pair 0 has y and z starting with the same symbol (*), and only pair k+1 has them ending with the same symbol ($), so any solution starts with 0 and ends with k+1; deleting the *s and $ gives an MPCP solution starting with pair 1.</p>
+<p><b>Jul 2024 Q26(a) — Rice's theorem:</b></p>` + A_RICE },
+
+{ u:5, m:8, t:"P, NP, NP-complete and NP-hard", items:[
+  {p:"m24", q:"25a", x:"Write short notes on NP hard and NP Complete. Express the relationship among them."},
+  {p:"jl24", q:"25b", x:"Explain class P, class NP, NP-complete and NP-hard problem with examples in detail."},
+  {p:"n24", q:"25a", x:"Explain in detail about P, NP, NP-Complete, and NP-Hard."}
+], a: `<p>Complexity theory classifies <b>decidable</b> problems by the time a Turing machine needs. A problem is <b>tractable</b> if it has a polynomial-time algorithm.</p>` + A_PNP + `
+<div class="tw"><table>
+<tr><th>Point</th><th>P</th><th>NP</th><th>NP-complete</th><th>NP-hard</th></tr>
+<tr><td>Solved in polynomial time</td><td>Yes (deterministic)</td><td>Non-deterministically</td><td>Not known</td><td>Not known</td></tr>
+<tr><td>Verified in polynomial time</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Not necessarily</td></tr>
+<tr><td>Must be in NP</td><td>Yes</td><td>—</td><td>Yes</td><td>No</td></tr>
+<tr><td>Decision problem</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Any kind</td></tr>
+<tr><td>Example</td><td>Shortest path</td><td>Subset sum</td><td>3-SAT</td><td>Halting problem</td></tr>
+</table></div>
+<p><b>Cook–Levin theorem:</b> SAT is NP-complete: the computation of any polynomial-time NTM on an input can be written as a Boolean formula that is satisfiable iff the machine accepts. Chain of reductions used in practice: SAT → 3-SAT → clique → vertex cover → Hamiltonian cycle → TSP.</p>` },
+
+{ u:5, m:8, t:"Undecidability — recursive vs RE, Rice's theorem, halting problem, Ld, Le", items:[
+  {p:"n23", q:"25b", x:"Define diagonalization language. Show that the language Ld is not a recursively enumerable language."},
+  {p:"n24", q:"25b", x:"Describe in detail about Halting problem and Rice Theorem."},
+  {p:"m25", q:"25b", x:"Compare and contrast Decidable and Undecidable Languages with examples?"},
+  {p:"jl25a", q:"25a", x:"State and prove Rice's Theorem for recursively enumerable index sets."},
+  {p:"jl25a", q:"25b", x:"Define Lₑ. Prove that Lₑ is not recursive."},
+  {p:"jl25b", q:"25b", x:"Classify decidable and undecidable problems with an example."},
+  {p:"d25", q:"25a", x:"Differentiate recursive and recursively enumerable languages. Describe briefly about undecidable problems with examples."},
+  {p:"m26", q:"25a", x:"Discuss whether each of the sets of recursive and recursively enumerable languages are closed under complementation."}
+], a: `
+<p><b>Recursive vs recursively enumerable; decidable vs undecidable</b> (May 2025, Jul 2025 · II, Dec 2025):</p>` + A_DECID + `
+<p><b>Closure under complementation (May 2026).</b> <b>Recursive languages are closed:</b> given an always-halting TM M for L, build M′ that accepts exactly when M halts without accepting; M′ always halts and accepts the complement. <b>RE languages are not closed:</b> L<sub>u</sub> is RE but its complement is not RE. If it were, L<sub>u</sub> and its complement would both be RE, which makes L<sub>u</sub> recursive (run both recognisers in parallel) — but L<sub>u</sub> is undecidable. Swapping accept and reject fails for RE languages because the machine may loop on non-members.</p>
+<p><b>Diagonalization language L<sub>d</sub> (Nov 2023).</b> Code every TM as a binary string and let w<sub>i</sub> be the i-th binary string and M<sub>i</sub> the TM whose code is w<sub>i</sub>. <b>L<sub>d</sub> = {w<sub>i</sub> | w<sub>i</sub> ∉ L(M<sub>i</sub>)}</b>: the strings that are not accepted by the machine they encode. Picture an infinite table with rows M<sub>1</sub>, M<sub>2</sub>, … and columns w<sub>1</sub>, w<sub>2</sub>, …, entry 1 if M<sub>i</sub> accepts w<sub>j</sub>; L<sub>d</sub> is the complement of the diagonal.</p>
+<p><b>Theorem: L<sub>d</sub> is not recursively enumerable.</b> Proof by contradiction: suppose L<sub>d</sub> = L(M) for some TM M. M has a code, so M = M<sub>i</sub> for some i. Is w<sub>i</sub> in L<sub>d</sub>?</p>
+<ul>
+<li>If w<sub>i</sub> ∈ L<sub>d</sub>, then M<sub>i</sub> accepts w<sub>i</sub> (as L(M<sub>i</sub>) = L<sub>d</sub>); but by definition of L<sub>d</sub>, w<sub>i</sub> ∈ L<sub>d</sub> means M<sub>i</sub> does <i>not</i> accept w<sub>i</sub>. Contradiction.</li>
+<li>If w<sub>i</sub> ∉ L<sub>d</sub>, then M<sub>i</sub> does not accept w<sub>i</sub>; but then by definition w<sub>i</sub> ∈ L<sub>d</sub>. Contradiction.</li>
+</ul>
+<p>Both cases are impossible, so no such M exists: L<sub>d</sub> is not RE. ∎</p>
+<p><b>Halting problem (Nov 2024).</b> HALT = {⟨M, w⟩ | M halts on input w}. <b>Theorem: HALT is undecidable</b> (but RE: simulate M on w and accept when it halts). Proof: suppose a TM H decides HALT. Build D that on input ⟨M⟩ runs H on ⟨M, ⟨M⟩⟩; if H says “halts”, D loops forever; if H says “does not halt”, D halts. Run D on its own code ⟨D⟩: if D halts on ⟨D⟩ then H said “halts”, so D loops; if D loops then H said “does not halt”, so D halts. Contradiction either way, so H cannot exist. ∎ (Equivalently: if HALT were decidable we could decide L<sub>u</sub> by first checking that M halts on w and then simulating it.)</p>
+<p><b>L<sub>e</sub> is not recursive (Jul 2025 · I).</b> L<sub>e</sub> = {⟨M⟩ | L(M) = ∅}; L<sub>ne</sub> = {⟨M⟩ | L(M) ≠ ∅}; they are complements.</p>
+<ol>
+<li><b>L<sub>ne</sub> is RE:</b> a non-deterministic TM guesses a string w and simulates M on w; it accepts if M accepts.</li>
+<li><b>L<sub>ne</sub> is not recursive:</b> reduce L<sub>u</sub> to it. Given (M, w), build M′ that ignores its own input x, writes w on its tape and simulates M on w, accepting if M accepts. If M accepts w, then L(M′) = Σ* ≠ ∅; otherwise L(M′) = ∅. So (M, w) ∈ L<sub>u</sub> ⇔ ⟨M′⟩ ∈ L<sub>ne</sub>. L<sub>u</sub> is undecidable, hence so is L<sub>ne</sub>.</li>
+<li><b>L<sub>e</sub> is not recursive:</b> if it were, its complement L<sub>ne</sub> would be recursive (recursive languages are closed under complement), contradicting step 2. In fact L<sub>e</sub> is <b>not RE</b>: if both L<sub>e</sub> and L<sub>ne</sub> were RE, both would be recursive.</li>
+</ol>
+<p><b>Rice's theorem (Nov 2024, Jul 2025 · I):</b></p>` + A_RICE }
+);
+
+/* MCQ key: all nine papers are ticked in the PDF */
+const MCQ = {
+  1: "BACABCDABACDBDBDACBB",
+  2: "CAADBBDBABBCBBAAABBB",
+  3: "CDCADBBBCAACAACABABB",
+  4: "CBBBABDABCCBBADBACCA",
+  5: "CCBBABDCBBAACABCBCCA",
+  6: "ACCBACBBBCBDBCBBBCCD",
+  7: "CBADABBBCBBBABBCADCA",
+  8: "CAACBBDAADDBCBDDADCB",
+  9: "DADCDCBBAAABADABDBCC"
+};
+const MCQ_NOTES = [
+  ["Nov 2023", 8, "None of the options states n ≥ 2, m ≥ 3 exactly; (A) gives the minimum values n = 2, m = 3 and is the intended answer."],
+  ["Nov 2023", 14, "The language is missing from the printed question. The options match the GATE question on {aᵖ | p is prime}, whose answer is (D)."],
+  ["Nov 2023", 17, "“Decidable” is the standard answer; (D) “decidable and solvable” says the same thing."],
+  ["May 2024", 13, "The usual answer is a pushdown automaton, which is not offered. Of the listed machines a Turing machine (and an LBA) can accept even palindromes; a finite automaton cannot."],
+  ["May 2024", 20, "Subset sum is NP-complete, so it is in NP and also NP-hard; (B) NP is ticked as the class the paper is testing."],
+  ["Jul 2024", 5, "Options (C) and (D) say the same thing: both statements are correct."],
+  ["Nov 2024", 6, "CFLs are not closed under intersection or under difference (minus); intersection is the standard answer."],
+  ["Nov 2024", 11, "A PDA accepts by final state or by empty stack; the paper's key treats “both” as the answer."],
+  ["May 2025", 8, "Both “E is not nullable” and “C is not nullable” are true for this grammar; (C) is the published answer."],
+  ["May 2025", 11, "The exact answer is recursively enumerable, which is not listed; “Recursive” is the intended option."],
+  ["Jul 2025 · I", 2, "The transition graph is not printed in the paper. The standard version of this question has q1 –ε→ q2, giving {q1, q2}."],
+  ["Jul 2025 · II", 3, "(a+b)* and (a*b*)* describe the same language; (A) is the direct answer."],
+  ["May 2026", 13, "δ is defined on a state and a tape symbol; the tape alphabet includes the input symbols, so (A) is ticked."]
+];
+
+// The paper fixes the unit of every 8-mark question by its number: Q21 = Unit 1, Q22 = Unit 2 … Q25 = Unit 5
+// (the CO column on the paper says the same). A question whose topic card sits in another unit is moved to a
+// copy of that card filed under the unit the paper gives it.
+(function () {
+  const extra = [];
+  for (const t of TOPICS) {
+    const moved = {};
+    t.items = t.items.filter(i => {
+      const n = parseInt(i.q, 10), u = n >= 21 && n <= 25 ? n - 20 : t.u;
+      if (u === t.u) return true;
+      (moved[u] = moved[u] || []).push(i); return false;
+    });
+    for (const u in moved) extra.push({ u: +u, m: t.m, t: t.t + " — set as a Unit " + u + " question (Q" + (20 + +u) + ")", items: moved[u], a: t.a });
+  }
+  for (let k = TOPICS.length - 1; k >= 0; k--) if (!TOPICS[k].items.length) TOPICS.splice(k, 1);
+  TOPICS.push(...extra);
+})();
+const FAMILIES = [
+  [1, "NFA / ε-NFA to DFA (subset construction)", ["NFA to DFA", "second-last", "ε-NFA to DFA"]],
+  [1, "Regular expression ↔ automaton", ["Regular expression to automaton", "Regular expression scenario", "DFA to regular expression"]],
+  [1, "DFA design", ["Designing a DFA"]],
+  [1, "Moore and Mealy machines", ["Moore and Mealy"]],
+  [1, "Pumping lemma and closure of regular languages", ["Closure properties of regular", "Pumping lemma for regular"]],
+  [1, "DFA minimisation", ["DFA minimisation"]],
+  [1, "Proof by induction", ["induction"]],
+  [2, "CFG simplification and CNF", ["Simplifying a CFG", "Chomsky Normal Form", "CNF (and GNF)"]],
+  [2, "Greibach Normal Form", ["Greibach", "GNF conversion with"]],
+  [2, "Derivations, parse trees, ambiguity, writing CFGs", ["Derivations"]],
+  [2, "Pumping lemma for CFLs", ["Pumping lemma for CFLs"]],
+  [3, "PDA design", ["Designing a PDA"]],
+  [3, "CFG ↔ PDA conversion", ["Converting a CFG", "Converting a PDA", "PDA to CFG +"]],
+  [3, "DPDA vs NPDA", ["Deterministic vs"]],
+  [4, "Turing machine design", ["Designing a Turing machine", "Turing machine problems"]],
+  [4, "TM variants and universal TM", ["Variants of Turing"]],
+  [4, "Closure of recursive languages", ["Closure of recursive"]],
+  [5, "Post's Correspondence Problem", ["Post's Correspondence", "PCP, MPCP"]],
+  [5, "Undecidability (recursive/RE, Rice, halting, Ld, Le)", ["Undecidability"]],
+  [2, "Regular-language questions set in the Unit 2 slot", ["Regular expression to automaton", "Closure properties of regular", "DFA minimisation"]],
+  [3, "Pumping lemma for regular languages (set in the Unit 3 slot)", ["Pumping lemma for regular"]],
+  [4, "Greibach Normal Form (set in the Unit 4 slot)", ["Greibach"]],
+  [5, "P, NP, NP-complete, NP-hard", ["P, NP"]]
+];
+function familyOf(t) {
+  for (const [u, name, keys] of FAMILIES) if (u === t.u && keys.some(k => t.t.includes(k))) return name;
+  return null;
+}
+// Which blocks of a topic's answer belong to which question ("paper:question" -> block numbers of that topic's answer,
+// in the order they should be shown). A question that is not listed gets the whole answer of its topic.
+const SPLIT = {
+  "n23:21a":"0-3,11", "jl24:21b":"0,4-7,11", "jl25a:21b":"0,4-7,11-14", "m26:21b":"0,8-11",
+  "n23:21b":"13-21", "m24:21b":"0-3", "jl25b:21a":"13-21", "jl24:22a":"4-12,0-2",
+  "m24:21a":"1-3", "m25:21a":"0,4,5", "d25:21a":"6-8",
+  "n24:21b":"2-6", "m25:21b":"0,1,7-10", "m26:21a":"11-14",
+  "d25:21b":"0,1,4,5", "jl25b:23b":"0-3",
+  "jl24:22b":"0-3", "d25:22b":"0,1,4-6",
+  "n23:22b":"0-3", "m24:22a":"0,1,4", "m25:22a":"0,1,5", "jl25b:22a":"0,1,6", "m26:22b":"0,1,7,8",
+  "n23:22a":"1-4", "m24:22b":"0,5-7", "n24:22a":"0,8,9", "n24:22b":"10-12", "d25:22a":"13-15",
+  "m25:22b":"0,7-9", "jl25a:22b":"0,10-14", "jl25b:22b":"0-3", "jl24:24a":"0,4-6",
+  "n24:27":"0,15,16", "jl25a:27":"0-9", "jl25b:26":"0,10-14", "d25:26":"0,17-24",
+  "n23:23a":"0,1,5-7", "n23:23b":"0,1,10,11", "m24:23a":"0,1,12,13", "m24:23b":"0,1,5,6,8,9", "jl24:23b":"0-4",
+  "n24:23a":"0,1,16-18", "m25:23a":"0,1,19,20", "m25:23b":"21-23", "jl25a:23a":"0,1,24-29",
+  "jl25a:23b":"0,1,14,15,30-33", "d25:23a":"0,1,24-26", "m26:23b":"0,1,14,15",
+  "n24:23b":"0-4", "d25:23b":"0,5-9", "m26:23a":"0,10-13",
+  "n23:24a":"0-4", "n23:24b":"0,1,9-11", "m24:24b":"0,1,12,13", "jl24:24b":"0,1,5-7", "n24:24a":"0,1,5-7",
+  "n24:24b":"0,1,16-18", "m25:24a":"0,1,25", "jl25a:24a":"0,1,19-21,8,5-7", "jl25a:24b":"0,1,22-24",
+  "jl25b:24a":"0,26-28", "jl25b:24b":"0,1,16-18", "d25:24b":"0,1,5-7", "m26:24b":"0,1,14,15",
+  "d25:24a":"0-4", "m26:24a":"0-2",
+  "m24:26":"0-8", "m24:27":"0,9-11", "jl24:27":"0,13-18", "m25:27":"0,19-23", "jl25b:27":"0,12,9-11", "d25:27":"0,19-23", "m26:27":"0,24-27",
+  "n23:25a":"0-4", "m24:25b":"0-4", "jl24:25a":"0,14-19", "m25:25a":"0,1,5,2-4,10-13", "jl25b:25a":"0-4", "d25:25b":"0,1,6-8,14,19", "m26:25b":"0,1,9",
+  "jl24:26":"14-20,13,0,2", "jl25a:26":"0-12",
+  "n23:25b":"9-12", "n24:25b":"13,16-21", "m25:25b":"0-7", "jl25a:25a":"17-22", "jl25a:25b":"14,15", "jl25b:25b":"0-7", "d25:25a":"0-7", "m26:25a":"8,1-3"
+};
+
+const SITE = {
+  key: "fla", title: "FLA PYQ Hub", code: "SRM · 21CSC301T · Semester 5", h1: "Formal Language &amp; Automata",
+  lede: "Every 8 mark and 15 mark question from nine end-semester papers, November 2023 to May 2026. Pick a unit, tap a question, read its worked answer.",
+  marksIntro: "Marks printed across all nine papers, counting both options of every either/or question. Q21 is always Unit 1, Q22 Unit 2, and so on to Q25 Unit 5; the two 15 mark questions in Part C can come from any unit.",
+  partC: "Eighteen 15 mark questions were set. You answer one of two; a Turing machine design is one of the two options in most papers.",
+  plan: '<li><b>Turing machine design</b> (Unit 4). Asked in every paper, usually as both an 8 mark and a 15 mark question. Learn the marking technique on 0ⁿ1ⁿ and aⁿbⁿcⁿ, then addition, proper subtraction, palindrome and multiplication.</li>' +
+    '<li><b>PDA design and CFG ↔ PDA conversion</b> (Unit 3). Every paper has a PDA question: aⁿbⁿ, wcwᴿ, wwᴿ, equal a and b, and S → 0BB with the string 010⁴.</li>' +
+    '<li><b>NFA to DFA and regular expression to DFA</b> (Unit 1). The subset construction is mechanical marks; the second-last-symbol NFA and a(a+b+c)*(a+b+c) were both repeated.</li>' +
+    '<li><b>Simplification, CNF and GNF</b> (Unit 2). One of these is in every paper; CNF is the usual 15 mark version.</li>' +
+    '<li><b>PCP</b> (Unit 5). The instance (1, 10111, 10) / (111, 10, 0) with answer 2, 1, 1, 3 has been asked several times. Then P/NP definitions, Rice, halting problem, recursive vs RE.</li>' +
+    '<li><b>Pumping lemma proofs, Moore/Mealy machines and minimisation</b> to finish Unit 1.</li>',
+  sources: "Nine papers are analysed: seven from your zip (May 2024 Paper 1 and Paper 2 in the zip are the same paper) and two more found on thehelpers.tech, listed there as Nov 2025 (its heading says December 2025) and May 2026. Every 8 mark question is filed under the unit its question number gives it (Q21 = Unit 1 … Q25 = Unit 5). Where a printed question has a misprint or an unreadable figure, the answer says how it was read.",
+  mcqSub: 'All nine papers are ticked in red on the original question papers, with a one-line reason beside each question, in <span class="m">FLA_PYQ_MCQs_Ticked_Explained.pdf</span> in your project folder.',
+  paperWord: "paper"
+};
+// The YouTube playlist used for study (65 videos) and which videos teach which topic card.
+const PLAYLIST = { title: "Formal Language and Automata (FLA) | SRM University", list: "PLAaj_wcMtpVLshvrpWED3VAO3KBX1uW3k",
+  videos: [[1, "FLA / TOC Basics", "-3QDNahCMUs"], [2, "DFA with Example", "dyOncDiu_94"], [3, "DFA Example 2 · Input Contains Substring", "yClJcRknLN0"], [4, "DFA Example 3 · Doesn't Contain Substring", "DS_hWinSVCk"], [5, "DFA Example 4 · Even Binary Number", "l8OgHzZt_mc"], [6, "DFA Example 5 · Divisible By 3", "1WJBTQIBM2Q"], [7, "DFA Example 6 · Even 0's And Even 1's", "e5bTToGsNr8"], [8, "NFA with Example", "Xzn-C40b2UU"], [9, "NFA Example 2 · Input Contains Substring", "S1Bm5ORewPk"], [10, "Extended Transition Function for DFA", "CJS-vHbGjpU"], [11, "Extended Transition Function for NFA", "mmVZC-ehXRg"], [12, "NFA To DFA · Subset Construction Method", "-CxbnrN-zzQ"], [13, "NFA To DFA Example 2 · Subset Construction Method", "TB9X6aRrDd4"], [14, "Epsilon Closure & E-NFA", "ZXMvBB7MLLc"], [15, "E-NFA To DFA Conversion", "geWpQacmUeI"], [16, "E-NFA To NFA Conversion", "wYu0jNaKpb0"], [17, "Regular Expression (RE)", "6MwS7ZnbNrk"], [18, "RE To E-NFA · Thompson's Construction Method", "vB76avLYK0I"], [19, "DFA To Regular Expression (RE) · Rijk Method 01", "78g48YwURM4"], [20, "DFA To RE Example 1 · Rijk Method 02", "qWWb_UNlATE"], [21, "DFA To RE Example 2 · Rijk Method 03", "Jvd4OR4TjaY"], [22, "DFA To RE · State Elimination Method 01", "HokBVK8S5do"], [23, "DFA To RE Example 1 · State Elimination Method 02", "1n4RXyWO09M"], [24, "DFA To RE Example 2 · State Elimination Method 03", "b2UhnYUdiHU"], [25, "DFA To RE Example 3 · State Elimination Method 04", "u9a2W93TZds"], [26, "Minimisation of DFA · Minimised DFA", "qk-sW7msH3g"], [27, "RE to DFA Conversion (Most Important)", "c-pEuBV1DnI"], [28, "Mealy and Moore Machine · Conversions", "NWZXcoYErVo"], [29, "Pumping Lemma with Example", "JyIyBBY3zqg"], [30, "Pumping Lemma Example 2", "q8hCOCtW0mU"], [31, "Context Free Grammar (CFG) Introduction · Derivations & Parse Trees", "m-7HzbPKGgo"], [32, "CFG Construction", "GD3-bKLEamQ"], [33, "Types of Grammar · Chomsky Hierarchy", "xtWHz7XexCU"], [34, "Derivations & Parse Tree", "_Z0XdzkDvPY"], [35, "Ambiguous Grammar & Ambiguity", "FmZ7251F3U0"], [36, "CFG To CNF Conversion · CNF Simplifications", "ol69kQTuKhw"], [37, "CFG To CNF Conversion · Example 1", "T2c6fhZvGmc"], [38, "CFG To CNF Conversion · Example 2", "MroymizHffY"], [39, "Elimination of Left Recursion", "KfFFdaANte8"], [40, "CFG To GNF Conversion · Greibach Normal Form", "Ob5MUiUglQw"], [41, "PDA Introduction & Example 1 (0^n 1^n)", "FlOtpGs42DY"], [42, "PDA Example 2 (a^n b^2n)", "mdcG0f9E2Pg"], [43, "PDA Example 3 (a^n b^m c^n)", "TM43-T1vT4g"], [44, "PDA Example 4 (a^n b^m c^m d^n)", "F9nsDTD0Oio"], [45, "NPDA Example (w w^r) · PDA Example 05", "43RzDy2OV0M"], [46, "DPDA Example (wcw^r) · PDA Example 06", "EwkJOvoT19E"], [47, "CFG To PDA Conversion · Context Free Grammar to PDA", "CpWRYfEYNCw"], [48, "PDA To CFG Conversion · Pushdown Automata to Context Free Grammar", "rQzBQrMXy6E"], [49, "Pumping Lemma for CFL · a^n b^n c^n", "w5jHHpkq9hE"], [50, "Pumping Lemma for CFL · a^k b^j c^k d^j", "kGEgR9C2Tz4"], [51, "Pumping Lemma for CFL · 0^(2^i)", "01x_EDquVu8"], [52, "Turing Machine for a^n b^n c^n · Introduction", "aFGJldpIrPA"], [53, "Turing Machine for Concatenation · Solved Problem", "fdKmM49_mLY"], [54, "Turing Machine for Palindrome · Odd & Even Length", "fgAEt2s4AS8"], [55, "Turing Machine Subtraction · Example 4", "AbVi5uKpmTg"], [56, "Turing Machine for Multiplication · Example 5", "08r5favS34o"], [57, "Turing Machine for Substring · Example 6", "EbSc9GiIzSE"], [58, "Code For Turing Machine · Implementation & Explanation", "tBiIqkirFz8"], [59, "Variations of Turing Machine · Multitrack, Multitape & Nondeterministic TM", "ZdRnB7BdvLk"], [60, "Undecidability · Recursive & RE Languages · Halting Turing Machine", "2f_CuoFvvjg"], [61, "Post Correspondence Problem (PCP)", "EI7hXFNGZmY"], [62, "Modified Post Correspondence Problem (MPCP)", "HIlcT1twg-I"], [63, "MPCP to PCP Conversion", "ckgh8A8fBnU"], [64, "Turing Machine to MPCP Conversion", "Nad6jLugJuI"], [65, "Storage in Finite Control", "obW_v3PUlsc"]],
+  map: [["NFA to DFA — subset", [12, 13]], ["NFA for “second-last", [8, 9, 12]], ["Regular expression to automaton", [27, 18, 17, 26]], ["Designing a DFA", [2, 7, 4, 3]], ["ε-NFA to DFA", [14, 15, 28]], ["Moore and Mealy", [28]], ["Proof by mathematical induction", []], ["Closure properties of regular", [35]], ["Pumping lemma for regular", [29, 30]], ["DFA minimisation", [26]], ["Regular expression scenario", [17, 27, 18, 12]], ["DFA to regular expression by the Rijk", [19, 20, 21]], ["Simplifying a CFG", [36]], ["Derivations, parse trees", [31, 34, 35, 32]], ["Greibach Normal Form", [40, 39]], ["GNF conversion with", [40, 39, 36]], ["Chomsky Normal Form conversion", [36, 37, 38]], ["CNF (and GNF)", [36, 37, 38, 40]], ["Pumping lemma for CFLs", [49, 50, 51, 26]], ["Designing a PDA", [41, 43, 44, 45, 46, 42]], ["Deterministic vs", [46, 45]], ["Converting a CFG", [47]], ["Converting a PDA", [48]], ["PDA to CFG +", [48, 34]], ["Designing a Turing machine", [52, 55, 53, 54, 57]], ["Variants of Turing", [59, 65]], ["Closure of recursive", [60]], ["Turing machine problems", [56, 54, 55, 58]], ["Post's Correspondence", [61, 62, 63, 64]], ["PCP, MPCP", [61, 62, 63, 64]], ["P, NP", []], ["Undecidability", [60]]] };
+if (typeof module !== "undefined") module.exports = { PAPERS, UNITS, TOPICS, MCQ, FAMILIES, familyOf };
+
+</script>
+<script>
+(function(){
+const $=s=>document.querySelector(s), el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+/* Lay a question out the way the printed paper does: transition tables as tables,
+   one grammar rule or δ move per line, sub-parts (i), (ii) on their own lines. */
+function fmtQ(x){
+  const keep=[];const hold=h=>{keep.push(h);return "\u0001"+(keep.length-1)+"\u0001"};
+  // 1. transition table written as "state: sym→next, sym→next; state: ..."
+  const tm=/(^|[\s(])((?:→|\*)*[A-Za-z]\w{0,2}: [0-9a-zε]→)/.exec(x);
+  if(tm){
+    const start=tm.index+tm[1].length, rows=[], syms=[];let pos=start,endPos=start;
+    for(const part of x.slice(start).split("; ")){
+      let c=part;const cut=c.search(/\.(\s|$)/);if(cut>=0)c=c.slice(0,cut);
+      const m=/^((?:→|\*)*[A-Za-z]\w{0,2}): (.+)$/.exec(c);if(!m)break;
+      const cells=m[2].split(", ").map(s=>/^([0-9a-zε])→(.*)$/.exec(s));if(cells.some(z=>!z))break;
+      const row={n:m[1],c:{}};cells.forEach(z=>{row.c[z[1]]=z[2];if(!syms.includes(z[1]))syms.push(z[1])});rows.push(row);
+      if(cut>=0){endPos=pos+cut+1;break}
+      endPos=pos+part.length;pos+=part.length+2;
+    }
+    if(rows.length>=2){
+      const t='<div class="tw"><table class="qt"><tr><th>δ</th>'+syms.map(s=>"<th>"+esc(s)+"</th>").join("")+"</tr>"+
+        rows.map(r=>'<tr><th>'+esc(r.n)+'</th>'+syms.map(s=>"<td>"+esc(r.c[s]==null||r.c[s]==="-"?"–":r.c[s])+"</td>").join("")+"</tr>").join("")+"</table></div>";
+      x=x.slice(0,start)+hold(t)+x.slice(endPos).replace(/^; /,"");
+    }
+  }
+  // 2. two lists of strings (PCP)
+  x=x.replace(/List A[^:={;]*[:=]\s*(?:wᵢ = )?\{?\s*([^;{}]+?)\s*\}?[;,] List B[^:={;]*[:=]\s*(?:xᵢ = )?\{?\s*([^.{}]+?)\s*\}?(?:\.(?=\s|$)|$)/,(m,a,b)=>{
+    const A=a.split(/,\s*/),B=b.split(/,\s*/);if(A.length!==B.length)return m;
+    return hold('<div class="tw"><table class="qt"><tr><th>i</th><th>List A</th><th>List B</th></tr>'+A.map((s,i)=>"<tr><th>"+(i+1)+"</th><td>"+esc(s)+"</td><td>"+esc(B[i])+"</td></tr>").join("")+"</table></div>")});
+  let h=esc(x);
+  // 3. one production / one move per line
+  h=h.replace(/ (\d[.)]) (?=[A-Z][A-Za-z₀-₉]{0,3} → |[δd]\([a-z]\w*,)/g,"<br>$1 ");
+  h=h.replace(/(?<!\d)([,;:.]) (?=[A-Z][A-Za-z₀-₉]{0,3} → )/g,"$1<br>");
+  h=h.replace(/(?<!\d)([,;:.]) (?=[δd]\([a-z]\w*,)/g,"$1<br>");
+  // 4. sub-parts on their own lines
+  h=h.replace(/([A-Za-z0-9.:?)\]}>”"]) (?=(?:\((?:i{1,3}|iv|v)\)|(?:i{1,3}|iv|v)[.)]|[1-9][.)]|[a-e][.)]) [^\d\s])/g,"$1<br>");
+  h=h.replace(/\u0001(\d+)\u0001/g,(m,i)=>keep[+i]);
+  return h;
+}
+/* Split an answer's HTML into its top-level blocks (paragraphs, tables, lists). */
+function splitBlocks(html){
+  const out=[],re=/<(\/?)([a-zA-Z0-9]+)([^>]*)>/g,VOID=/^(br|hr|img|input|col|wbr)$/i;let depth=0,start=0,m;
+  while((m=re.exec(html))){
+    if(VOID.test(m[2])||/\/\s*$/.test(m[3]))continue;
+    if(!m[1]){if(depth===0){const pre=html.slice(start,m.index).trim();if(pre)out.push(pre);start=m.index}depth++}
+    else{depth--;if(depth===0){out.push(html.slice(start,re.lastIndex).trim());start=re.lastIndex}}
+  }
+  const tail=html.slice(start).trim();if(tail)out.push(tail);return out;
+}
+const P=Object.fromEntries(PAPERS.map((p,i)=>[p.k,Object.assign({i},p)]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const KEY=SITE.key, MAP=typeof SPLIT!=="undefined"?SPLIT:{};
+const qk=x=>x.p+":"+x.q, uname=u=>UNITS[u].split(" — ")[0];
+
+TOPICS.forEach((t,i)=>{t.id=i;t.fam=familyOf(t);t.items.sort((a,b)=>P[b.p].i-P[a.p].i);t.papers=[...new Set(t.items.map(x=>x.p))]});
+const order=TOPICS.slice().sort((a,b)=>a.u-b.u||b.papers.length-a.papers.length||a.m-b.m||a.id-b.id);
+const ALLQ=[];order.forEach(t=>t.items.forEach(x=>ALLQ.push({t,x})));
+const totalQ=ALLQ.length;
+let done=new Set(store.get(KEY+"-doneq",[]).filter(k=>ALLQ.some(r=>qk(r.x)===k)));
+const st={unit:store.get(KEY+"-unit2",0),marks:"",paper:"",q:"",todo:false,fam:"",open:new Set(),topen:new Set()};
+if(![0,1,2,3,4,5].includes(st.unit))st.unit=0;
+
+$("#h-code").textContent=SITE.code;$("#h-title").innerHTML=SITE.h1;$("#h-lede").textContent=SITE.lede;
+$("#f-paper").innerHTML='<option value="">All papers</option>'+PAPERS.slice().reverse().map(p=>'<option value="'+p.k+'">'+p.name+'</option>').join("");
+
+/* ---------- light / dark: bright by default, the button switches and remembers ---------- */
+(function(){
+  const root=document.documentElement,b=$("#themeb");
+  const apply=m=>{root.setAttribute("data-theme",m);b.textContent=m==="dark"?"☀ Light mode":"☾ Dark mode"};
+  apply(store.get(KEY+"-theme",null)||root.getAttribute("data-theme")||"light");
+  b.addEventListener("click",()=>{const m=root.getAttribute("data-theme")==="dark"?"light":"dark";store.set(KEY+"-theme",m);apply(m)});
+})();
+
+/* ---------- progress ---------- */
+function cheer(n){
+  const f=n/totalQ;
+  return n===0?"11 11 · this is your sign to start with one question"
+    :f<.1?"you started. trust the process."
+    :f<.25?"soft progress is still progress"
+    :f<.5?"it is working. keep going."
+    :f<.75?"more than halfway there"
+    :f<1?"nearly done. finish what you started."
+    :"every question done · wish granted";
+}
+function progress(){
+  const n=done.size;
+  $("#ring-n").textContent=n;$("#ring-t").textContent="of "+totalQ+" done";
+  $("#ring-fg").style.strokeDashoffset=326.7*(1-n/totalQ);
+  $("#ring").setAttribute("aria-label",n+" of "+totalQ+" questions revised");
+  $("#cheer").textContent=cheer(n);
+  document.querySelectorAll(".tcard").forEach(c=>{
+    const ks=[...c.querySelectorAll(".pc")],d=ks.filter(k=>{const on=done.has(k.dataset.k);k.classList.toggle("d",on);return on}).length;
+    const p=c.querySelector(".dn");p.hidden=!d;p.textContent=d===ks.length?"All done ✓":d+" of "+ks.length+" done";
+  });
+  document.querySelectorAll("#units .ut").forEach(b=>{
+    const u=+b.dataset.u,qs=ALLQ.filter(r=>!u||r.t.u===u),d=qs.filter(r=>done.has(qk(r.x))).length;
+    b.querySelector(".pb i").style.width=(qs.length?d/qs.length*100:0)+"%";b.querySelector(".c").textContent=d+" / "+qs.length+" done";
+  });
+}
+function setDone(k,on){
+  on?done.add(k):done.delete(k);store.set(KEY+"-doneq",[...done]);
+  document.querySelectorAll('.qrow[data-k="'+k+'"]').forEach(r=>{r.classList.toggle("done",on);r.querySelector(".tick").setAttribute("aria-pressed",on);
+    const b=r.querySelector(".doneb");if(b)b.textContent=on?"Done ✓ (undo)":"Mark as done"});
+  progress();
+}
+
+/* ---------- one question's own answer ---------- */
+const bcache=new Map();
+const blocksOf=t=>{if(!bcache.has(t.a))bcache.set(t.a,splitBlocks(t.a));return bcache.get(t.a)};
+const PRE=PAPERS.map(p=>({k:p.k,re:new RegExp(p.name.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"(?!I)")}));
+function answerFor(t,x){
+  const B=blocksOf(t);let idx=[];const sp=MAP[qk(x)];
+  if(sp){String(sp).split(",").forEach(s=>{const m=s.split("-").map(Number);for(let i=m[0];i<=(m.length>1?m[1]:m[0]);i++)if(i<B.length)idx.push(i)})}
+  else if(t.items.length===1)idx=B.map((_,i)=>i);
+  else{
+    // a part headed with other papers' names (and the tables under it) belongs to those papers' questions
+    let hide=false;
+    B.forEach((b,i)=>{
+      if(/^<p[\s>]/.test(b)){
+        const m=/^<p[^>]*>\s*<b>([\s\S]*?)<\/b>/.exec(b),txt=b.replace(/<[^>]+>/g,""),lead=m?m[1].replace(/<[^>]+>/g,""):(txt.length<70?txt:"");
+        const ps=PRE.filter(r=>r.re.test(lead)).map(r=>r.k);hide=ps.length>0&&!ps.includes(x.p);
+      }
+      if(!hide)idx.push(i)});
+    if(!idx.length)idx=B.map((_,i)=>i);
+  }
+  const set=new Set(idx);
+  return{main:idx.map(i=>B[i]).join("\n"),rest:B.filter((_,i)=>!set.has(i)).join("\n"),n:B.length-set.size};
+}
+function answerPanel(t,x){
+  const k=qk(x),a=answerFor(t,x),d=el("div","qa");
+  d.appendChild(el("div","lab","Answer · "+t.m+" marks"));
+  d.appendChild(el("div","ans",a.main));
+  if(a.n&&t.items.length>1){const m=el("details","more",'<summary>Same topic, other papers’ versions ('+a.n+' more part'+(a.n>1?"s":"")+')</summary>');m.appendChild(el("div","ans",a.rest));d.appendChild(m)}
+  const b=el("button","doneb",done.has(k)?"Done ✓ (undo)":"Mark as done");
+  b.addEventListener("click",()=>setDone(k,!done.has(k)));d.appendChild(b);
+  return d;
+}
+function qRow(t,x,withTopic){
+  const k=qk(x),r=el("div","qrow u"+t.u+(done.has(k)?" done":""));r.dataset.k=k;r.id="q-"+k.replace(":","-");
+  const h=el("div","qh",'<button class="tick" aria-label="Mark as done" aria-pressed="'+done.has(k)+'">✓</button><div><div class="qmeta"><span class="pill u">'+P[x.p].name+'</span><span class="pill">Q'+x.q+'</span><span class="pill">'+t.m+' marks</span>'+
+    (withTopic?'<span class="pill">'+esc(t.fam)+'</span>':'')+'</div><div class="qtext">'+fmtQ(x.x)+'</div></div><span class="chev"></span>');
+  h.tabIndex=0;h.setAttribute("role","button");
+  const paint=()=>{const o=st.open.has(k);r.classList.toggle("open",o);h.setAttribute("aria-expanded",o);h.querySelector(".chev").textContent=o?"Hide ▲":"Answer ▼";
+    const p=r.querySelector(".qa");if(o&&!p)r.appendChild(answerPanel(t,x));if(!o&&p)p.remove();};
+  const toggle=()=>{st.open.has(k)?st.open.delete(k):st.open.add(k);paint()};
+  h.addEventListener("click",e=>{if(e.target.closest(".tick")){setDone(k,!done.has(k));return}if(e.target.closest("a,table")&&window.getSelection().toString())return;toggle()});
+  h.addEventListener("keydown",e=>{if(e.target!==h)return;if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle()}});
+  r.appendChild(h);paint();return r;
+}
+
+/* ---------- study ---------- */
+$("#units").innerHTML='<button class="ut all" data-u="0"><span class="k">All</span><span class="n">Most repeated first</span><span class="pb"><i></i></span><span class="c"></span></button>'+
+  [1,2,3,4,5].map(u=>'<button class="ut u'+u+'" data-u="'+u+'"><span class="k">Unit '+u+'</span><span class="n">'+esc(uname(u))+'</span><span class="pb"><i></i></span><span class="c"></span></button>').join("");
+document.querySelectorAll("#units .ut").forEach(b=>b.addEventListener("click",()=>{st.unit=+b.dataset.u;store.set(KEY+"-unit2",st.unit);renderQ()}));
+function qmatch(t,x){
+  if(st.unit&&!st.q&&t.u!==st.unit)return false;
+  if(st.marks&&t.m!=st.marks)return false;
+  if(st.paper&&x.p!==st.paper)return false;
+  if(st.todo&&done.has(qk(x)))return false;
+  if(st.fam&&t.fam!==st.fam)return false;
+  if(st.q){const q=st.q.toLowerCase();if(!(t.t.toLowerCase().includes(q)||t.fam.toLowerCase().includes(q)||x.x.toLowerCase().includes(q)))return false}
+  return true;
+}
+function renderQ(){
+  const root=$("#qlist");root.textContent="";
+  document.querySelectorAll("#units .ut").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.u===st.unit));
+  document.querySelectorAll("#f-marks button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===String(st.marks)));
+  $("#f-fam").innerHTML=st.fam?'<button class="chipx" id="famx">Topic: '+esc(st.fam)+' ✕</button>':"";
+  if(st.fam)$("#famx").onclick=()=>{st.fam="";renderQ()};
+  // one unit: that unit's topics, most repeated first. All: every topic, most repeated first.
+  const list=(st.unit&&!st.q?order:order.slice().sort((a,b)=>b.papers.length-a.papers.length||b.items.length-a.items.length||a.u-b.u||a.id-b.id))
+    .map(t=>({t,xs:t.items.filter(x=>qmatch(t,x))})).filter(r=>r.xs.length);
+  const nq=list.reduce((n,r)=>n+r.xs.length,0);
+  if(st.unit&&!st.q&&list.length)root.appendChild(el("div","unit-h u"+st.unit,'<h2>Unit '+st.unit+' · '+esc(uname(st.unit))+'</h2><p>'+esc(UNITS[st.unit].split(" — ")[1]||"")+'</p>'));
+  const box=el("div","cards");root.appendChild(box);
+  const auto=(st.fam||st.q)&&list.length<=3;
+  list.forEach((r,i)=>{
+    const t=r.t,c=el("article","tcard u"+t.u);c.dataset.id=t.id;
+    const btn=el("button",null,'<span class="num">'+String(i+1).padStart(2,"0")+'</span><span><span class="tags"><span class="pill u">Unit '+t.u+'</span><span class="pill">Part '+(t.m===8?"B · 8 marks":"C · 15 marks")+'</span>'+
+      (t.papers.length>1?'<span class="pill rep">Repeated '+t.papers.length+'×</span>':'<span class="pill">Asked once</span>')+'<span class="pill dn"></span></span><h3>'+esc(t.t)+'</h3><span class="pcs">'+
+      r.xs.map(x=>'<span class="pc" data-k="'+qk(x)+'">'+P[x.p].name+' · Q'+x.q+'</span>').join("")+'</span></span><span class="pm"></span>');
+    const paint=()=>{
+      const o=st.topen.has(t.id);btn.setAttribute("aria-expanded",o);btn.querySelector(".pm").textContent=o?"−":"+";
+      const b=c.querySelector(".tbody");
+      if(o&&!b){const d=el("div","tbody",'<div class="lab">'+r.xs.length+' question'+(r.xs.length>1?"s":"")+' on this topic · tap one for its own answer</div>');
+        const vc=vidChips(t);if(vc)d.insertBefore(vc,d.firstChild);
+        const rows=el("div","rows");r.xs.forEach(x=>rows.appendChild(qRow(t,x,false)));d.appendChild(rows);c.appendChild(d)}
+      if(!o&&b)b.remove();
+    };
+    if(auto)st.topen.add(t.id);
+    btn.addEventListener("click",()=>{st.topen.has(t.id)?st.topen.delete(t.id):st.topen.add(t.id);paint();$("#f-close").hidden=!st.topen.size});
+    c.appendChild(btn);paint();box.appendChild(c);
+  });
+  $("#f-count").textContent=list.length+" topic"+(list.length===1?"":"s")+" · "+nq+" question"+(nq===1?"":"s")+(st.q?" across all units":"")+", most repeated first. Open a topic, then tap a question for its answer.";
+  if(!nq)root.appendChild(el("div","empty","No questions match. Clear the search, or pick another unit above."));
+  $("#f-close").hidden=!st.topen.size;
+  progress();
+}
+function resetFilters(over){
+  Object.assign(st,{marks:"",paper:"",q:"",todo:false,fam:""},over);
+  $("#f-paper").value="";$("#f-search").value="";$("#f-todo").checked=false;
+}
+function goFam(name,u){st.topen.clear();resetFilters({fam:name,unit:u});show("questions");renderQ();window.scrollTo(0,0)}
+
+/* ---------- game plan ---------- */
+function fams(){
+  const m=new Map();
+  TOPICS.forEach(t=>{const k=t.u+"|"+t.fam;if(!m.has(k))m.set(k,{u:t.u,name:t.fam,ps:new Set(),n8:0,n15:0,last:-1});
+    const f=m.get(k);t.items.forEach(x=>{f.ps.add(x.p);t.m===8?f.n8++:f.n15++;f.last=Math.max(f.last,P[x.p].i)})});
+  return [...m.values()].map(f=>Object.assign(f,{papers:f.ps.size,marks:f.n8*8+f.n15*15}));
+}
+function pri(f){return f.papers>=5?'<span class="pri a">MUST DO</span>':f.papers>=3?'<span class="pri b">HIGH</span>':f.papers===2?'<span class="pri c">MEDIUM</span>':'<span class="pri c">ONCE</span>'}
+function rrow(f,i,NP,withUnit){
+  return '<button class="rrow u'+f.u+'" data-f="'+esc(f.name)+'" data-u="'+f.u+'"><span class="rk">'+i+'</span><span class="nm">'+esc(f.name)+pri(f)+'<span class="mt">'+(withUnit?"Unit "+f.u+" · ":"")+f.n8+' × 8m'+(f.n15?' · '+f.n15+' × 15m':'')+' · last asked '+PAPERS[f.last].name+'</span></span><span class="fr">'+f.papers+'/'+NP+' papers<div class="meter"><i style="width:'+f.papers/NP*100+'%"></i></div></span></button>';
+}
+function renderA(){
+  const root=$("#v-analysis");
+  const F=fams(), NP=PAPERS.length;
+  const um=[1,2,3,4,5].map(u=>{const ts=TOPICS.filter(t=>t.u===u);const a=ts.filter(t=>t.m===8).reduce((s,t)=>s+t.items.length,0),b=ts.filter(t=>t.m===15).reduce((s,t)=>s+t.items.length,0);return{u,a,b,marks:a*8+b*15}});
+  const tot=um.reduce((s,x)=>s+x.marks,0);
+  let h='<div class="block"><h2>If you have very little time</h2><p class="sub">Do these in order. Each one is a topic that keeps coming back.</p><ol class="plan">'+SITE.plan+'</ol></div>';
+  h+='<div class="block"><h2>Where the marks come from</h2><p class="sub">'+SITE.marksIntro+'</p><div class="ugrid">';
+  um.forEach(x=>{h+='<div class="ucard u'+x.u+'"><span class="pill u" style="align-self:flex-start">UNIT '+x.u+'</span><b>'+Math.round(x.marks/tot*100)+'%</b><div class="meter"><i style="width:'+Math.round(x.marks/Math.max(...um.map(y=>y.marks))*100)+'%"></i></div><small>'+x.a+' × 8m · '+x.b+' × 15m · '+x.marks+' marks</small><small>'+esc(uname(x.u))+'</small></div>'});
+  h+='</div></div>';
+  const top=F.slice().sort((a,b)=>b.papers-a.papers||b.marks-a.marks).slice(0,10);
+  h+='<div class="block"><h2>Top 10 topics overall</h2><p class="sub">Ranked by the number of papers (out of '+NP+') in which the topic appeared as an 8 or 15 mark question. Select a row to open its questions.</p><div class="rank">';
+  top.forEach((f,i)=>{h+=rrow(f,i+1,NP,true)});h+='</div></div>';
+  h+='<div class="block"><h2>Most important topics in each unit</h2><p class="sub">Every topic of every unit, most repeated first. Study each unit from the top down.</p>';
+  [1,2,3,4,5].forEach(u=>{
+    h+='<div class="rank u'+u+'"><h3><span class="pill u">UNIT '+u+'</span>'+esc(uname(u))+'</h3>';
+    F.filter(f=>f.u===u).sort((a,b)=>b.papers-a.papers||b.marks-a.marks).forEach((f,i)=>{h+=rrow(f,i+1,NP,false)});
+    h+='</div>'});
+  h+='</div>';
+  const c15=F.filter(f=>f.n15).sort((a,b)=>b.n15-a.n15||b.papers-a.papers);
+  h+='<div class="block"><h2>What Part C (15 marks) is made of</h2><p class="sub">'+SITE.partC+'</p><div class="tw"><table><tr><th>Topic</th><th>Unit</th><th>Times as 15m</th><th>Papers</th></tr>';
+  c15.forEach(f=>{const ps=[];TOPICS.filter(t=>t.fam===f.name&&t.m===15).forEach(t=>t.items.forEach(x=>ps.push(P[x.p].name+" Q"+x.q)));h+='<tr><td>'+esc(f.name)+'</td><td>'+f.u+'</td><td>'+f.n15+'</td><td>'+ps.join(", ")+'</td></tr>'});
+  h+='</table></div></div>';
+  h+='<div class="block"><h2>Paper × unit map</h2><p class="sub">Marks set from each unit in each paper (maximum printed marks per paper: 110). Darker cells mean more marks.</p><div class="tw"><table class="heat"><tr><th>Paper</th>'+[1,2,3,4,5].map(u=>'<th>Unit '+u+'</th>').join("")+'</tr>';
+  PAPERS.forEach(p=>{h+='<tr><th>'+p.name+'</th>';[1,2,3,4,5].forEach(u=>{let m=0;TOPICS.filter(t=>t.u===u).forEach(t=>t.items.forEach(x=>{if(x.p===p.k)m+=t.m}));h+='<td class="h" style="--v:'+Math.min(60,m*1.4)+'">'+(m||"–")+'</td>'});h+='</tr>'});
+  h+='</table></div></div>';
+  h+='<div class="note"><b>About the sources.</b> '+SITE.sources+'</div>';
+  root.innerHTML=h;
+  root.querySelectorAll(".rrow").forEach(r=>r.addEventListener("click",()=>goFam(r.dataset.f,+r.dataset.u)));
+}
+
+/* ---------- hot topics ---------- */
+let tu=store.get(KEY+"-tu",1);
+function renderT(){
+  const root=$("#v-topics"), F=fams(), NP=PAPERS.length;
+  if(![1,2,3,4,5].includes(tu))tu=1;
+  const fs=F.filter(f=>f.u===tu).sort((a,b)=>b.papers-a.papers||b.marks-a.marks);
+  let h='<div class="block"><h2>Hot topics</h2><p class="sub">Every topic that has come as an 8 or 15 mark question, by unit. The bar shows in how many of the '+NP+' papers it appeared. Select a topic to open its questions.</p>'+
+    '<div class="utabs" role="tablist">'+[1,2,3,4,5].map(u=>'<button role="tab" class="u'+u+'" data-u="'+u+'" aria-selected="'+(u===tu)+'">Unit '+u+' · '+esc(uname(u))+'</button>').join("")+'</div>'+
+    '<div class="legend"><span><i class="lg hi"></i>5 or more papers: must do</span><span><i class="lg mid"></i>3–4 papers: high</span><span><i class="lg lo"></i>1–2 papers: lower</span></div>';
+  h+='<div class="hgrid">'+fs.map(f=>{const c=f.papers>=5?"hi":f.papers>=3?"mid":"lo";
+    return '<button class="hcard '+c+'" data-f="'+esc(f.name)+'"><span class="hn">'+esc(f.name)+'</span><span class="hbar"><i style="width:'+f.papers/NP*100+'%"></i></span><span class="hmeta"><span>'+f.n8+' × 8m'+(f.n15?' · '+f.n15+' × 15m':'')+'</span><b>'+f.papers+'/'+NP+' papers</b></span></button>'}).join("")+'</div></div>';
+  h+='<div class="block u'+tu+'"><h2>Which paper asked which topic</h2><p class="sub">Unit '+tu+' topics against every paper. Each cell shows the marks set on that topic: 8 is one Part B option, 8+8 is two options, 15 is a Part C question.</p>';
+  h+='<div class="tw"><table class="hm"><thead><tr><th>Topic</th>'+PAPERS.map(p=>'<th>'+p.name.replace(" 20","<br>'").replace(" · ","&nbsp;")+'</th>').join("")+'<th>Papers</th><th>Marks</th></tr></thead><tbody>';
+  fs.forEach(f=>{
+    h+='<tr><th data-f="'+esc(f.name)+'">'+esc(f.name)+'</th>';
+    PAPERS.forEach(p=>{
+      const parts=[];TOPICS.filter(t=>t.u===tu&&t.fam===f.name).forEach(t=>t.items.forEach(x=>{if(x.p===p.k)parts.push(t.m)}));
+      parts.sort((a,b)=>a-b);const m=parts.reduce((s,x)=>s+x,0);
+      h+=m?'<td class="on" style="--v:'+Math.min(62,10+m*1.6)+'" title="'+esc(f.name)+' · '+p.name+' · '+m+' marks">'+parts.join("+")+'</td>':'<td class="off">·</td>';
+    });
+    h+='<td class="sum">'+f.papers+'/'+NP+'</td><td class="sum">'+f.marks+'</td></tr>';
+  });
+  h+='</tbody></table></div></div>';
+  root.innerHTML=h;
+  root.querySelectorAll(".utabs button").forEach(b=>b.addEventListener("click",()=>{tu=+b.dataset.u;store.set(KEY+"-tu",tu);renderT()}));
+  root.querySelectorAll("[data-f]").forEach(b=>{b.addEventListener("click",()=>goFam(b.dataset.f,tu));if(b.tagName==="TH"){b.tabIndex=0;b.addEventListener("keydown",e=>{if(e.key==="Enter")goFam(b.dataset.f,tu)})}});
+}
+
+/* ---------- paper by paper ---------- */
+let pp=store.get(KEY+"-pp",PAPERS[PAPERS.length-1].k);
+function renderP(){
+  const root=$("#v-papers");root.textContent="";if(!P[pp])pp=PAPERS[PAPERS.length-1].k;
+  const head=el("div","block",'<h2>Paper by paper</h2><p class="sub">Pick a paper to see its twelve long questions in order. Tap a question to see its answer.</p>');
+  const chips=el("div","pchips");
+  PAPERS.slice().reverse().forEach(p=>{const b=el("button",null,p.name);b.setAttribute("aria-pressed",p.k===pp);b.addEventListener("click",()=>{pp=p.k;store.set(KEY+"-pp",pp);renderP()});chips.appendChild(b)});
+  head.appendChild(chips);root.appendChild(head);
+  const p=P[pp];root.appendChild(el("p","note",'<b>'+p.name+'</b> · '+esc(p.note)+(p.n?' · '+SITE.paperWord+' '+p.n:'')));
+  const rows=ALLQ.filter(r=>r.x.p===pp);
+  [21,22,23,24,25,26,27].forEach(n=>{
+    const rs=rows.filter(r=>parseInt(r.x.q,10)===n).sort((a,b)=>a.x.q<b.x.q?-1:1);if(!rs.length)return;
+    root.appendChild(el("div","orh",'<h3>Q'+n+'</h3><span>'+(n<=25?"Part B · 8 marks · answer (a) or (b)":"Part C · 15 marks · answer Q26 or Q27")+'</span>'));
+    const box=el("div","rows");rs.forEach(r=>box.appendChild(qRow(r.t,r.x,true)));root.appendChild(box);
+  });
+}
+
+/* ---------- playlist: which videos teach which topic, ranked by how often the exams asked it ---------- */
+const PL=typeof PLAYLIST!=="undefined"?PLAYLIST:null;
+const vurl=v=>"https://www.youtube.com/watch?v="+v[2]+"&list="+PL.list;
+const vidsOf=t=>{if(!PL)return[];const m=PL.map.find(e=>t.t.startsWith(e[0]));return m?m[1].map(n=>PL.videos[n-1]):[]};
+function vidChips(t){
+  const vs=vidsOf(t);if(!PL)return null;
+  const d=el("div","vids",'<span class="lab">Watch first</span>'+(vs.length?vs.map(v=>'<a class="vid" target="_blank" rel="noopener" href="'+vurl(v)+'"><b>▶ '+String(v[0]).padStart(2,"0")+'</b>'+esc(v[1])+'</a>').join(""):'<span class="pill">No video for this topic in your playlist — use the answer below</span>'));
+  return d;
+}
+let plOrder=store.get(KEY+"-plo","asked");
+function renderPL(){
+  const root=$("#v-playlist");if(!PL){return}
+  $("#tab-pl").hidden=false;
+  const rows=PL.videos.map(v=>{const ts=TOPICS.filter(t=>vidsOf(t).includes(v));const ps=new Set();let q=0;ts.forEach(t=>t.items.forEach(x=>{ps.add(x.p);q++}));return{v,ts,q,papers:ps.size}});
+  const list=plOrder==="asked"?rows.slice().sort((a,b)=>b.papers-a.papers||b.q-a.q||a.v[0]-b.v[0]):rows;
+  const missing=TOPICS.filter(t=>!vidsOf(t).length);
+  root.textContent="";
+  const head=el("div","block",'<h2>Your playlist, ranked by the exams</h2><p class="sub">'+esc(PL.title)+' · '+PL.videos.length+' videos. Each video shows how many of the '+PAPERS.length+' papers asked an 8 or 15 mark question on what it teaches. Videos are matched to topics by their titles.</p>');
+  const seg=el("div","seg");[["asked","Most asked first"],["order","Playlist order"]].forEach(([k,l])=>{const b=el("button",null,l);b.setAttribute("aria-pressed",plOrder===k);b.addEventListener("click",()=>{plOrder=k;store.set(KEY+"-plo",k);renderPL()});seg.appendChild(b)});
+  head.appendChild(seg);root.appendChild(head);
+  list.forEach(r=>{
+    const d=el("div","vrow"+(r.q?"":" cold"),'<span class="vn">'+String(r.v[0]).padStart(2,"0")+'</span><div><div class="vt">'+esc(r.v[1])+'</div><div class="vm">'+
+      (r.q?'<span class="pill rep">In '+r.papers+' of '+PAPERS.length+' papers</span><span class="pill">'+r.q+' question'+(r.q>1?"s":"")+'</span>':'<span class="pill">Not asked as a long question yet</span>')+'</div></div><a class="watch" target="_blank" rel="noopener" href="'+vurl(r.v)+'">Watch ▶</a>');
+    const vm=d.querySelector(".vm");
+    [...new Set(r.ts.map(t=>t.u+"|"+t.fam))].forEach(k=>{const [u,f]=k.split("|");const b=el("button","pill u u"+u,esc(f)+" →");b.addEventListener("click",()=>goFam(f,+u));vm.appendChild(b)});
+    root.appendChild(d);
+  });
+  if(missing.length){
+    const fs=[...new Set(missing.map(t=>t.u+"|"+t.fam))];
+    const n=el("div","note",'<b>Asked in the exams but not in your playlist.</b> Learn these from the answers here: ');
+    fs.forEach(k=>{const [u,f]=k.split("|");const b=el("button","pill u u"+u,esc(f)+" →");b.style.cssText="border:0;cursor:pointer;margin:4px 4px 0 0";b.addEventListener("click",()=>goFam(f,+u));n.appendChild(b)});
+    n.style.marginTop="16px";root.appendChild(n);
+  }
+}
+
+/* ---------- mcq ---------- */
+function renderM(){
+  const root=$("#v-mcq");const np=PAPERS.filter(p=>p.n).sort((a,b)=>a.n-b.n);
+  let h='<div class="block"><h2>Part A answer key, papers 1–9</h2><p class="sub">'+SITE.mcqSub+'</p><div class="tw"><table class="key"><tr><th>Q</th>'+np.map(p=>'<th>'+p.n+'<br><span style="font-weight:400;font-family:var(--body);font-size:12px">'+p.name+'</span></th>').join("")+'</tr>';
+  for(let q=0;q<20;q++){h+='<tr><th>'+(q+1)+'</th>'+np.map(p=>'<td>'+MCQ[p.n][q]+'</td>').join("")+'</tr>'}
+  h+='</table></div></div><div class="block"><h2>Answers worth a second look</h2><p class="sub">These questions are worded loosely or have more than one defensible option. The ticked answer is the standard textbook or published one.</p><div class="tw"><table><tr><th>Paper</th><th>Q</th><th>Why</th></tr>'+MCQ_NOTES.map(n=>'<tr><td>'+n[0]+'</td><td>'+n[1]+'</td><td>'+esc(n[2])+'</td></tr>').join("")+'</table></div></div>';
+  root.innerHTML=h;
+}
+
+/* ---------- tabs ---------- */
+const views=["questions","topics","analysis","papers","playlist","mcq"];
+function show(v,push){
+  if(!views.includes(v))v="questions";
+  views.forEach(x=>{$("#v-"+x).hidden=x!==v});
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v));
+  if(v==="papers")renderP();if(v==="questions"&&push!==undefined)renderQ();
+  if(push!==false&&location.hash!=="#"+v){try{history.replaceState(null,"","#"+v)}catch(e){location.hash=v}}
+}
+document.querySelectorAll("#tabs button").forEach(b=>b.addEventListener("click",()=>{show(b.dataset.v,true);window.scrollTo(0,0)}));
+window.addEventListener("hashchange",()=>show(location.hash.slice(1),false));
+document.querySelectorAll("#f-marks button").forEach(b=>b.addEventListener("click",()=>{st.marks=b.dataset.m;renderQ()}));
+$("#f-paper").onchange=e=>{st.paper=e.target.value;renderQ()};
+$("#f-search").oninput=e=>{st.q=e.target.value.trim();renderQ()};
+$("#f-todo").onchange=e=>{st.todo=e.target.checked;renderQ()};
+$("#f-close").onclick=()=>{st.open.clear();st.topen.clear();renderQ()};
+renderQ();renderT();renderA();renderP();renderPL();renderM();show(location.hash.slice(1)||"questions",false);
+})();
+</script>
+
+</body>
+</html>
