@@ -370,6 +370,11 @@ figure.fsm .nd{fill:#0d1830}
 figure.fsm text.el{stroke:#0d1830}
 a.vid b{font-family:var(--display);font-size:16px}
 ::selection{background:var(--hot);color:#140612}
+.sndb{position:fixed;top:max(12px,env(safe-area-inset-top,0px));right:12px;z-index:60;width:46px;height:46px;cursor:pointer;border:0;
+  background:#0d1830;color:var(--accent);font:400 22px/1 var(--display);box-shadow:var(--shadow);display:grid;place-items:center}
+.sndb:hover{box-shadow:var(--glow)}
+.sndb[aria-pressed="false"]{color:var(--muted)}
+.sndb svg{width:24px;height:24px;shape-rendering:crispEdges}
 </style>
 
 </head>
@@ -1526,5 +1531,46 @@ renderQ();renderT();renderA();renderP();renderPL();renderM();show(location.hash.
 })();
 </script>
 
+
+<button class="sndb" id="sndb" aria-pressed="true" title="Sound on/off"></button>
+<script>
+(function(){
+  var KEYS="dive-sound", on=true, ctx=null;
+  try{ on=localStorage.getItem(KEYS)!=="off" }catch(e){}
+  var b=document.getElementById("sndb");
+  var icon=function(){ b.setAttribute("aria-pressed",on); b.setAttribute("aria-label",on?"Sound on":"Sound off");
+    b.innerHTML='<svg viewBox="0 0 12 12" fill="currentColor"><rect x="1" y="4" width="2" height="4"/><rect x="3" y="3" width="1" height="6"/><rect x="4" y="2" width="1" height="8"/><rect x="5" y="1" width="1" height="10"/>'+
+      (on?'<rect x="7" y="5" width="1" height="2"/><rect x="8" y="3" width="1" height="1"/><rect x="8" y="8" width="1" height="1"/><rect x="9" y="4" width="1" height="4"/><rect x="10" y="2" width="1" height="8"/>'
+         :'<rect x="7" y="4" width="1" height="1"/><rect x="8" y="5" width="1" height="1"/><rect x="9" y="6" width="1" height="1"/><rect x="10" y="7" width="1" height="1"/><rect x="10" y="4" width="1" height="1"/><rect x="9" y="5" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="7" y="7" width="1" height="1"/>')+'</svg>' };
+  icon();
+  function ac(){ if(!ctx){ var C=window.AudioContext||window.webkitAudioContext; if(!C) return null; ctx=new C() } if(ctx.state==="suspended") ctx.resume(); return ctx }
+  // one note: wave type, start/end frequency, length (s), volume, delay (s)
+  function tone(type,f1,f2,len,vol,delay){
+    var c=ac(); if(!c) return; var t=c.currentTime+(delay||0), o=c.createOscillator(), g=c.createGain();
+    o.type=type; o.frequency.setValueAtTime(f1,t); if(f2!==f1) o.frequency.exponentialRampToValueAtTime(f2,t+len);
+    g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.0001,t+len);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+len+0.02);
+  }
+  var S={
+    tab:function(){ tone("square",660,660,0.05,0.05); tone("square",990,990,0.06,0.04,0.05) },
+    open:function(){ tone("sine",320,900,0.12,0.12); tone("sine",500,1300,0.09,0.06,0.07) },          // bubble going up
+    close:function(){ tone("sine",900,300,0.12,0.10) },
+    done:function(){ [523,659,784,1047].forEach(function(f,i){ tone("square",f,f,0.09,0.045,i*0.065) }) }, // coin arpeggio
+    undo:function(){ tone("square",440,220,0.12,0.04) },
+    blip:function(){ tone("square",880,880,0.035,0.035) },
+    on:function(){ tone("square",523,523,0.06,0.05); tone("square",784,784,0.08,0.05,0.07) }
+  };
+  b.addEventListener("click",function(){ on=!on; try{ localStorage.setItem(KEYS,on?"on":"off") }catch(e){} icon(); if(on) S.on() });
+  document.addEventListener("click",function(e){
+    if(!on) return; var t=e.target.closest("button,a,summary,select,input[type=checkbox],[role=tab],.qh"); if(!t||t===b) return;
+    if(t.matches(".tick,.doneb")){ var r=t.closest(".qrow"); setTimeout(function(){ (r&&r.classList.contains("done")?S.done:S.undo)() },0); return }
+    if(t.matches("[role=tab],.pchips button,.utabs button,.seg button,.ut")) return S.tab();
+    if(t.matches(".tcard>button,.qh,summary")){
+      var box=t.closest(".tcard,.qrow,details");
+      setTimeout(function(){ var now=box&&(box.matches("details")?box.open:(box.matches(".qrow")?box.classList.contains("open")||!!box.querySelector(".qa"):!!box.querySelector(".tbody"))); (now?S.open:S.close)() },0); return }
+    S.blip();
+  },true);
+})();
+</script>
 </body>
 </html>
