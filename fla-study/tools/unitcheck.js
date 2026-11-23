@@ -1,6 +1,6 @@
 // Lists every question whose card's unit differs from the unit its question number implies (Q21→1 … Q25→5).
 const fs = require("fs"), path = require("path");
-const rd = f => fs.readFileSync(path.join(__dirname, f), "utf8");
+const rd = f => fs.readFileSync(path.join(__dirname, "..", f), "utf8");
 const src = rd("gen.js") + rd("data1.js") + rd("data2.js").replace(/if \(typeof module[^\n]*\n?$/, "");
 const d = new Function(src + "; return {PAPERS,TOPICS};")();
 console.log("card keys:", Object.keys(d.TOPICS[0]).join(","), "| item keys:", Object.keys(d.TOPICS[0].items[0]).join(","));

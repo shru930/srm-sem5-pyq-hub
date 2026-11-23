@@ -1,6 +1,6 @@
 // Builds <site>/dive.html: a site restyled as a pixel-art "deep dive" (sky at the top, deep sea below).
 // Same page, data and behaviour as that site's index.html; only the fonts, colours and hero art change.
-// Usage: node build-dive.js [maths|fla] [share copy path]
+// Usage: node shared/build-dive.js [maths|fla] [share copy path]
 const fs = require("fs"), path = require("path");
 const SITES = {
   maths: { dir: "maths-study", files: ["gen.js", "data.js"], title: "Maths PYQ · The Exam Dive" },
@@ -192,7 +192,7 @@ const sound = `
 })();
 </script>`;
 
-let page = rd("cn-study/page.src.html")
+let page = rd("shared/page.src.html")
   .replace("__TITLE__", S.title)
   .replace(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis[^>]*>/,
     '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&family=IBM+Plex+Mono:wght@400;600&display=swap">')

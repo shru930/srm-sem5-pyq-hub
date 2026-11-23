@@ -1,6 +1,6 @@
-// Builds index.html (open this file in a browser) from page.src.html + data.js
+// Builds index.html (open this file in a browser) from ../shared/page.src.html + data.js
 const fs = require("fs"), path = require("path");
-const src = fs.readFileSync(path.join(__dirname, "page.src.html"), "utf8");
+const src = fs.readFileSync(path.join(__dirname, "../shared/page.src.html"), "utf8");
 const data = fs.readFileSync(path.join(__dirname, "data.js"), "utf8");
 if (data.includes("</script")) throw new Error("data.js must not contain a closing script tag");
 const page = src.replace("__TITLE__", "CN PYQ Hub").replace("/*__DATA__*/", () => data);

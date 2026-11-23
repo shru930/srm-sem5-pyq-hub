@@ -1,0 +1,12 @@
+{
+  "name": "srm-sem5-pyq-hub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Study sites for SRM semester 5 previous-year question papers (CN, FLA, Discrete Maths).",
+  "scripts": {
+    "build": "node cn-study/build.js && node fla-study/build.js && node maths-study/build.js && npm run dive",
+    "dive": "node shared/build-dive.js maths && node shared/build-dive.js fla",
+    "check": "node fla-study/check.js && node fla-study/tools/unitcheck.js && node fla-study/tools/splitcheck.js && node maths-study/check.js",
+    "serve": "python -m http.server 8000"
+  }
+}

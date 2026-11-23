@@ -1,6 +1,6 @@
 // Checks the per-question answer map (SPLIT): every key is a real question and every block number exists.
 const fs = require("fs"), path = require("path"), { splitBlocks } = require(path.join(__dirname, "blocks.js"));
-const src = ["gen.js", "data1.js", "data2.js"].map(f => fs.readFileSync(path.join(__dirname, f), "utf8")).join("\n").replace(/if \(typeof module[^\n]*/, "");
+const src = ["gen.js", "data1.js", "data2.js"].map(f => fs.readFileSync(path.join(__dirname, "..", f), "utf8")).join("\n").replace(/if \(typeof module[^\n]*/, "");
 const d = new Function(src + ";return {TOPICS,SPLIT}")();
 const keys = new Set();
 d.TOPICS.forEach(t => {
