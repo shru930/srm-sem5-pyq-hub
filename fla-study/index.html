@@ -2037,7 +2037,9 @@ function renderM(){
   const root=$("#v-mcq");const np=PAPERS.filter(p=>p.n).sort((a,b)=>a.n-b.n);
   let h='<div class="block"><h2>Part A answer key, papers 1–9</h2><p class="sub">'+SITE.mcqSub+'</p><div class="tw"><table class="key"><tr><th>Q</th>'+np.map(p=>'<th>'+p.n+'<br><span style="font-weight:400;font-family:var(--body);font-size:12px">'+p.name+'</span></th>').join("")+'</tr>';
   for(let q=0;q<20;q++){h+='<tr><th>'+(q+1)+'</th>'+np.map(p=>'<td>'+MCQ[p.n][q]+'</td>').join("")+'</tr>'}
-  h+='</table></div></div><div class="block"><h2>Answers worth a second look</h2><p class="sub">These questions are worded loosely or have more than one defensible option. The ticked answer is the standard textbook or published one.</p><div class="tw"><table><tr><th>Paper</th><th>Q</th><th>Why</th></tr>'+MCQ_NOTES.map(n=>'<tr><td>'+n[0]+'</td><td>'+n[1]+'</td><td>'+esc(n[2])+'</td></tr>').join("")+'</table></div></div>';
+  h+='</table></div></div>';
+  if(typeof MCQ_WHY!=="undefined"){h+='<div class="block"><h2>Why each answer is right</h2><p class="sub">One line of logic per question. Tap a paper.</p>'+np.map(p=>'<details class="more"><summary>'+p.name+'</summary><div class="ans"><ol>'+MCQ_WHY[p.n].map((w,i)=>'<li><b>'+MCQ[p.n][i]+'</b> — '+esc(w)+'</li>').join("")+'</ol></div></details>').join("")+'</div>'}
+  h+='<div class="block"><h2>Answers worth a second look</h2><p class="sub">These questions are worded loosely or have more than one defensible option. The ticked answer is the standard textbook or published one.</p><div class="tw"><table><tr><th>Paper</th><th>Q</th><th>Why</th></tr>'+MCQ_NOTES.map(n=>'<tr><td>'+n[0]+'</td><td>'+n[1]+'</td><td>'+esc(n[2])+'</td></tr>').join("")+'</table></div></div>';
   root.innerHTML=h;
 }
 
