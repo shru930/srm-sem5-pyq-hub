@@ -60,6 +60,9 @@ footer b{color:var(--accent)}
 <canvas id="confetti" aria-hidden="true"></canvas>
 <script>
 (function(){
+  // Birthday banner and confetti end at midnight after 26 Nov 2026 (the visitor's local time).
+  var END=new Date(2026,10,27),now=new Date();
+  if(now>=END){var b=document.querySelector(".bday");if(b)b.remove();return}
   if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;
   var c=document.getElementById("confetti"),x=c.getContext("2d"),W,H,P=[],cols=["#cc4a92","#ff8cc4","#ffd37a","#8fe3c9","#fff3fa","#a04f7e"];
   function size(){W=c.width=innerWidth;H=c.height=innerHeight}size();addEventListener("resize",size);
