@@ -23,36 +23,13 @@ a.s span{flex:1}
 a.s b{display:block;font:600 20px/1.2 "Fraunces",Georgia,serif}
 a.s small{color:var(--muted)}
 a.s i{font-style:normal;color:var(--accent);font-weight:700}
-.bday{margin:22px 0 4px}
-.bday h2{font:700 clamp(30px,8vw,48px)/1.05 "Fraunces",Georgia,serif;font-variation-settings:"SOFT" 100;margin:0;color:var(--accent);text-shadow:0 2px 0 var(--surface)}
-.bday .cake{font-size:40px;display:inline-block;animation:bob 2.4s ease-in-out infinite}
-@keyframes bob{50%{transform:translateY(-6px) rotate(-4deg)}}
-pre.code{text-align:left;margin:14px auto 0;max-width:420px;background:#3a1b35;color:#ffe6f3;border-radius:16px;padding:14px 16px;font:13px/1.6 ui-monospace,"Cascadia Code",Consolas,monospace;font-variant-ligatures:none;font-feature-settings:"calt" 0,"liga" 0;white-space:pre-wrap;word-break:break-word;box-shadow:0 12px 28px -16px rgba(120,30,90,.6)}
-pre.code .k{color:#ff8cc4}pre.code .s{color:#ffd37a}pre.code .c{color:#c99bb8}pre.code .f{color:#8fe3c9}
-.cur{display:inline-block;width:8px;height:1.1em;background:#ff8cc4;vertical-align:-2px;animation:blink 1s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
 footer{margin-top:22px;color:var(--muted);font-size:14px}
 footer b{color:var(--accent)}
-#confetti{position:fixed;inset:0;pointer-events:none;z-index:9}
-@media (prefers-reduced-motion: reduce){.bday .cake,.cur{animation:none}}
 </style>
 </head>
 <body>
 <main>
   <div class="wish"><b>11 11</b>trust your intuition</div>
-  <section class="bday" aria-label="Happy birthday Shruti">
-    <span class="cake" aria-hidden="true">🎂</span>
-    <h2>Happy Birthday, Shruti!</h2>
-<pre class="code" aria-hidden="true"><span class="k">const</span> shruti = {
-  name: <span class="s">"Shruti Narang"</span>,
-  birthday: <span class="s">"24 Nov"</span>
-};
-<span class="k">if</span> (today === shruti.birthday) {
-  <span class="f">celebrate</span>(shruti);   <span class="c">// 🎉 🎈 🎁</span>
-  <span class="f">share</span>(<span class="s">"PYQs"</span>, <span class="s">"everyone"</span>);
-}
-<span class="c">// output: Happy Birthday, Shruti! 💗</span><span class="cur"></span></pre>
-  </section>
   <h1>Semester 5 PYQ Hub</h1>
   <p>Every long question from past SRM papers, grouped by topic, most repeated first, with worked answers.</p>
   <a class="s" href="maths-study/"><span><b>Discrete Mathematics</b><small>21MAB302T · 9 papers · 104 questions</small></span><i>Open →</i></a>
@@ -60,21 +37,5 @@ footer b{color:var(--accent)}
   <a class="s" href="cn-study/"><span><b>Computer Networks</b><small>21CSC302J · 10 papers · 120 questions</small></span><i>Open →</i></a>
   <footer>Made with 💗 by <b>Shruti Narang</b></footer>
 </main>
-<canvas id="confetti" aria-hidden="true"></canvas>
-<script>
-(function(){
-  // Birthday banner and confetti end at midnight after 26 Nov 2026 (the visitor's local time).
-  var END=new Date(2026,10,27),now=new Date();
-  if(now>=END){var b=document.querySelector(".bday");if(b)b.remove();return}
-  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;
-  var c=document.getElementById("confetti"),x=c.getContext("2d"),W,H,P=[],cols=["#cc4a92","#ff8cc4","#ffd37a","#8fe3c9","#fff3fa","#a04f7e"];
-  function size(){W=c.width=innerWidth;H=c.height=innerHeight}size();addEventListener("resize",size);
-  for(var i=0;i<160;i++)P.push({x:Math.random()*W,y:-Math.random()*H,r:4+Math.random()*5,v:2+Math.random()*3,a:Math.random()*6,s:.05+Math.random()*.1,c:cols[i%cols.length]});
-  var t0=performance.now();
-  (function f(t){x.clearRect(0,0,W,H);var live=0;
-    P.forEach(function(p){p.y+=p.v;p.x+=Math.sin(p.a+=p.s)*1.2;if(p.y<H+20)live++;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);x.restore()});
-    if(live&&t-t0<9000)requestAnimationFrame(f);else x.clearRect(0,0,W,H)})(t0);
-})();
-</script>
 </body>
 </html>
