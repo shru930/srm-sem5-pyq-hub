@@ -252,6 +252,13 @@ a.vid b{font:600 11.5px var(--mono);color:var(--accent)}
 .vrow .vm{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .vrow .vm button{cursor:pointer;border:0}
 .vrow.cold{opacity:.72}
+.mx{display:inline-block;vertical-align:middle;margin:4px 4px;padding:2px 7px;border-left:2px solid currentColor;border-right:2px solid currentColor;border-radius:7px;font-family:var(--mono);font-size:.95em;line-height:1.5}
+.mxi{display:table}.mxi>span{display:table-row}.mxi i{display:table-cell;font-style:normal;text-align:center;padding:0 6px}
+.qimg{margin:10px 0 0;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;max-width:100%}
+.qimg img{display:block;max-width:100%;height:auto;margin:0 auto}
+.qimg figcaption{font-size:12px;opacity:.7;margin-top:4px;text-align:center;color:#555}
+.stars{display:block;margin-top:4px;color:#f0a500;font-size:16px;letter-spacing:2px;line-height:1}
+.stars i{font-style:normal;color:var(--line)}
 a.watch{text-decoration:none;font-weight:700;font-size:13.5px;background:var(--pill);color:var(--pill-ink);border-radius:999px;padding:8px 14px;white-space:nowrap}
 @media (max-width:520px){.vrow{grid-template-columns:32px minmax(0,1fr)}.vrow a.watch{grid-column:2;justify-self:start}}
 
@@ -330,6 +337,8 @@ const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
    one grammar rule or δ move per line, sub-parts (i), (ii) on their own lines. */
 function fmtQ(x){
   const keep=[];const hold=h=>{keep.push(h);return "\u0001"+(keep.length-1)+"\u0001"};
+  // 0. matrices written as [1 0 1; 0 1 1] → a real bracketed grid
+  x=x.replace(/\[((?:[0-9a-z]+ )*[0-9a-z]+(?:; (?:[0-9a-z]+ )*[0-9a-z]+)+)\]/g,(m,b)=>hold('<span class="mx"><span class="mxi">'+b.split("; ").map(r=>"<span>"+r.split(" ").map(c=>"<i>"+esc(c)+"</i>").join("")+"</span>").join("")+"</span></span>"));
   // 1. transition table written as "state: sym→next, sym→next; state: ..."
   const tm=/(^|[\s(])((?:→|\*)*[A-Za-z]\w{0,2}: [0-9a-zε]→)/.exec(x);
   if(tm){
@@ -462,10 +471,16 @@ function answerPanel(t,x){
   drawDiagrams(d);
   return d;
 }
+/* Question text, plus the picture cropped from the printed paper when this copy has one (QIMG is added only to the local offline build). */
+function qHTML(x){
+  const img=typeof QIMG!=="undefined"&&QIMG[x.p+"|"+x.q];
+  if(!img)return fmtQ(x.x);
+  return fmtQ(x.x.replace(/\s*\(Figure:[^)]*\)\.?/g,""))+'<figure class="qimg"><img loading="lazy" alt="Question '+esc(x.q)+' as printed in the '+esc(P[x.p].name)+' paper" src="data:image/jpeg;base64,'+img+'"><figcaption>As printed in the '+esc(P[x.p].name)+' paper</figcaption></figure>';
+}
 function qRow(t,x,withTopic){
   const k=qk(x),r=el("div","qrow u"+t.u+(done.has(k)?" done":""));r.dataset.k=k;r.id="q-"+k.replace(":","-");
   const h=el("div","qh",'<button class="tick" aria-label="Mark as done" aria-pressed="'+done.has(k)+'">✓</button><div><div class="qmeta"><span class="pill u">'+P[x.p].name+'</span><span class="pill">Q'+x.q+'</span><span class="pill">'+mk(t,x)+' marks</span>'+
-    (withTopic?'<span class="pill">'+esc(t.fam)+'</span>':'')+'</div><div class="qtext">'+fmtQ(x.x)+'</div></div><span class="chev"></span>');
+    (withTopic?'<span class="pill">'+esc(t.fam)+'</span>':'')+'</div><div class="qtext">'+qHTML(x)+'</div></div><span class="chev"></span>');
   h.tabIndex=0;h.setAttribute("role","button");
   const paint=()=>{const o=st.open.has(k);r.classList.toggle("open",o);h.setAttribute("aria-expanded",o);h.querySelector(".chev").textContent=o?"Hide ▲":"Answer ▼";
     const p=r.querySelector(".qa");if(o&&!p)r.appendChild(answerPanel(t,x));if(!o&&p)p.remove();};
@@ -710,6 +725,8 @@ function vidChips(t){
   return d;
 }
 let plOrder=store.get(KEY+"-plo","asked");
+// priority stars out of 5 from the share of papers that asked what the video teaches (0 papers = no stars)
+const starsOf=p=>{const n=p?Math.max(1,Math.round(p/PAPERS.length*5)):0;return '<span class="stars" title="Priority '+n+' of 5" aria-label="Priority '+n+' of 5">'+"★".repeat(n)+'<i>'+"★".repeat(5-n)+'</i></span>'};
 function renderPL(){
   const root=$("#v-playlist");if(!PL){return}
   $("#tab-pl").hidden=false;
@@ -717,11 +734,11 @@ function renderPL(){
   const list=plOrder==="asked"?rows.slice().sort((a,b)=>b.papers-a.papers||b.q-a.q||a.v[0]-b.v[0]):rows;
   const missing=TOPICS.filter(t=>!vidsOf(t).length&&!xvidsOf(t).length);
   root.textContent="";
-  const head=el("div","block",'<h2>Your playlist, ranked by the exams</h2><p class="sub">'+esc(PL.title)+' · '+PL.videos.length+' videos. Each video shows how many of the '+PAPERS.length+' papers asked an 8 or 15 mark question on what it teaches. Videos are matched to topics by their titles.</p>');
+  const head=el("div","block",'<h2>Your playlist, ranked by the exams</h2><p class="sub">'+esc(PL.title)+' · '+PL.videos.length+' videos. Each video shows how many of the '+PAPERS.length+' papers asked an 8 or 15 mark question on what it teaches, and stars for priority: ★★★★★ means asked in almost every paper, no stars means skip if short on time. Videos are matched to topics by their titles.</p>');
   const seg=el("div","seg");[["asked","Most asked first"],["order","Playlist order"]].forEach(([k,l])=>{const b=el("button",null,l);b.setAttribute("aria-pressed",plOrder===k);b.addEventListener("click",()=>{plOrder=k;store.set(KEY+"-plo",k);renderPL()});seg.appendChild(b)});
   head.appendChild(seg);root.appendChild(head);
   list.forEach(r=>{
-    const d=el("div","vrow"+(r.q?"":" cold"),'<span class="vn">'+String(r.v[0]).padStart(2,"0")+'</span><div><div class="vt">'+esc(r.v[1])+'</div><div class="vm">'+
+    const d=el("div","vrow"+(r.q?"":" cold"),'<span class="vn">'+String(r.v[0]).padStart(2,"0")+'</span><div><div class="vt">'+esc(r.v[1])+'</div>'+starsOf(r.papers)+'<div class="vm">'+
       (r.q?'<span class="pill rep">In '+r.papers+' of '+PAPERS.length+' papers</span><span class="pill">'+r.q+' question'+(r.q>1?"s":"")+'</span>':'<span class="pill">Not asked as a long question yet</span>')+'</div></div><a class="watch" target="_blank" rel="noopener" href="'+vurl(r.v)+'">Watch ▶</a>');
     const vm=d.querySelector(".vm");
     [...new Set(r.ts.map(t=>t.u+"|"+t.fam))].forEach(k=>{const [u,f]=k.split("|");const b=el("button","pill u u"+u,esc(f)+" →");b.addEventListener("click",()=>goFam(f,+u));vm.appendChild(b)});
@@ -731,7 +748,7 @@ function renderPL(){
     const X=PL.extra;
     root.appendChild(el("div","block",'<h2 style="margin-top:22px">Only in '+esc(X.who)+'’s playlist</h2><p class="sub">'+esc(X.who)+'’s “Theory of Computation” playlist ('+X.total+' videos) teaches the same topics in the same order. These are the only videos it has that yours does not.</p>'));
     X.videos.forEach(v=>{const ts=TOPICS.filter(t=>xvidsOf(t).includes(v));const ps=new Set();let q=0;ts.forEach(t=>t.items.forEach(x=>{ps.add(x.p);q++}));
-      const d=el("div","vrow"+(q?"":" cold"),'<span class="vn">'+String(v[0]).padStart(2,"0")+'</span><div><div class="vt">'+esc(v[1])+'</div><div class="vm">'+
+      const d=el("div","vrow"+(q?"":" cold"),'<span class="vn">'+String(v[0]).padStart(2,"0")+'</span><div><div class="vt">'+esc(v[1])+'</div>'+starsOf(ps.size)+'<div class="vm">'+
         (q?'<span class="pill rep">In '+ps.size+' of '+PAPERS.length+' papers</span><span class="pill">'+q+' question'+(q>1?"s":"")+'</span>':'<span class="pill">Background only, not asked as a long question</span>')+'</div></div><a class="watch" target="_blank" rel="noopener" href="'+vurl(v)+'">Watch ▶</a>');
       const vm=d.querySelector(".vm");[...new Set(ts.map(t=>t.u+"|"+t.fam))].forEach(k=>{const [u,f]=k.split("|");const b=el("button","pill u u"+u,esc(f)+" →");b.addEventListener("click",()=>goFam(f,+u));vm.appendChild(b)});
       root.appendChild(d)});

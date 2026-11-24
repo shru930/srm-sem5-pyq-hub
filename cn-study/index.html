@@ -260,6 +260,8 @@ a.vid b{font:600 11.5px var(--mono);color:var(--accent)}
 .vrow .vm{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .vrow .vm button{cursor:pointer;border:0}
 .vrow.cold{opacity:.72}
+.stars{display:block;margin-top:4px;color:#f0a500;font-size:16px;letter-spacing:2px;line-height:1}
+.stars i{font-style:normal;color:var(--line)}
 a.watch{text-decoration:none;font-weight:700;font-size:13.5px;background:var(--pill);color:var(--pill-ink);border-radius:999px;padding:8px 14px;white-space:nowrap}
 @media (max-width:520px){.vrow{grid-template-columns:32px minmax(0,1fr)}.vrow a.watch{grid-column:2;justify-self:start}}
 
@@ -2514,6 +2516,8 @@ function vidChips(t){
   return d;
 }
 let plOrder=store.get(KEY+"-plo","asked");
+// priority stars out of 5 from the share of papers that asked what the video teaches (0 papers = no stars)
+const starsOf=p=>{const n=p?Math.max(1,Math.round(p/PAPERS.length*5)):0;return '<span class="stars" title="Priority '+n+' of 5" aria-label="Priority '+n+' of 5">'+"★".repeat(n)+'<i>'+"★".repeat(5-n)+'</i></span>'};
 function renderPL(){
   const root=$("#v-playlist");if(!PL){return}
   $("#tab-pl").hidden=false;
@@ -2521,11 +2525,11 @@ function renderPL(){
   const list=plOrder==="asked"?rows.slice().sort((a,b)=>b.papers-a.papers||b.q-a.q||a.v[0]-b.v[0]):rows;
   const missing=TOPICS.filter(t=>!vidsOf(t).length&&!xvidsOf(t).length);
   root.textContent="";
-  const head=el("div","block",'<h2>Your playlist, ranked by the exams</h2><p class="sub">'+esc(PL.title)+' · '+PL.videos.length+' videos. Each video shows how many of the '+PAPERS.length+' papers asked an 8 or 15 mark question on what it teaches. Videos are matched to topics by their titles.</p>');
+  const head=el("div","block",'<h2>Your playlist, ranked by the exams</h2><p class="sub">'+esc(PL.title)+' · '+PL.videos.length+' videos. Each video shows how many of the '+PAPERS.length+' papers asked an 8 or 15 mark question on what it teaches, and stars for priority: ★★★★★ means asked in almost every paper, no stars means skip if short on time. Videos are matched to topics by their titles.</p>');
   const seg=el("div","seg");[["asked","Most asked first"],["order","Playlist order"]].forEach(([k,l])=>{const b=el("button",null,l);b.setAttribute("aria-pressed",plOrder===k);b.addEventListener("click",()=>{plOrder=k;store.set(KEY+"-plo",k);renderPL()});seg.appendChild(b)});
   head.appendChild(seg);root.appendChild(head);
   list.forEach(r=>{
-    const d=el("div","vrow"+(r.q?"":" cold"),'<span class="vn">'+String(r.v[0]).padStart(2,"0")+'</span><div><div class="vt">'+esc(r.v[1])+'</div><div class="vm">'+
+    const d=el("div","vrow"+(r.q?"":" cold"),'<span class="vn">'+String(r.v[0]).padStart(2,"0")+'</span><div><div class="vt">'+esc(r.v[1])+'</div>'+starsOf(r.papers)+'<div class="vm">'+
       (r.q?'<span class="pill rep">In '+r.papers+' of '+PAPERS.length+' papers</span><span class="pill">'+r.q+' question'+(r.q>1?"s":"")+'</span>':'<span class="pill">Not asked as a long question yet</span>')+'</div></div><a class="watch" target="_blank" rel="noopener" href="'+vurl(r.v)+'">Watch ▶</a>');
     const vm=d.querySelector(".vm");
     [...new Set(r.ts.map(t=>t.u+"|"+t.fam))].forEach(k=>{const [u,f]=k.split("|");const b=el("button","pill u u"+u,esc(f)+" →");b.addEventListener("click",()=>goFam(f,+u));vm.appendChild(b)});
@@ -2535,7 +2539,7 @@ function renderPL(){
     const X=PL.extra;
     root.appendChild(el("div","block",'<h2 style="margin-top:22px">Only in '+esc(X.who)+'’s playlist</h2><p class="sub">'+esc(X.who)+'’s “Theory of Computation” playlist ('+X.total+' videos) teaches the same topics in the same order. These are the only videos it has that yours does not.</p>'));
     X.videos.forEach(v=>{const ts=TOPICS.filter(t=>xvidsOf(t).includes(v));const ps=new Set();let q=0;ts.forEach(t=>t.items.forEach(x=>{ps.add(x.p);q++}));
-      const d=el("div","vrow"+(q?"":" cold"),'<span class="vn">'+String(v[0]).padStart(2,"0")+'</span><div><div class="vt">'+esc(v[1])+'</div><div class="vm">'+
+      const d=el("div","vrow"+(q?"":" cold"),'<span class="vn">'+String(v[0]).padStart(2,"0")+'</span><div><div class="vt">'+esc(v[1])+'</div>'+starsOf(ps.size)+'<div class="vm">'+
         (q?'<span class="pill rep">In '+ps.size+' of '+PAPERS.length+' papers</span><span class="pill">'+q+' question'+(q>1?"s":"")+'</span>':'<span class="pill">Background only, not asked as a long question</span>')+'</div></div><a class="watch" target="_blank" rel="noopener" href="'+vurl(v)+'">Watch ▶</a>');
       const vm=d.querySelector(".vm");[...new Set(ts.map(t=>t.u+"|"+t.fam))].forEach(k=>{const [u,f]=k.split("|");const b=el("button","pill u u"+u,esc(f)+" →");b.addEventListener("click",()=>goFam(f,+u));vm.appendChild(b)});
       root.appendChild(d)});

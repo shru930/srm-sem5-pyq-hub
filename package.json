@@ -6,6 +6,6 @@
   "scripts": {
     "build": "node shared/build.js",
     "check": "node fla-study/check.js && node fla-study/tools/unitcheck.js && node fla-study/tools/splitcheck.js && node maths-study/check.js",
-    "serve": "python -m http.server 8000"
+    "serve": "python -m http.server 8000 --bind 127.0.0.1"
   }
 }
